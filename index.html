@@ -1,1 +1,712 @@
-e
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LCA - Professional Trading Company</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="styles/main.css">
+    <style>
+        .feature-item, .course-item {
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .feature-item:hover, .course-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .feature-link, .course-link {
+            text-decoration: none; /* إزالة السطر تحت النص */
+            color: inherit; /* الحفاظ على لون النص الأصلي */
+        }
+    </style>
+</head>
+<body class="dark-mode">
+    <header>
+        <nav>
+            <div class="logo">LCA</div>
+            <ul>
+                <li><a href="#home" class="nav-link active" onclick="showTab('home')" data-translate="home">Home</a></li>
+                <li><a href="#courses" class="nav-link" onclick="showTab('courses')" data-translate="courses">Courses</a></li>
+                <li><a href="#channels" class="nav-link" onclick="showTab('channels')" data-translate="channels">Contact Us</a></li>
+            </ul>
+            <select id="language-switcher" onchange="changeLanguage(this.value)">
+                <option value="en">English</option>
+                <option value="ar">العربية</option>
+                <option value="tr">Türkçe</option>
+            </select>
+        </nav>
+    </header>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TradingView Forex & Gold Prices</title>
+</head>
+<body>
+    <!-- TradingView Widget -->
+    <div class="tradingview-widget-container">
+        <div id="tradingview_ticker"></div>
+        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
+        {
+            "symbols": [
+                {
+                    "proName": "FOREXCOM:XAUUSD",
+                    "title": "Gold (XAU/USD)"
+                },
+                {
+                    "proName": "FOREXCOM:EURUSD",
+                    "title": "EUR/USD"
+                },
+                {
+                    "proName": "FOREXCOM:GBPUSD",
+                    "title": "GBP/USD"
+                },
+                {
+                    "proName": "FOREXCOM:USDJPY",
+                    "title": "USD/JPY"
+                },
+                {
+                    "proName": "FOREXCOM:USDCHF",
+                    "title": "USD/CHF"
+                },
+                {
+                    "proName": "FOREXCOM:AUDUSD",
+                    "title": "AUD/USD"
+                },
+                {
+                    "proName": "FOREXCOM:USDCAD",
+                    "title": "USD/CAD"
+                },
+                {
+                    "proName": "FOREXCOM:NZDUSD",
+                    "title": "NZD/USD"
+                },
+                {
+                    "proName": "FOREXCOM:EURJPY",
+                    "title": "EUR/JPY"
+                },
+                {
+                    "proName": "FOREXCOM:GBPJPY",
+                    "title": "GBP/JPY"
+                },
+                {
+                    "proName": "FOREXCOM:EURGBP",
+                    "title": "EUR/GBP"
+                },
+                {
+                    "proName": "FOREXCOM:CHFJPY",
+                    "title": "CHF/JPY"
+                },
+                {
+                    "proName": "FOREXCOM:EURCHF",
+                    "title": "EUR/CHF"
+                },
+                {
+                    "proName": "FOREXCOM:EURAUD",
+                    "title": "EUR/AUD"
+                },
+                {
+                    "proName": "FOREXCOM:GBPAUD",
+                    "title": "GBP/AUD"
+                },
+                {
+                    "proName": "FOREXCOM:AUDJPY",
+                    "title": "AUD/JPY"
+                },
+                {
+                    "proName": "FOREXCOM:GBPCAD",
+                    "title": "GBP/CAD"
+                },
+                {
+                    "proName": "FOREXCOM:EURCAD",
+                    "title": "EUR/CAD"
+                },
+                {
+                    "proName": "FOREXCOM:NZDJPY",
+                    "title": "NZD/JPY"
+                },
+                {
+                    "proName": "FOREXCOM:AUDNZD",
+                    "title": "AUD/NZD"
+                },
+                {
+                    "proName": "FOREXCOM:CADJPY",
+                    "title": "CAD/JPY"
+                },
+                {
+                    "proName": "FOREXCOM:GBPNZD",
+                    "title": "GBP/NZD"
+                }
+            ],
+            "showSymbolLogo": true,
+            "colorTheme": "light",
+            "isTransparent": false,
+            "displayMode": "regular",
+            "locale": "ar"
+        }
+        </script>
+    </div>
+</body>
+</html>
+
+    <!-- Home Section -->
+    <div id="home" class="tab-container active">
+        <section>
+            <div class="hero">
+                <h1 data-translate="welcome">Welcome to LCA</h1>
+                <p data-translate="learn">Learn trading professionally with the best trainers and educational resources.</p>
+                <a href="#courses" class="cta-button" onclick="showTab('courses')" data-translate="start">Start Your Journey Now</a>
+            </div>
+
+            <div class="features">
+                <a href="#forex-section" onclick="showTab('home')" class="feature-link">
+                    <div class="feature-item">
+                        <i class="fas fa-chart-line"></i>
+                        <h3 data-translate="expert">Learn from Experts</h3>
+                        <p data-translate="expert_desc">Professional trainers with years of trading experience.</p>
+                    </div>
+                </a>
+                <a href="#courses" onclick="showTab('courses')" class="feature-link">
+                    <div class="feature-item">
+                        <i class="fas fa-book-open"></i>
+                        <h3 data-translate="resources">Comprehensive Educational Resources</h3>
+                        <p data-translate="resources_desc">From beginner to professional.</p>
+                    </div>
+                </a>
+                <a href="#channels" onclick="showTab('channels')" class="feature-link">
+                    <div class="feature-item">
+                        <i class="fas fa-headset"></i>
+                        <h3 data-translate="support">24/7 Technical Support</h3>
+                        <p data-translate="support_desc">Technical support team available from 8:00 AM to 8:00 PM UTC+3.</p>
+                    </div>
+                </a>
+            </div>
+            <div id="forex-section" class="forex-section">
+                <h2 data-translate="forex">Forex Trading with LCA</h2>
+                <p data-translate="forex_desc">
+                    Forex is the foreign exchange market, the largest financial market in the world. With LCA's strategy, you will learn how to trade in the Forex market professionally, understand market movements, and make the right decisions to achieve profits.
+                </p>
+                <div class="forex-benefits">
+                    <div class="benefit-item">
+                        <i class="fas fa-globe"></i>
+                        <h3 data-translate="global">Global Trading</h3>
+                        <p data-translate="global_desc">Learn to trade foreign currencies, metals, and indices.</p>
+                    </div>
+                    <div class="benefit-item">
+                        <i class="fas fa-chart-pie"></i>
+                        <h3 data-translate="analysis">Market Analysis</h3>
+                        <p data-translate="analysis_desc">Learn how to analyze the market and make decisions based on data.</p>
+                    </div>
+                    <div class="benefit-item">
+                        <i class="fas fa-coins"></i>
+                        <h3 data-translate="risk">Risk Management</h3>
+                        <p data-translate="risk_desc">Learn risk management strategies to protect your account.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Courses Section -->
+    <div id="courses" class="tab-container">
+        <section>
+            <div class="course-list">
+                <a href="#course1" onclick="showCourseDetails('course1')" class="course-link">
+                    <div class="course-item">
+                        <h3>LCA</h3>
+                        <p data-translate="course1_desc">Learn how to trade using the LCA method without indicators.</p>
+                        <div class="price" data-translate="course1_price">Price: $100</div>
+                        <div class="course-actions">
+                            <button class="buy-button" onclick="event.stopPropagation(); showPurchaseForm()" data-translate="buy">Buy Course</button>
+                            <button class="details-button" onclick="event.stopPropagation(); showCourseDetails('course1')" data-translate="details">Course Details</button>
+                        </div>
+                    </div>
+                </a>
+                <a href="#course2" onclick="showCourseDetails('course2')" class="course-link">
+                    <div class="course-item">
+                        <h3>LCA PRO</h3>
+                        <p data-translate="course2_desc">LCA course + indicators.</p>
+                        <div class="price" data-translate="course2_price">Price: $175</div>
+                        <div class="course-actions">
+                            <button class="buy-button" onclick="event.stopPropagation(); showPurchaseForm()" data-translate="buy">Buy Course</button>
+                            <button class="details-button" onclick="event.stopPropagation(); showCourseDetails('course2')" data-translate="details">Course Details</button>
+                        </div>
+                    </div>
+                </a>
+                <a href="#course3" onclick="showCourseDetails('course3')" class="course-link">
+                    <div class="course-item">
+                        <h3>VIP LCA</h3>
+                        <p data-translate="course3_desc">Includes the basic LCA course and VIP indicators with technical support and special broadcasts for 15 days.</p>
+                        <div class="price" data-translate="course3_price">Price: $300</div>
+                        <div class="course-actions">
+                            <button class="buy-button" onclick="event.stopPropagation(); showPurchaseForm()" data-translate="buy">Buy Course</button>
+                            <button class="details-button" onclick="event.stopPropagation(); showCourseDetails('course3')" data-translate="details">Course Details</button>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Course Details -->
+            <div id="course1" class="course-details" style="display: none;">
+                <h2 data-translate="course1_title">LCA Course</h2>
+                <div class="course-info">
+                    <div>
+                        <h3 data-translate="course1_duration">Duration</h3>
+                        <p data-translate="course1_duration_value">5 days</p>
+                    </div>
+                    <div>
+                        <h3 data-translate="course1_level">Level</h3>
+                        <p data-translate="course1_level_value">Intermediate</p>
+                    </div>
+                    <div>
+                        <h3 data-translate="course1_rating">Rating</h3>
+                        <p data-translate="course1_rating_value">7.5/10</p>
+                    </div>
+                </div>
+                <div class="course-content">
+                    <h3 class="white-text" data-translate="course_content"> </h3>
+                    <ul>
+                        <li><i class="fas fa-check"></i> <span data-translate="course1_content1">Basics of Trading</span></li>
+                        <li><i class="fas fa-check"></i> <span data-translate="course1_content2">Explanation of the LCA Strategy</span></li>
+                        <li><i class="fas fa-check"></i> <span data-translate="course1_content3">Practical Application of the LCA Strategy</span></li>
+                    </ul>
+                </div>
+                <div class="course-preview">
+                    <h3 data-translate="course_preview"></h3>
+                </div>
+                <div class="buy-section">
+                    <div class="price" data-translate="course1_price">Price: $100</div>
+                    <button onclick="showPurchaseForm()" data-translate="buy">Buy Course</button>
+                </div>
+            </div>
+
+            <div id="course2" class="course-details" style="display: none;">
+                <h2 data-translate="course2_title">LCA PRO Course</h2>
+                <div class="course-info">
+                    <div>
+                        <h3 data-translate="course2_duration">Duration</h3>
+                        <p data-translate="course2_duration_value">5 days</p>
+                    </div>
+                    <div>
+                        <h3 data-translate="course2_level">Level</h3>
+                        <p data-translate="course2_level_value">Advanced</p>
+                    </div>
+                    <div>
+                        <h3 data-translate="course2_rating">Rating</h3>
+                        <p data-translate="course2_rating_value">8.5/10</p>
+                    </div>
+                </div>
+                <div class="course-content">
+                    <h3 class="white-text" data-translate="course_content"></h3>
+                    <ul>
+                        <li><i class="fas fa-check"></i> <span data-translate="course2_content1">Everything in the LCA Course</span></li>
+                        <li><i class="fas fa-check"></i> <span data-translate="course2_content2">Explanation of the LCA Indicator</span></li>
+                        <li><i class="fas fa-check"></i> <span data-translate="course2_content3">Practical Application of the LCA Indicator</span></li>
+                        <li><i class="fas fa-check"></i> <span data-translate="course2_content4">One Week of Practical Application and Taking Trades Using the LCA Indicator</span></li>
+                    </ul>
+                </div>
+
+                <div class="buy-section">
+                    <div class="price" data-translate="course2_price">Price: $175</div>
+                    <button onclick="showPurchaseForm()" data-translate="buy">Buy Course</button>
+                </div>
+            </div>
+
+            <div id="course3" class="course-details" style="display: none;">
+                <h2 data-translate="course3_title">VIP LCA Course</h2>
+                <div class="course-info">
+                    <div>
+                        <h3 data-translate="course3_duration">Duration</h3>
+                        <p data-translate="course3_duration_value">15 days</p>
+                    </div>
+                    <div>
+                        <h3 data-translate="course3_level">Level</h3>
+                        <p data-translate="course3_level_value">Very Advanced</p>
+                    </div>
+                    <div>
+                        <h3 data-translate="course3_rating">Rating</h3>
+                        <p data-translate="course3_rating_value">9.5/10</p>
+                    </div>
+                </div>
+                <div class="course-content">
+                    <h3 class="white-text" data-translate="course_content"></h3>
+                    <ul>
+                        <li><i class="fas fa-check"></i> <span data-translate="course3_content1">Everything in the LCA Course</span></li>
+                        <li><i class="fas fa-check"></i> <span data-translate="course3_content2">Explanation of the VIP Indicator</span></li>
+                        <li><i class="fas fa-check"></i> <span data-translate="course3_content3">Practical Application of the VIP Indicator</span></li>
+                        <li><i class="fas fa-check"></i> <span data-translate="course3_content4">One Week of Practical Application and Taking Trades Using the VIP Indicator</span></li>
+                        <li><i class="fas fa-check"></i> <span data-translate="course3_content5">Personal Trainer for One Month</span></li>
+                    </ul>
+                </div>
+
+                <div class="buy-section">
+                    <div class="price" data-translate="course3_price">Price: $300</div>
+                    <button onclick="showPurchaseForm()" data-translate="buy">Buy Course</button>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Channels Section -->
+    <div id="channels" class="tab-container">
+        <section class="channels-section">
+            <h2 data-translate="channels_title" style="color: white;">Our Channels</h2>
+            <p data-translate="follow_us" style="color: white;">Follow us on social media:</p>
+            <div class="social-links">
+                <!-- إنستغرام -->
+                <a href="https://www.instagram.com/lca__group?igsh=dXBxb2wzcjN3NWFv&utm_source=qr" target="_blank" class="cta-button" style="color: white;">
+                    <i class="fab fa-instagram"></i> <span data-translate="instagram">Instagram</span>
+                </a>
+                <!-- تيليجرام -->
+                <a href="https://t.me/lcaforex" target="_blank" class="cta-button" style="color: white;">
+                    <i class="fab fa-telegram"></i> <span data-translate="telegram">Telegram</span>
+                </a>
+                <!-- واتساب -->
+                <a href="https://wa.me/905393011147" target="_blank" class="cta-button" style="color: white;">
+                    <i class="fab fa-whatsapp"></i> <span data-translate="whatsapp">WhatsApp</span>
+                </a>
+                <!-- تيك توك -->
+                <a href="https://www.tiktok.com/@lca_group?_t=ZS-8tKx7Y8CUlD&_r=1" target="_blank" class="cta-button" style="color: white;">
+                    <i class="fab fa-tiktok"></i> <span data-translate="tiktok">TikTok</span>
+                </a>
+                <!-- تويتر -->
+                <a href="https://x.com/lca0fx?s=21&t=Ng1ER4VAoZfJdhI3q_w-1w" target="_blank" class="cta-button" style="color: white;">
+                    <i class="fab fa-twitter"></i> <span data-translate="twitter">Twitter</span>
+                </a>
+                <a href="mailto:lca0fx@gmail.com" class="cta-button" style="color: white;">
+                    <i class="fas fa-envelope"></i> <span data-translate="email">Email</span>
+                </a>
+target="_blank" class="cta-button" style="color: white;">
+                    <i class="fab fa-youtube"></i> <span data-translate="youtube">YouTube</span>
+                </a>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <p data-translate="copyright">© 2025 LCA. All rights reserved.</p>
+    </footer>
+
+    <button id="scrollToTopBtn" title="Back to Top">↑</button>
+    <button id="themeToggle" class="theme-toggle">
+        <i class="fas fa-moon"></i>
+    </button>
+
+    <script>
+        const translations = {
+            ar: {
+                home: "الرئيسية",
+                courses: "الكورسات",
+                channels: "تواصل معنا",
+                welcome: "مرحبًا بكم في شركة LCA",
+                learn: "تعلم التداول باحترافية مع أفضل المدربين والموارد التعليمية.",
+                start: "ابدأ رحلتك الآن",
+                expert: "تعلم من الخبراء",
+                expert_desc: "مدربون محترفون من سنوات من الخبرة في التداول.",
+                resources: "موارد تعليمية شاملة",
+                resources_desc: "من الصفر الى الاحتراف.",
+                support: "دعم فني متواصل",
+                support_desc: "فريق دعم فني متاح على من الساعه ال8:00 الى  الساعة 20:00 توقيت UTC:3.",
+                forex: "تداول الفوركس مع LCA",
+                forex_desc: "الفوركس هو سوق تداول العملات الأجنبية، وهو أكبر سوق مالي في العالم. مع استراتجية LCA، ستتعلم كيفية التداول في سوق الفوركس باحترافية، وفهم تحركات السوق، واتخاذ القرارات الصحيحة لتحقيق الأرباح.",
+                global: "تداول عالمي",
+                global_desc: "تعلم التداول على العملات الاجنبيه والمعادن والموشرات.",
+                analysis: "تحليل السوق",
+                analysis_desc: "تعلم كيفية تحليل السوق واتخاذ القرارات بناءً على البيانات.",
+                risk: "إدارة المخاطر",
+                risk_desc: "تعلم استراتيجيات إدارة المخاطر لحماية حسابك.",
+                course1_desc: "تعلم كيفية التداول بطريقة LCA بدون مؤشرات.",
+                course2_desc: "دورة LCA + مؤشرات.",
+                course3_desc: "تشمل دورة LCA الأساسية ومؤشرات VIP مع دعم فني وبثوث خاصة لمده 15 يوم .",
+                course1_price: "السعر: 100$",
+                course2_price: "السعر: 175$",
+                course3_price: "السعر: 300$",
+                buy: "شراء الكورس",
+                details: "تفاصيل الكورس",
+                course1_title: "دورة LCA",
+                course1_duration: "المدة",
+                course1_duration_value: "5 أيام",
+                course1_level: "المستوى",
+                course1_level_value: "متوسط",
+                course1_rating: "التقييم",
+                course1_rating_value: "7.5/10",
+                course1_content1: "أساسيات التداول",
+                course1_content2: "شرح استراتيجية LCA",
+                course1_content3: "التطبيق العملي لاستراتيجية LCA",
+                course2_title: "دورة LCA PRO",
+                course2_duration: "المدة",
+                course2_duration_value: "5 أيام",
+                course2_level: "المستوى",
+                course2_level_value: "متقدم",
+                course2_rating: "التقييم",
+                course2_rating_value: "8.5/10",
+                course2_content1: "كل ما في دورة LCA",
+                course2_content2: "شرح مؤشر LCA",
+                course2_content3: "التطبيق العملي لمؤشر LCA",
+                course2_content4: "أسبوع من التطبيق العملي وأخذ الصفقات باستخدام مؤشر LCA",
+                course3_title: "دورة VIP LCA",
+                course3_duration: "المدة",
+                course3_duration_value: "15 يومًا",
+                course3_level: "المستوى",
+                course3_level_value: "متقدم جدًا",
+                course3_rating: "التقييم",
+                course3_rating_value: "9.5/10",
+                course3_content1: "كل ما في دورة LCA",
+                course3_content2: "شرح المؤشر VIP",
+                course3_content3: "التطبيق العملي للمؤشر VIP",
+                course3_content4: "أسبوع من التطبيق العملي وأخذ الصفقات باستخدام المؤشر VIP",
+                course3_content5: "مدرب شخصي لمدة شهر",
+                channels_title: "قنواتنا",
+                follow_us: "تابعنا على منصات التواصل الاجتماعي:",
+                facebook: "Facebook",
+                twitter: "Twitter",
+                instagram: "Instagram",
+                copyright: "© 2025 LCA. جميع الحقوق محفوظة."
+            },
+            en: {
+                home: "Home",
+                courses: "Courses",
+                channels: "Contact Us",
+                welcome: "Welcome to LCA",
+                learn: "Learn trading professionally with the best trainers and educational resources.",
+                start: "Start Your Journey Now",
+                expert: "Learn from Experts",
+                expert_desc: "Professional trainers with years of trading experience.",
+                resources: "Comprehensive Educational Resources",
+                resources_desc: "From beginner to professional.",
+                support: "24/7 Technical Support",
+                support_desc: "Technical support team available from 8:00 AM to 8:00 PM UTC+3.",
+                forex: "Forex Trading with LCA",
+                forex_desc: "Forex is the foreign exchange market, the largest financial market in the world. With LCA's strategy, you will learn how to trade in the Forex market professionally, understand market movements, and make the right decisions to achieve profits.",
+                global: "Global Trading",
+                global_desc: "Learn to trade foreign currencies, metals, and indices.",
+                analysis: "Market Analysis",
+                analysis_desc: "Learn how to analyze the market and make decisions based on data.",
+                risk: "Risk Management",
+                risk_desc: "Learn risk management strategies to protect your account.",
+                course1_desc: "Learn how to trade using the LCA method without indicators.",
+                course2_desc: "LCA course + indicators.",
+                course3_desc: "Includes the basic LCA course and VIP indicators with technical support and special broadcasts for 15 days.",
+                course1_price: "Price: $100",
+                course2_price: "Price: $175",
+                course3_price: "Price: $300",
+                buy: "Buy Course",
+                details: "Course Details",
+                course1_title: "LCA Course",
+                course1_duration: "Duration",
+                course1_duration_value: "5 days",
+                course1_level: "Level",
+                course1_level_value: "Intermediate",
+                course1_rating: "Rating",
+                course1_rating_value: "7.5/10",
+                course1_content1: "Basics of Trading",
+                course1_content2: "Explanation of the LCA Strategy",
+                course1_content3: "Practical Application of the LCA Strategy",
+                course2_title: "LCA PRO Course",
+                course2_duration: "Duration",
+                course2_duration_value: "5 days",
+                course2_level: "Level",
+                course2_level_value: "Advanced",
+                course2_rating: "Rating",
+                course2_rating_value: "8.5/10",
+                course2_content1: "Everything in the LCA Course",
+                course2_content2: "Explanation of the LCA Indicator",
+                course2_content3: "Practical Application of the LCA Indicator",
+                course2_content4: "One Week of Practical Application and Taking Trades Using the LCA Indicator",
+                course3_title: "VIP LCA Course",
+                course3_duration: "Duration",
+                course3_duration_value: "15 days",
+                course3_level: "Level",
+                course3_level_value: "Very Advanced",
+                course3_rating: "Rating",
+                course3_rating_value: "9.5/10",
+                course3_content1: "Everything in the LCA Course",
+                course3_content2: "Explanation of the VIP Indicator",
+                course3_content3: "Practical Application of the VIP Indicator",
+                course3_content4: "One Week of Practical Application and Taking Trades Using the VIP Indicator",
+                course3_content5: "Personal Trainer for One Month",
+                channels_title: "Our Channels",
+                follow_us: "Follow us on social media:",
+                facebook: "Facebook",
+                twitter: "Twitter",
+                instagram: "Instagram",
+                copyright: "© 2025 LCA. All rights reserved."
+            },
+            tr: {
+                home: "Ana Sayfa",
+                courses: "Kurslar",
+                channels: "İletişim",
+                welcome: "LCA'ya Hoş Geldiniz",
+                learn: "En iyi eğitmenler ve eğitim kaynaklarıyla profesyonel ticaret öğrenin.",
+                start: "Yolculuğunuza Şimdi Başlayın",
+                expert: "Uzmanlardan Öğrenin",
+                expert_desc: "Yılların ticaret deneyimine sahip profesyonel eğitmenler.",
+                resources: "Kapsamlı Eğitim Kaynakları",
+                resources_desc: "Başlangıçtan profesyonel seviyeye.",
+                support: "7/24 Teknik Destek",
+                support_desc: "Teknik destek ekibi UTC+3 saat diliminde 08:00 - 20:00 arasında hizmet vermektedir.",
+                forex: "LCA ile Forex Ticareti",
+                forex_desc: "Forex, döviz piyasasıdır ve dünyanın en büyük finansal piyasasıdır. LCA stratejisi ile Forex piyasasında nasıl profesyonel bir şekilde ticaret yapılacağını öğrenecek, piyasa hareketlerini anlayacak ve kar elde etmek için doğru kararları alacaksınız.",
+                global: "Küresel Ticaret",
+                global_desc: "Yabancı para birimleri, metaller ve endeksler üzerinde ticaret yapmayı öğrenin.",
+                analysis: "Piyasa Analizi",
+                analysis_desc: "Piyasayı analiz etmeyi ve verilere dayalı kararlar almayı öğrenin.",
+                risk: "Risk Yönetimi",
+                risk_desc: "Hesabınızı korumak için risk yönetimi stratejilerini öğrenin.",
+                course1_desc: "Göstergeler olmadan LCA yöntemiyle ticaret yapmayı öğrenin.",
+                course2_desc: "LCA kursu + göstergeler.",
+                course3_desc: "Temel LCA kursunu ve VIP göstergeleri içerir. 15 gün boyunca teknik destek ve özel yayınlar sunulur.",
+                course1_price: "Fiyat: $100",
+                course2_price: "Fiyat: $175",
+                course3_price: "Fiyat: $300",
+                buy: "Kursu Satın Al",
+                details: "Kurs Detayları",
+                course1_title: "LCA Kursu",
+                course1_duration: "Süre",
+                course1_duration_value: "5 gün",
+                course1_level: "Seviye",
+                course1_level_value: "Orta",
+                course1_rating: "Değerlendirme",
+                course1_rating_value: "7.5/10",
+                course1_content1: "Ticaretin Temelleri",
+                course1_content2: "LCA Stratejisi Açıklaması",
+                course1_content3: "LCA Stratejisinin Pratik Uygulaması",
+                course2_title: "LCA PRO Kursu",
+                course2_duration: "Süre",
+                course2_duration_value: "5 gün",
+                course2_level: "Seviye",
+                course2_level_value: "İleri",
+                course2_rating: "Değerlendirme",
+                course2_rating_value: "8.5/10",
+                course2_content1: "LCA Kursundaki Her Şey",
+                course2_content2: "LCA Göstergesi Açıklaması",
+                course2_content3: "LCA Göstergesinin Pratik Uygulaması",
+                course2_content4: "LCA Göstergesi Kullanarak Pratik Uygulama ve İşlem Yapma Haftası",
+                course3_title: "VIP LCA Kursu",
+                course3_duration: "Süre",
+                course3_duration_value: "15 gün",
+                course3_level: "Seviye",
+                course3_level_value: "Çok İleri",
+                course3_rating: "Değerlendirme",
+                course3_rating_value: "9.5/10",
+                course3_content1: "LCA Kursundaki Her Şey",
+                course3_content2: "VIP Göstergesi Açıklaması",
+                course3_content3: "VIP Göstergesinin Pratik Uygulaması",
+                course3_content4: "VIP Göstergesi Kullanarak Pratik Uygulama ve İşlem Yapma Haftası",
+                course3_content5: "Bir Ay Boyunca Kişisel Eğitmen",
+                channels_title: "Kanallarımız",
+                follow_us: "Bizi sosyal medyadan takip edin:",
+                facebook: "Facebook",
+                twitter: "Twitter",
+                instagram: "Instagram",
+                copyright: "© 2025 LCA. Tüm hakları saklıdır."
+            }
+        };
+
+        function changeLanguage(lang) {
+            const elements = document.querySelectorAll("[data-translate]");
+            elements.forEach(element => {
+                const key = element.getAttribute("data-translate");
+                if (translations[lang] && translations[lang][key]) {
+                    element.textContent = translations[lang][key];
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedLang = localStorage.getItem('language') || 'en';
+            document.getElementById('language-switcher').value = savedLang;
+            changeLanguage(savedLang);
+        });
+
+        document.getElementById('language-switcher').addEventListener('change', function() {
+            const lang = this.value;
+            localStorage.setItem('language', lang);
+            changeLanguage(lang);
+        });
+
+        function showCourseDetails(courseId) {
+            const allDetails = document.querySelectorAll('.course-details');
+            allDetails.forEach(detail => {
+                detail.style.display = 'none';
+            });
+            const selectedDetail = document.getElementById(courseId);
+            if (selectedDetail) {
+                selectedDetail.style.display = 'block';
+            }
+        }
+
+        function showTab(tabId) {
+            document.querySelectorAll('.tab-container').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.getElementById(tabId).classList.add('active');
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+
+        function showPurchaseForm() {
+             window.open('https://t.me/LCA_fx', '_blank');
+        }
+
+        window.onscroll = function() {
+            const scrollToTopBtn = document.getElementById('scrollToTopBtn');
+            if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+                scrollToTopBtn.style.display = 'block';
+            } else {
+                scrollToTopBtn.style.display = 'none';
+            }
+        };
+
+        document.getElementById('scrollToTopBtn').addEventListener('click', function() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        document.getElementById('themeToggle').addEventListener('click', function() {
+            const body = document.body;
+            if (body.classList.contains('dark-mode')) {
+                body.classList.remove('dark-mode');
+                body.classList.add('light-mode');
+                this.innerHTML = '<i class="fas fa-moon"></i>';
+            } else {
+                body.classList.remove('light-mode');
+                body.classList.add('dark-mode');
+                this.innerHTML = '<i class="fas fa-sun"></i>';
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedTheme = localStorage.getItem('theme');
+            const body = document.body;
+            const themeToggle = document.getElementById('themeToggle');
+
+            if (savedTheme === 'light-mode') {
+                body.classList.remove('dark-mode');
+                body.classList.add('light-mode');
+                themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+            } else {
+                body.classList.remove('light-mode');
+                body.classList.add('dark-mode');
+                themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+            }
+        });
+
+        document.getElementById('themeToggle').addEventListener('click', function() {
+            const body = document.body;
+            if (body.classList.contains('dark-mode')) {
+                localStorage.setItem('theme', 'dark-mode');
+            } else {
+                localStorage.setItem('theme', 'light-mode');
+            }
+        });
+    </script>
+</body>
+</html>
