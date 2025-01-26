@@ -27,9 +27,9 @@
         <nav>
             <div class="logo">LCA</div>
             <ul>
-                <li><a href="#home" class="nav-link active" onclick="showTab('home')" data-translate="home">Home</a></li>
-                <li><a href="#courses" class="nav-link" onclick="showTab('courses')" data-translate="courses">Courses</a></li>
-                <li><a href="#channels" class="nav-link" onclick="showTab('channels')" data-translate="channels">Contact Us</a></li>
+                <li><a href="#home" class="nav-link active" onclick="showTab('home', event)" data-translate="home">Home</a></li>
+                <li><a href="#courses" class="nav-link" onclick="showTab('courses', event)" data-translate="courses">Courses</a></li>
+                <li><a href="#channels" class="nav-link" onclick="showTab('channels', event)" data-translate="channels">Contact Us</a></li>
             </ul>
             <select id="language-switcher" onchange="changeLanguage(this.value)">
                 <option value="en">English</option>
@@ -38,14 +38,7 @@
             </select>
         </nav>
     </header>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TradingView Forex & Gold Prices</title>
-</head>
-<body>
+
     <!-- TradingView Widget -->
     <div class="tradingview-widget-container">
         <div id="tradingview_ticker"></div>
@@ -149,8 +142,6 @@
         }
         </script>
     </div>
-</body>
-</html>
 
     <!-- Home Section -->
     <div id="home" class="tab-container active">
@@ -158,25 +149,25 @@
             <div class="hero">
                 <h1 data-translate="welcome">Welcome to LCA</h1>
                 <p data-translate="learn">Learn trading professionally with the best trainers and educational resources.</p>
-                <a href="#courses" class="cta-button" onclick="showTab('courses')" data-translate="start">Start Your Journey Now</a>
+                <a href="#courses" class="cta-button" onclick="showTab('courses', event)" data-translate="start">Start Your Journey Now</a>
             </div>
 
             <div class="features">
-                <a href="#forex-section" onclick="showTab('home')" class="feature-link">
+                <a href="#forex-section" onclick="showTab('home', event)" class="feature-link">
                     <div class="feature-item">
                         <i class="fas fa-chart-line"></i>
                         <h3 data-translate="expert">Learn from Experts</h3>
                         <p data-translate="expert_desc">Professional trainers with years of trading experience.</p>
                     </div>
                 </a>
-                <a href="#courses" onclick="showTab('courses')" class="feature-link">
+                <a href="#courses" onclick="showTab('courses', event)" class="feature-link">
                     <div class="feature-item">
                         <i class="fas fa-book-open"></i>
                         <h3 data-translate="resources">Comprehensive Educational Resources</h3>
                         <p data-translate="resources_desc">From beginner to professional.</p>
                     </div>
                 </a>
-                <a href="#channels" onclick="showTab('channels')" class="feature-link">
+                <a href="#channels" onclick="showTab('channels', event)" class="feature-link">
                     <div class="feature-item">
                         <i class="fas fa-headset"></i>
                         <h3 data-translate="support">24/7 Technical Support</h3>
@@ -376,11 +367,13 @@
                 <a href="https://x.com/lca0fx?s=21&t=Ng1ER4VAoZfJdhI3q_w-1w" target="_blank" class="cta-button" style="color: white;">
                     <i class="fab fa-twitter"></i> <span data-translate="twitter">Twitter</span>
                 </a>
+                <!-- يوتيوب -->
+                <a href="https://www.youtube.com/channel/your_channel_id" target="_blank" class="cta-button" style="color: white;">
+                    <i class="fab fa-youtube"></i> <span data-translate="youtube">YouTube</span>
+                </a>
+                <!-- إيميل -->
                 <a href="mailto:lca0fx@gmail.com" class="cta-button" style="color: white;">
                     <i class="fas fa-envelope"></i> <span data-translate="email">Email</span>
-                </a>
-target="_blank" class="cta-button" style="color: white;">
-                    <i class="fab fa-youtube"></i> <span data-translate="youtube">YouTube</span>
                 </a>
             </div>
         </section>
@@ -639,7 +632,8 @@ target="_blank" class="cta-button" style="color: white;">
             }
         }
 
-        function showTab(tabId) {
+        function showTab(tabId, event) {
+            event.preventDefault();
             document.querySelectorAll('.tab-container').forEach(tab => {
                 tab.classList.remove('active');
             });
@@ -651,7 +645,7 @@ target="_blank" class="cta-button" style="color: white;">
         }
 
         function showPurchaseForm() {
-             window.open('https://t.me/LCA_fx', '_blank');
+            window.open('https://t.me/LCA_fx', '_blank');
         }
 
         window.onscroll = function() {
