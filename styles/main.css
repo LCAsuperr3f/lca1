@@ -1,0 +1,781 @@
+/* التنسيقات العامة */
+body {
+    font-family: 'Tajawal', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #1a1a1a; /* لون خلفية داكن */
+    color: #f5f5f5; /* لون نص فاتح */
+    text-align: center; /* توسيط كل النصوص بشكل عام */
+    line-height: 1.8;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+header {
+    background-color: #333; /* لون خلفية داكن للهيدر */
+    color: #fff;
+    padding: 20px 0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    transition: background-color 0.3s ease;
+}
+
+/* تنسيق عام للقائمة */
+#language-switcher {
+    padding: 10px 15px;
+    font-size: 16px;
+    color: #fff;
+    background-color: #199454; /* استخدام التدرج الأخضر */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    appearance: none; /* لإزالة المظهر الافتراضي للمتصفح */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url('data:image/svg+xml;utf8,<svg fill="%23ffffff" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>'); /* سهم مخصص */
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    padding-right: 40px; /* لإفساح المجال للسهم */
+}
+
+/* تنسيق عند التمرير فوق القائمة */
+#language-switcher:hover {
+    background-color: #147a3d; /* لون أخضر داكن */
+}
+
+/* تنسيق عند التركيز على القائمة */
+#language-switcher:focus {
+    outline: none;
+    box-shadow: 0 0 5px rgba(25, 148, 84, 0.5);
+}
+
+/* تنسيق الخيارات داخل القائمة */
+#language-switcher option {
+    background-color: #199454; /* لون أخضر */
+    color: #fff;
+}
+
+/* تنسيق الخيارات عند التمرير فوقها */
+#language-switcher option:hover {
+    background-color: #147a3d; /* لون أخضر داكن */
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+nav .logo {
+    font-size: 28px;
+    font-weight: 700;
+    color: #199454; /* استخدام التدرج الأخضر */
+    text-align: center; /* توسيط الشعار */
+}
+
+nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center; /* توسيط عناصر القائمة */
+}
+
+nav ul li {
+    margin-left: 20px;
+}
+
+nav ul li a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: 500;
+    transition: color 0.3s ease;
+    text-align: center; /* توسيط نصوص القائمة */
+}
+
+nav ul li a:hover {
+    color: #199454; /* استخدام التدرج الأخضر */
+}
+
+/* تنسيقات قسم الهوم */
+.hero {
+    background: linear-gradient(rgba(25, 148, 84, 0.9), rgba(20, 122, 61, 0.9)), /* استخدام التدرج الأخضر */
+                url('https://via.placeholder.com/1920x1080'); /* يمكنك استبدالها بصورة خلفية احترافية */
+    background-size: cover;
+    background-position: center;
+    color: #fff; /* لون نص أبيض */
+    text-align: center;
+    padding: 200px 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero h1 {
+    font-size: 56px;
+    margin-bottom: 20px;
+    font-weight: 700;
+    position: relative;
+    z-index: 1;
+    animation: fadeInDown 1.5s ease;
+    text-align: center; /* توسيط النصوص في الهوم */
+}
+
+.hero p {
+    font-size: 24px;
+    margin-bottom: 40px;
+    position: relative;
+    z-index: 1;
+    animation: fadeInUp 1.5s ease;
+    color: #fff; /* لون نص أبيض */
+    text-align: center; /* توسيط النصوص في الهوم */
+}
+
+.cta-button {
+    background: linear-gradient(45deg, #199454, #147a3d); /* استخدام التدرج الأخضر */
+    color: #fff; /* لون نص أبيض */
+    padding: 15px 30px;
+    text-decoration: none;
+    font-size: 18px;
+    border-radius: 50px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: inline-block;
+    box-shadow: 0 4px 6px rgba(25, 148, 84, 0.3); /* ظل أخضر */
+    position: relative;
+    z-index: 1;
+    animation: fadeIn 2s ease;
+}
+
+.cta-button:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(25, 148, 84, 0.4); /* ظل أخضر */
+}
+
+.features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-top: 60px;
+    padding: 0 20px;
+    text-align: center; /* توسيط النصوص في الأقسام */
+}
+
+.feature-item {
+    background-color: #333; /* لون خلفية داكن */
+    border-radius: 10px;
+    padding: 30px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid rgba(25, 148, 84, 0.1); /* استخدام التدرج الأخضر */
+    text-align: center; /* توسيط النصوص داخل العناصر */
+}
+
+.feature-item:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 20px rgba(25, 148, 84, 0.2); /* ظل أخضر */
+}
+
+.feature-item i {
+    font-size: 40px;
+    color: #199454; /* استخدام التدرج الأخضر */
+    margin-bottom: 20px;
+}
+
+.feature-item h3 {
+    font-size: 24px;
+    margin-bottom: 15px;
+    color: #199454; /* استخدام التدرج الأخضر */
+    font-weight: 700;
+}
+
+.feature-item p {
+    font-size: 16px;
+    color: #ddd; /* لون نص فاتح */
+}
+
+/* قسم الكورسات المتاحة */
+.course-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 0 20px;
+    margin-top: 60px; /* إضافة مسافة بين الأقسام */
+    text-align: center; /* توسيط النصوص في الأقسام */
+}
+
+.course-list h2 {
+    font-size: 36px;
+    color: #199454; /* استخدام التدرج الأخضر */
+    margin-bottom: 20px;
+    font-weight: 700;
+    text-align: center; /* توسيط النص */
+    animation: fadeInDown 1s ease;
+}
+
+.course-item {
+    background-color: #333; /* لون خلفية داكن */
+    border-radius: 10px;
+    padding: 30px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid rgba(25, 148, 84, 0.1); /* استخدام التدرج الأخضر */
+    animation: fadeInUp 1s ease;
+    text-align: center; /* توسيط النصوص داخل العناصر */
+}
+
+.course-item:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 20px rgba(25, 148, 84, 0.2); /* ظل أخضر */
+}
+
+.course-item h3 {
+    font-size: 24px;
+    margin-bottom: 15px;
+    color: #199454; /* استخدام التدرج الأخضر */
+    font-weight: 700;
+}
+
+.course-item p {
+    font-size: 16px;
+    color: #ddd; /* لون نص فاتح */
+    margin-bottom: 20px;
+}
+
+.course-item .price {
+    font-size: 20px;
+    color: #199454; /* استخدام التدرج الأخضر */
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+/* تنسيقات الأزرار الجانبية */
+.course-actions {
+    display: flex;
+    justify-content: center; /* توسيط الأزرار */
+    gap: 10px; /* مسافة بين الأزرار */
+    margin-top: 20px; /* مسافة من الأعلى */
+}
+
+.course-actions .buy-button,
+.course-actions .details-button {
+    background: linear-gradient(45deg, #199454, #147a3d); /* استخدام التدرج الأخضر */
+    color: #fff;
+    padding: 12px 24px; /* تعديل الحجم ليكون متساويًا */
+    text-decoration: none;
+    font-size: 16px; /* حجم الخط متساوي */
+    border-radius: 50px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: inline-block;
+    box-shadow: 0 4px 6px rgba(25, 148, 84, 0.3); /* ظل أخضر */
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+    width: 150px; /* عرض ثابت للأزرار */
+    text-align: center; /* توسيط النص داخل الأزرار */
+}
+
+.course-actions .buy-button:hover,
+.course-actions .details-button:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(25, 148, 84, 0.4); /* ظل أخضر */
+}
+
+/* تفاصيل الكورس */
+.course-details {
+    display: none;
+    margin-top: 40px;
+    background-color: #333; /* لون خلفية داكن */
+    border-radius: 10px;
+    padding: 30px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    text-align: center; /* توسيط النص */
+    border: 1px solid rgba(25, 148, 84, 0.1); /* استخدام التدرج الأخضر */
+}
+
+.course-details.active {
+    display: block;
+    animation: fadeIn 0.5s;
+}
+
+.course-details h2 {
+    font-size: 32px;
+    margin-bottom: 20px;
+    color: #199454; /* استخدام التدرج الأخضر */
+}
+
+.course-details .course-info {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+    justify-content: center; /* توسيط العناصر داخل .course-info */
+}
+
+.course-details .course-info div {
+    flex: 1;
+    min-width: 200px;
+    background-color: #444; /* لون خلفية داكن */
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.course-details .course-info h3 {
+    font-size: 20px;
+    margin-bottom: 10px;
+    color: #199454; /* استخدام التدرج الأخضر */
+}
+
+.course-details .course-info p {
+    font-size: 16px;
+    color: #ddd; /* لون نص فاتح */
+}
+
+.course-details .course-content {
+    margin-bottom: 30px;
+}
+
+.course-details .course-content h3 {
+    font-size: 24px;
+    margin-bottom: 15px;
+    color: #199454; /* استخدام التدرج الأخضر */
+}
+
+.course-details .course-content ul {
+    list-style: none;
+    padding: 0;
+}
+
+.course-details .course-content ul li {
+    font-size: 16px;
+    color: #ddd; /* لون نص فاتح */
+    margin-bottom: 10px;
+    padding: 10px;
+    background-color: #444; /* لون خلفية داكن */
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: center; /* توسيط العناصر داخل القوائم */
+}
+
+.course-details .course-content ul li i {
+    color: #199454; /* استخدام التدرج الأخضر */
+}
+
+.course-details .course-preview {
+    margin-bottom: 30px;
+}
+
+.course-details .course-preview h3 {
+    font-size: 24px;
+    margin-bottom: 15px;
+    color: #199454; /* استخدام التدرج الأخضر */
+}
+
+.course-details .course-preview iframe {
+    width: 100%;
+    height: 400px;
+    border-radius: 10px;
+    border: none;
+}
+
+.course-details .buy-section {
+    text-align: center;
+}
+
+.course-details .buy-section .price {
+    font-size: 28px;
+    color: #199454; /* استخدام التدرج الأخضر */
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+.course-details .buy-section button {
+    background: linear-gradient(45deg, #199454, #147a3d); /* استخدام التدرج الأخضر */
+    color: #fff;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 50px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.course-details .buy-section button:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(25, 148, 84, 0.4); /* ظل أخضر */
+}
+
+/* قسم تداول الفوركس مع LCA */
+.forex-section {
+    background-color: #1a1a1a; /* لون خلفية أسود */
+    color: #f5f5f5; /* لون نص فاتح */
+    padding: 100px 20px;
+    margin-top: 60px;
+    text-align: center;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(25, 148, 84, 0.1); /* استخدام التدرج الأخضر */
+}
+
+.forex-section h2 {
+    font-size: 36px;
+    color: #199454; /* استخدام التدرج الأخضر */
+    margin-bottom: 20px;
+    font-weight: 700;
+    animation: fadeInDown 1s ease;
+}
+
+.forex-section p {
+    font-size: 18px;
+    color: #f5f5f5; /* لون نص فاتح */
+    margin-bottom: 40px;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    animation: fadeInUp 1s ease;
+}
+
+.forex-benefits {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-top: 40px;
+}
+
+.benefit-item {
+    background-color: #444; /* لون خلفية داكن */
+    border-radius: 10px;
+    padding: 30px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid rgba(25, 148, 84, 0.1); /* استخدام التدرج الأخضر */
+    animation: fadeIn 1.5s ease;
+    text-align: center; /* توسيط النصوص داخل العناصر */
+}
+
+.benefit-item:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 20px rgba(25, 148, 84, 0.2); /* ظل أخضر */
+}
+
+.benefit-item i {
+    font-size: 40px;
+    color: #199454; /* استخدام التدرج الأخضر */
+    margin-bottom: 20px;
+}
+
+.benefit-item h3 {
+    font-size: 24px;
+    margin-bottom: 15px;
+    color: #199454; /* استخدام التدرج الأخضر */
+    font-weight: 700;
+}
+
+.benefit-item p {
+    font-size: 16px;
+    color: #ddd; /* لون نص فاتح */
+}
+
+/* قسم قنواتنا */
+.channels-section {
+    background: linear-gradient(45deg, #199454, #147a3d), /* استخدام التدرج الأخضر */
+                url('https://via.placeholder.com/1920x1080'); /* يمكنك استبدالها بصورة خلفية احترافية */
+    background-size: cover;
+    background-position: center;
+    color: #fff; /* لون نص أبيض */
+    text-align: center;
+    padding: 100px 20px;
+    position: relative;
+    overflow: hidden;
+    margin-top: 60px; /* إضافة مسافة بين الأقسام */
+}
+
+.channels-section h2 {
+    font-size: 36px;
+    margin-bottom: 20px;
+    font-weight: 700;
+    position: relative;
+    z-index: 1;
+    animation: fadeInDown 1s ease;
+    color: #fff; /* لون نص أبيض */
+}
+
+.channels-section p {
+    font-size: 18px;
+    margin-bottom: 40px;
+    position: relative;
+    z-index: 1;
+    animation: fadeInUp 1s ease;
+    color: #fff; /* لون نص أبيض */
+}
+
+.social-links {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 40px;
+}
+
+.social-links a {
+    background: #199454; /* استخدام التدرج الأخضر */
+    color: #fff; /* لون نص أبيض */
+    padding: 15px 30px;
+    text-decoration: none;
+    font-size: 18px;
+    border-radius: 50px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 6px rgba(25, 148, 84, 0.3); /* ظل أخضر */
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.social-links a:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(25, 148, 84, 0.4); /* ظل أخضر */
+}
+
+footer {
+    background-color: #333; /* لون خلفية داكن */
+    color: #fff;
+    text-align: center;
+    padding: 40px 20px;
+    margin-top: 100px;
+}
+
+footer p {
+    margin: 0;
+    font-size: 16px;
+}
+
+/* زر العودة إلى الأعلى */
+#scrollToTopBtn {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    left: 20px; /* تغيير الموضع إلى اليسار */
+    background-color: #199454; /* استخدام التدرج الأخضر */
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    padding: 10px 15px;
+    font-size: 18px;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease;
+}
+
+#scrollToTopBtn:hover {
+    background-color: #147a3d; /* لون أخضر داكن */
+}
+
+/* زر تبديل الوضع */
+.theme-toggle {
+    position: fixed;
+    top: 20px; /* تحريك الزر إلى الأعلى */
+    right: 20px; /* التأكد من بقاء الزر في الزاوية اليمنى */
+    background-color: #199454; /* استخدام التدرج الأخضر */
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    padding: 15px;
+    font-size: 18px;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease;
+    z-index: 1000; /* التأكد من ظهور الزر فوق العناصر الأخرى */
+}
+
+.theme-toggle:hover {
+    background-color: #147a3d; /* لون أخضر داكن */
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* الوضع الداكن (الإفتراضي) */
+body.dark-mode {
+    background-color: #1a1a1a; /* لون خلفية داكن */
+    color: #f5f5f5; /* لون نص فاتح */
+}
+
+/* الوضع الفاتح */
+body.light-mode {
+    background-color: #f9f9f9; /* لون خلفية فاتح ناعم */
+    color: #333; /* لون نص أسود غامق */
+}
+
+body.light-mode header {
+    background-color: #ffffff; /* لون خلفية فاتح للهيدر */
+    color: #333; /* لون نص أسود غامق */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* ظل ناعم */
+}
+
+body.light-mode .hero {
+    background: linear-gradient(rgba(25, 148, 84, 0.9), rgba(20, 122, 61, 0.9)), /* استخدام التدرج الأخضر */
+                url('https://via.placeholder.com/1920x1080');
+    color: #fff; /* لون نص أبيض */
+}
+
+body.light-mode .feature-item,
+body.light-mode .benefit-item,
+body.light-mode .course-item,
+body.light-mode .course-details {
+    background-color: #ffffff; /* لون خلفية فاتح */
+    border: 1px solid rgba(0, 0, 0, 0.1); /* لون حدود فاتح */
+    color: #333; /* لون نص أسود غامق */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* ظل ناعم */
+}
+
+body.light-mode .course-details .course-info div {
+    background-color: #f5f5f5; /* لون خلفية فاتح */
+    color: #333; /* لون نص أسود غامق */
+}
+
+body.light-mode footer {
+    background-color: #ffffff; /* لون خلفية فاتح */
+    color: #333; /* لون نص أسود غامق */
+    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1); /* ظل ناعم */
+}
+
+/* تغيير النصوص الرمادية إلى أسود غامق */
+body.light-mode .feature-item p,
+body.light-mode .benefit-item p,
+body.light-mode .course-item p,
+body.light-mode .course-details .course-info p,
+body.light-mode .course-details .course-content ul li,
+body.light-mode .forex-section p,
+body.light-mode .channels-section p,
+body.light-mode footer p {
+    color: #333; /* لون نص أسود غامق */
+}
+
+/* الحفاظ على الألوان الخضراء */
+body.light-mode .feature-item i,
+body.light-mode .benefit-item i,
+body.light-mode .course-item .price,
+body.light-mode .course-details .buy-section .price,
+body.light-mode .course-details .course-content ul li i,
+body.light-mode .course-details h2,
+body.light-mode .course-details .course-info h3,
+body.light-mode .course-details .course-content h3,
+body.light-mode .course-details .course-preview h3,
+body.light-mode .feature-item h3,
+body.light-mode .benefit-item h3,
+body.light-mode .course-item h3,
+body.light-mode .forex-section h2,
+body.light-mode .forex-section .benefit-item h3,
+body.light-mode .channels-section h2,
+body.light-mode .cta-button,
+body.light-mode .buy-button,
+body.light-mode .course-details .buy-section button,
+body.light-mode .social-links a {
+    color: #199454; /* استخدام التدرج الأخضر */
+}
+
+body.light-mode .cta-button,
+body.light-mode .buy-button,
+body.light-mode .course-details .buy-section button,
+body.light-mode .social-links a {
+    background: linear-gradient(45deg, #199454, #147a3d); /* استخدام التدرج الأخضر */
+    color: #fff; /* لون نص أبيض */
+}
+
+body.light-mode .cta-button:hover,
+body.light-mode .buy-button:hover,
+body.light-mode .course-details .buy-section button:hover,
+body.light-mode .social-links a:hover {
+    box-shadow: 0 6px 12px rgba(25, 148, 84, 0.4); /* ظل أخضر */
+}
+
+/* تعديل نص التوبيبات في الوضع الفاتح */
+body.light-mode nav ul li a {
+    color: #333; /* لون نص أسود غامق */
+}
+
+body.light-mode nav ul li a:hover {
+    color: #199454; /* استخدام التدرج الأخضر عند التمرير */
+}
+
+/* انتقالات سلسة */
+body,
+header,
+.hero,
+.feature-item,
+.benefit-item,
+.course-item,
+.course-details,
+footer {
+    transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* تعديل لون النص داخل قسم محتوى الكورس في الوضع الفاتح */
+body.light-mode .course-details,
+body.light-mode .course-details .course-content,
+body.light-mode .course-details .course-content ul li,
+body.light-mode .course-details .course-content h3,
+body.light-mode .course-details .course-content p {
+    color: #ffffff; /* لون نص أبيض */
+}
+
+/* إصلاح لون خلفية قسم "تداول الفوركس مع LCA" في الوضع الفاتح */
+body.light-mode .forex-section {
+    background-color: #ffffff; /* لون خلفية فاتح */
+    color: #333; /* لون نص أسود غامق */
+    border: 1px solid rgba(0, 0, 0, 0.1); /* لون حدود فاتح */
+}
+
+body.light-mode .forex-section h2 {
+    color: #199454; /* استخدام التدرج الأخضر */
+}
+
+body.light-mode .forex-section p {
+    color: #333; /* لون نص أسود غامق */
+}
+
+body.light-mode .benefit-item {
+    background-color: #f5f5f5; /* لون خلفية فاتح */
+    color: #333; /* لون نص أسود غامق */
+    border: 1px solid rgba(0, 0, 0, 0.1); /* لون حدود فاتح */
+}
+
+body.light-mode .benefit-item h3 {
+    color: #199454; /* استخدام التدرج الأخضر */
+}
+
+body.light-mode .benefit-item p {
+    color: #333; /* لون نص أسود غامق */
+}
