@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>عرض المحتوى القابل للنسخ</title>
+    <title>عرض POST مباشر</title>
     <style>
         textarea {
             width: 100%;
@@ -14,28 +14,31 @@
 </head>
 <body>
 
-    <h1>عرض محتوى قابل للنسخ</h1>
+    <h1>عرض محتوى POST المرسل</h1>
 
-    <form id="postForm" method="POST">
-        <label for="content">أدخل المحتوى:</label>
-        <textarea id="content" name="content" placeholder="أدخل النص هنا..."></textarea>
-        <br><br>
-        <button type="submit">إرسال</button>
-    </form>
-
-    <h2>المحتوى المرسل:</h2>
+    <h2>المحتوى المرسل عبر POST:</h2>
     <textarea id="displayContent" readonly></textarea>
 
     <script>
-        document.getElementById("postForm").onsubmit = function(event) {
-            event.preventDefault(); // منع إعادة تحميل الصفحة عند إرسال النموذج
+        // دالة لالتقاط البيانات عبر AJAX باستخدام POST
+        function fetchPostData() {
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', window.location.href, true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 
-            // الحصول على النص من حقل الإدخال
-            var content = document.getElementById("content").value;
+            // إرسال البيانات عبر POST
+            xhr.send('content=' + encodeURIComponent('هذا نص مرسل عبر POST'));
 
-            // عرض النص في حقل النص القابل للنسخ
-            document.getElementById("displayContent").value = content;
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    // عرض النص المرسل في الحقل القابل للنسخ
+                    document.getElementById('displayContent').value = xhr.responseText;
+                }
+            };
         }
+
+        // استدعاء الدالة لتحميل البيانات
+        fetchPostData();
     </script>
 
 </body>
