@@ -3,22 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>حفظ النصوص في ملف نصي</title>
+    <title>عرض منشورات من موقع آخر</title>
 </head>
 <body>
-    <h1>أدخل النصوص هنا لحفظها في ملف نصي</h1>
-    <textarea id="textInput" rows="10" cols="50" placeholder="أدخل النص هنا"></textarea><br><br>
-    <button onclick="saveTextToFile()">حفظ النص في ملف نصي</button>
 
-    <script>
-        function saveTextToFile() {
-            var text = document.getElementById("textInput").value; // الحصول على النص من المربع
-            var blob = new Blob([text], { type: 'text/plain;charset=utf-8' }); // إنشاء ملف نصي
-            var link = document.createElement("a"); // إنشاء رابط لتحميل الملف
-            link.href = URL.createObjectURL(blob); // تعيين رابط الملف
-            link.download = "output.txt"; // تعيين اسم الملف
-            link.click(); // بدء التحميل
-        }
-    </script>
+    <h1>عرض منشورات من موقع آخر</h1>
+    <iframe src="https://example.com" width="100%" height="600px" frameborder="0">
+        <p>متصفحك لا يدعم الـ iframe، يرجى تحديث المتصفح.</p>
+    </iframe>
+
 </body>
 </html>
