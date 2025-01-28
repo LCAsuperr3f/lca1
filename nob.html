@@ -65,6 +65,32 @@
             bottom: 0;
             width: 100%;
         }
+
+        /* تخصيص للنموذج */
+        form {
+            margin-top: 20px;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
     </style>
 </head>
 <body>
@@ -73,24 +99,57 @@
         <p>المطور الرائد في مؤشرات وقوالب MT4 وMT5</p>
     </header>
 
+    <section id="about">
+        <h2>من نحن؟</h2>
+        <p>نحن فريق Nobel، نقدم أفضل المؤشرات والقوالب لتعزيز تجربة التداول الخاصة بك على منصتي MT4 وMT5.</p>
+    </section>
+
+    <section id="products">
+        <h2>منتجاتنا</h2>
+        <ul>
+            <li>مؤشرات MT4/MT5 القوية</li>
+            <li>قوالب تخصيصية لتحليل السوق</li>
+            <li>أدوات تعليمية لتحسين مهارات التداول</li>
+        </ul>
+    </section>
+
     <section id="contact">
         <h2>تواصل معنا</h2>
         <p>للحصول على المزيد من المعلومات، يرجى التواصل معنا عبر البريد الإلكتروني:</p>
         <a href="mailto:info@nobel.com">info@nobel.com</a>
 
-        <h3>إرسال بيانات إلى السيرفر</h3>
-        <form id="contactForm">
-            <label for="name">اسمك:</label><br>
+        <!-- نموذج الاتصال -->
+        <form id="contactForm" method="POST">
+            <label for="name">الاسم:</label>
             <input type="text" id="name" name="name" required><br><br>
 
-            <label for="email">بريدك الإلكتروني:</label><br>
-            <input type="email" id="email" name="email" required><br><br>
-
-            <label for="message">رسالتك:</label><br>
+            <label for="message">الرسالة:</label>
             <textarea id="message" name="message" required></textarea><br><br>
 
             <button type="submit">إرسال</button>
         </form>
+
+        <?php
+        // إذا تم إرسال البيانات عبر POST
+        if ($_SERVER["REQUEST_METHOD"] == "POST") {
+            // استلام البيانات من النموذج
+            $name = htmlspecialchars($_POST['name']);
+            $message = htmlspecialchars($_POST['message']);
+
+            // تنسيق البيانات ليتم تخزينها
+            $data = "اسم المستخدم: " . $name . "\nالرسالة: " . $message . "\n\n";
+
+            // تحديد مسار الملف النصي
+            $file = 'messages.txt';
+
+            // فتح الملف وإضافة البيانات
+            if (file_put_contents($file, $data, FILE_APPEND)) {
+                echo "<p style='color: green;'>تم إرسال رسالتك بنجاح!</p>";
+            } else {
+                echo "<p style='color: red;'>حدث خطأ أثناء حفظ رسالتك. يرجى المحاولة مرة أخرى.</p>";
+            }
+        }
+        ?>
     </section>
 
     <footer>
@@ -101,28 +160,6 @@
         // JavaScript هنا
         document.addEventListener('DOMContentLoaded', function() {
             console.log('تم تحميل الموقع بنجاح!');
-
-            const form = document.getElementById('contactForm');
-            form.addEventListener('submit', function(event) {
-                event.preventDefault();
-
-                const formData = new FormData(form);
-
-                // إرسال البيانات إلى سيرفر Flask على الجهاز الآخر
-                fetch('http://192.168.1.100:5000/submit', {  // استبدل بـ IP الخاص بالسيرفر
-                    method: 'POST',
-                    body: formData,
-                })
-                .then(response => response.json())
-                .then(data => {
-                    console.log('تم إرسال البيانات بنجاح:', data);
-                    alert('تم إرسال بياناتك بنجاح!');
-                })
-                .catch((error) => {
-                    console.error('حدث خطأ أثناء إرسال البيانات:', error);
-                    alert('حدث خطأ. يرجى المحاولة لاحقًا.');
-                });
-            });
         });
     </script>
 </body>
