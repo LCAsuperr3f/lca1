@@ -3,14 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>عرض منشورات من موقع آخر</title>
+    <title>عرض المحتوى القابل للنسخ</title>
+    <style>
+        textarea {
+            width: 100%;
+            height: 200px;
+            font-size: 16px;
+        }
+    </style>
 </head>
 <body>
 
-    <h1>عرض منشورات من موقع آخر</h1>
-    <iframe src="https://example.com" width="100%" height="600px" frameborder="0">
-        <p>متصفحك لا يدعم الـ iframe، يرجى تحديث المتصفح.</p>
-    </iframe>
+    <h1>عرض محتوى قابل للنسخ</h1>
+
+    <form id="postForm" method="POST">
+        <label for="content">أدخل المحتوى:</label>
+        <textarea id="content" name="content" placeholder="أدخل النص هنا..."></textarea>
+        <br><br>
+        <button type="submit">إرسال</button>
+    </form>
+
+    <h2>المحتوى المرسل:</h2>
+    <textarea id="displayContent" readonly></textarea>
+
+    <script>
+        document.getElementById("postForm").onsubmit = function(event) {
+            event.preventDefault(); // منع إعادة تحميل الصفحة عند إرسال النموذج
+
+            // الحصول على النص من حقل الإدخال
+            var content = document.getElementById("content").value;
+
+            // عرض النص في حقل النص القابل للنسخ
+            document.getElementById("displayContent").value = content;
+        }
+    </script>
 
 </body>
 </html>
