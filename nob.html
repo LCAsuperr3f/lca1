@@ -91,6 +91,20 @@
         <h2>تواصل معنا</h2>
         <p>للحصول على المزيد من المعلومات، يرجى التواصل معنا عبر البريد الإلكتروني:</p>
         <a href="mailto:info@nobel.com">info@nobel.com</a>
+
+        <h3>إرسال بيانات إلى السيرفر</h3>
+        <form id="contactForm">
+            <label for="name">اسمك:</label><br>
+            <input type="text" id="name" name="name" required><br><br>
+
+            <label for="email">بريدك الإلكتروني:</label><br>
+            <input type="email" id="email" name="email" required><br><br>
+
+            <label for="message">رسالتك:</label><br>
+            <textarea id="message" name="message" required></textarea><br><br>
+
+            <button type="submit">إرسال</button>
+        </form>
     </section>
 
     <footer>
@@ -101,6 +115,28 @@
         // JavaScript هنا
         document.addEventListener('DOMContentLoaded', function() {
             console.log('تم تحميل الموقع بنجاح!');
+
+            const form = document.getElementById('contactForm');
+            form.addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                const formData = new FormData(form);
+
+                // إرسال البيانات إلى سيرفر Flask (يجب تغيير العنوان إلى عنوان السيرفر الفعلي)
+                fetch('http://<IP_ADDRESS>:<PORT>/submit', {
+                    method: 'POST',
+                    body: formData,
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('تم إرسال البيانات بنجاح:', data);
+                    alert('تم إرسال بياناتك بنجاح!');
+                })
+                .catch((error) => {
+                    console.error('حدث خطأ أثناء إرسال البيانات:', error);
+                    alert('حدث خطأ. يرجى المحاولة لاحقًا.');
+                });
+            });
         });
     </script>
 </body>
