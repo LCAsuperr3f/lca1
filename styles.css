@@ -639,3 +639,26 @@ body.dark-mode .course-details ul li {
 body.dark-mode .course-details ul li i {
   color: #ffcc00; /* تغيير لون الأيقونات */
 }
+
+/* تغيير ألوان قسم "تواصل معنا" في الوضع الداكن */
+body.dark-mode .footer-follow-us h4 {
+  color: #fff; /* تغيير لون العنوان إلى الأبيض */
+}
+
+body.dark-mode .social-links a {
+  background-color: #111 !important; /* تغيير خلفية الروابط */
+  color: #fff !important; /* تغيير لون النص */
+  border: 1px solid #333; /* إضافة حدود خفيفة */
+  transition: all 0.3s ease-in-out;
+}
+
+body.dark-mode .social-links a:hover {
+  background-color: #222 !important; /* تفتيح لون الخلفية عند التحويم */
+  transform: translateY(-3px);
+}
+
+/* تغيير لون الأيقونات */
+body.dark-mode .social-links a i {
+  color: #2563eb !important; /* لون مميز للأيقونات */
+}
+
