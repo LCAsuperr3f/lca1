@@ -1,102 +1,353 @@
 <!DOCTYPE html>
-<html dir="rtl" lang="ar">
+<html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LCA - الموقع قيد الصيانة</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f5f9f5;
-            color: #0a3d0a;
-            margin: 0;
-            padding: 0;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            direction: rtl;
-        }
-        
-        .maintenance-container {
-            background-color: #ffffff;
-            border-radius: 10px;
-            box-shadow: 0 10px 30px rgba(0, 128, 0, 0.1);
-            padding: 40px;
-            text-align: center;
-            max-width: 450px;
-            width: 90%;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .maintenance-container::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 6px;
-            height: 100%;
-            background-color: #2e8b57;
-        }
-        
-        h1 {
-            color: #2e8b57;
-            margin-bottom: 20px;
-            font-size: 2.5em;
-        }
-        
-        p {
-            font-size: 1.2em;
-            line-height: 1.5;
-            margin-bottom: 20px;
-            color: #3a5a40;
-        }
-        
-        .progress-container {
-            margin: 30px 0;
-            background-color: #e8f5e9;
-            border-radius: 30px;
-            height: 20px;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .progress-bar {
-            position: absolute;
-            height: 100%;
-            width: 70%;
-            background: linear-gradient(to right, #4caf50, #2e8b57);
-            animation: progressAnimation 2s ease-in-out infinite alternate;
-            border-radius: 30px;
-        }
-        
-        .logo {
-            font-size: 3em;
-            font-weight: bold;
-            color: #2e8b57;
-            margin-bottom: 20px;
-            font-family: "Arial", sans-serif;
-        }
-        
-        @keyframes progressAnimation {
-            from {
-                width: 60%;
-            }
-            to {
-                width: 80%;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LCA - إستراتيجية التداول بالمؤشرات بـ100$</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <div class="maintenance-container">
-        <div class="logo">LCA</div>
-        <h1>الموقع قيد الصيانة</h1>
-        
-        <div class="progress-container">
-            <div class="progress-bar"></div>
-        </div>
+  <!-- هيدر باللغة العربية -->
+  <header id="header-ar" class="header">
+    <div class="container">
+      <div class="logo">
+        <h1>LCA</h1>
+      </div>
+      <nav class="main-nav">
+        <ul>
+          <li><a href="#home" class="active">الرئيسية</a></li>
+          <li><a href="#courses">الإستراتيجية</a></li>
+          <li><a href="#features">المميزات</a></li>
+        </ul>
+      </nav>
+      <!-- مبدل اللغات -->
+      <div class="language-switcher">
+        <a href="#" id="arabic" class="active">عربي</a> | 
+        <a href="#" id="english">English</a>
+      </div>
+      <!-- زر تبديل الوضع (دارك/وايت مود) -->
+      <div class="mode-toggle">
+        <i class="fas fa-moon"></i>
+      </div>
+      <div class="mobile-menu-btn">
+        <i class="fas fa-bars"></i>
+      </div>
     </div>
+  </header>
+
+  <!-- هيدر باللغة الإنجليزية (مخفي افتراضيًا) -->
+  <header id="header-en" class="header" style="display: none;">
+    <div class="container">
+      <div class="logo">
+        <h1>LCA</h1>
+      </div>
+      <nav class="main-nav">
+        <ul>
+          <li><a href="#home" class="active">Home</a></li>
+          <li><a href="#courses">Strategy</a></li>
+          <li><a href="#features">Features</a></li>
+        </ul>
+      </nav>
+      <!-- Language Switcher -->
+      <div class="language-switcher">
+        <a href="#" id="arabic" class="">عربي</a> | 
+        <a href="#" id="english" class="active">English</a>
+      </div>
+      <!-- Dark/Light Mode Toggle -->
+      <div class="mode-toggle">
+        <i class="fas fa-moon"></i>
+      </div>
+      <div class="mobile-menu-btn">
+        <i class="fas fa-bars"></i>
+      </div>
+    </div>
+  </header>
+
+  <!-- المحتوى باللغة العربية -->
+  <div id="content-ar">
+    <section class="hero" id="home">
+      <div class="container">
+        <div class="hero-content">
+          <h1>مرحبًا بكم في شركة LCA</h1>
+          <h2>إستراتيجية تداول احترافية مع مؤشرات ذكية بـ100$ فقط</h2>
+          <a href="#courses" class="btn btn-primary">اشتري الإستراتيجية الآن</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="features" id="features">
+      <div class="container">
+        <div class="section-header">
+          <h2>مميزات الإستراتيجية</h2>
+        </div>
+        <div class="features-grid">
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-chart-line"></i>
+            </div>
+            <h3>مؤشرات ذكية</h3>
+            <p>3 مؤشرات احترافية لتحليل دقيق</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-video"></i>
+            </div>
+            <h3>فيديوهات شرح</h3>
+            <p>شرح عملي لاستخدام المؤشرات</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-headset"></i>
+            </div>
+            <h3>دعم فني</h3>
+            <p>دعم مباشر لمدة 3 أيام بعد الشراء</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="courses" id="courses">
+      <div class="container">
+        <div class="section-header">
+          <h2>إستراتيجية LCA الحصرية</h2>
+          <p>احصل على الإستراتيجية الكاملة مع المؤشرات بخصم 50%</p>
+        </div>
+        <div class="courses-grid">
+          <div class="course-card featured">
+            <div class="course-badge">العرض الحصري</div>
+            <div class="course-header">
+              <h3>حزمة المؤشرات الاحترافية</h3>
+            </div>
+            <div class="course-price">
+              <h4>السعر: <span>100$</span> بدلًا من <del>200$</del></h4>
+            </div>
+            <div class="course-details">
+              <ul>
+                <li><i class="fas fa-check"></i> 3 مؤشرات تداول ذكية</li>
+                <li><i class="fas fa-check"></i> دليل استخدام مفصل</li>
+                <li><i class="fas fa-check"></i> 5 ساعات فيديو تعليمي</li>
+                <li><i class="fas fa-check"></i> دعم فني لمدة 72 ساعة</li>
+              </ul>
+            </div>
+            <div class="course-actions">
+              <a href="https://t.me/lcafxsclp" class="btn btn-primary" target="_blank">شراء الحزمة</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-logo">
+            <h3>LCA</h3>
+            <p>تداول بذكاء مع مؤشرات LCA</p>
+          </div>
+          <div class="footer-links">
+            <h4>روابط سريعة</h4>
+            <ul>
+              <li><a href="#home">الرئيسية</a></li>
+              <li><a href="#courses">الشراء</a></li>
+              <li><a href="#features">المميزات</a></li>
+            </ul>
+          </div>
+          <div class="footer-follow-us">
+            <h4>تواصل معنا</h4>
+            <div class="social-links">
+              <a href="https://t.me/YourTelegramLink" class="social-link"><i class="fab fa-telegram-plane"></i> تليجرام</a>
+              <a href="https://wa.me/905393011147" class="social-link"><i class="fab fa-whatsapp"></i> واتساب</a>
+<a href="https://www.instagram.com/lca__group?igsh=dXBxb2wzcjN3NWFv&utm_source=qr" class="social-link">
+  <i class="fab fa-instagram"></i> إنستقرام
+<a href="https://x.com/lca0fx?s=21&t=Ng1ER4VAoZfJdhI3q_w-1w" class="social-link">
+  <i class="fab fa-twitter"></i> تويتر
+</a>
+            </div>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>&copy; 2024 LCA. جميع الحقوق محفوظة.</p>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- المحتوى باللغة الإنجليزية -->
+  <div id="content-en" style="display: none;">
+    <section class="hero" id="home">
+      <div class="container">
+        <div class="hero-content">
+          <h1>Welcome to LCA</h1>
+          <h2>Professional Trading Strategy with $100 Smart Indicators</h2>
+          <a href="#courses" class="btn btn-primary">Buy Strategy Now</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="features" id="features">
+      <div class="container">
+        <div class="section-header">
+          <h2>Strategy Features</h2>
+        </div>
+        <div class="features-grid">
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-chart-line"></i>
+            </div>
+            <h3>Smart Indicators</h3>
+            <p>3 Professional Analysis Indicators</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-video"></i>
+            </div>
+            <h3>Video Tutorials</h3>
+            <p>5 Hours of Practical Guides</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-headset"></i>
+            </div>
+            <h3>Technical Support</h3>
+            <p>72 Hours Direct Support</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="courses" id="courses">
+      <div class="container">
+        <div class="section-header">
+          <h2>Exclusive LCA Strategy</h2>
+          <p>Get Full Package with 50% Discount</p>
+        </div>
+        <div class="courses-grid">
+          <div class="course-card featured">
+            <div class="course-badge">Special Offer</div>
+            <div class="course-header">
+              <h3>Professional Indicators Package</h3>
+            </div>
+            <div class="course-price">
+              <h4>Price: <span>$100</span> Instead of <del>$200</del></h4>
+            </div>
+            <div class="course-details">
+              <ul>
+                <li><i class="fas fa-check"></i> 3 Smart Trading Indicators</li>
+                <li><i class="fas fa-check"></i> Detailed User Guide</li>
+                <li><i class="fas fa-check"></i> 5 Hours Video Tutorials</li>
+                <li><i class="fas fa-check"></i> 72 Hours Support</li>
+              </ul>
+            </div>
+            <div class="course-actions">
+              <a href="https://t.me/YourTelegramLink" class="btn btn-primary" target="_blank">Buy Package</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-logo">
+            <h3>LCA</h3>
+            <p>Trade Smart with LCA Indicators</p>
+          </div>
+          <div class="footer-links">
+            <h4>Quick Links</h4>
+            <ul>
+              <li><a href="#home">Home</a></li>
+              <li><a href="#courses">Purchase</a></li>
+              <li><a href="#features">Features</a></li>
+            </ul>
+          </div>
+          <div class="footer-follow-us">
+            <h4>Contact Us</h4>
+            <div class="social-links">
+              <a href="https://t.me/YourTelegramLink" class="social-link"><i class="fab fa-telegram-plane"></i> Telegram</a>
+              <a href="https://wa.me/YourWhatsApp" class="social-link"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+            </div>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>&copy; 2024 LCA. All Rights Reserved.</p>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    // تفعيل القائمة في الأجهزة المحمولة
+    document.querySelectorAll('.mobile-menu-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.main-nav ul').forEach(nav => {
+          nav.classList.toggle('active');
+        });
+      });
+    });
+
+    // تبديل الوضع (دارك/وايت مود)
+    document.querySelectorAll('.mode-toggle').forEach(toggle => {
+      toggle.addEventListener('click', function() {
+        document.body.classList.toggle('dark-mode');
+        var icon = this.querySelector('i');
+        if (document.body.classList.contains('dark-mode')) {
+          icon.classList.remove('fa-moon');
+          icon.classList.add('fa-sun');
+        } else {
+          icon.classList.remove('fa-sun');
+          icon.classList.add('fa-moon');
+        }
+      });
+    });
+
+    // تبديل اللغة
+    function switchToArabic() {
+      document.documentElement.lang = "ar";
+      document.documentElement.dir = "rtl";
+      // تفعيل الروابط المناسبة
+      document.querySelectorAll('.language-switcher a').forEach(link => {
+        link.classList.remove('active');
+      });
+      document.querySelector('#header-ar .language-switcher a#arabic').classList.add('active');
+
+      // تبديل الهيدر والمحتوى
+      document.getElementById('header-ar').style.display = "block";
+      document.getElementById('header-en').style.display = "none";
+      document.getElementById('content-ar').style.display = "block";
+      document.getElementById('content-en').style.display = "none";
+      document.title = "LCA - إستراتيجية التداول بالمؤشرات بـ100$";
+    }
+
+    function switchToEnglish() {
+      document.documentElement.lang = "en";
+      document.documentElement.dir = "ltr";
+      document.querySelectorAll('.language-switcher a').forEach(link => {
+        link.classList.remove('active');
+      });
+      document.querySelector('#header-en .language-switcher a#english').classList.add('active');
+
+      document.getElementById('header-ar').style.display = "none";
+      document.getElementById('header-en').style.display = "block";
+      document.getElementById('content-ar').style.display = "none";
+      document.getElementById('content-en').style.display = "block";
+      document.title = "LCA - Trading Strategy with $100 Indicators";
+    }
+
+    document.querySelectorAll('#arabic').forEach(link => {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        switchToArabic();
+      });
+    });
+
+    document.querySelectorAll('#english').forEach(link => {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        switchToEnglish();
+      });
+    });
+  </script>
 </body>
 </html>
