@@ -629,3 +629,13 @@ body.dark-mode .footer p {
 
 /* روابط سريعة (روابط إضافية) */
 /* يمكنك إضافة المزيد من التنسيقات إذا لزم الأمر */
+/* تعديل ألوان النصوص في الوضع الداكن */
+body.dark-mode .course-details ul li {
+  background: #111 !important; /* خلفية داكنة */
+  color: #fff !important; /* نص أبيض */
+  border-color: #333; /* حدود داكنة */
+}
+
+body.dark-mode .course-details ul li i {
+  color: #ffcc00; /* تغيير لون الأيقونات */
+}
