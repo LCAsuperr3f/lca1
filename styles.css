@@ -2,12 +2,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap');
 
 :root {
-  --primary-color: #2563eb;
-  --primary-dark: #1d4ed8;
-  --secondary-color: #2563eb;
-  --dark-color: #1e293b;
-  --light-color: #f8fafc;
-  --gray-color: #94a3b8;
+  --primary-color: #FED100;
+  --primary-dark: #FED100;
+  --secondary-color: #FED100;
+  --dark-color: #FED100;
+  --light-color: #FED100;
+  --gray-color: ##FED100;
   --box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
   --transition: all 0.3s ease-in-out;
 }
@@ -161,7 +161,7 @@ ul {
 
 /* ===== الأقسام الرئيسية ===== */
 .hero {
-  background: linear-gradient(135deg, rgba(37, 99, 235, 0.9), rgba(16, 185, 129, 0.9)), url('/api/placeholder/1200/800') center/cover;
+  background: linear-gradient(135deg, rgba(0, 0, 0), rgba(0, 0, 0, 0)), url('/api/placeholder/1200/800') center/cover;
   height: 100vh;
   display: flex;
   align-items: center;
@@ -179,7 +179,7 @@ ul {
   font-size: 3.5rem;
   margin-bottom: 15px;
   font-weight: 800;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0);
 }
 
 .hero-content h2 {
@@ -363,7 +363,7 @@ ul {
   top: 15px;
   left: 15px;
   background-color: var(--secondary-color);
-  color: white;
+  color: BLACK;
   padding: 5px 10px;
   border-radius: 5px;
   font-size: 0.8rem;
@@ -524,34 +524,34 @@ body.dark-mode .main-nav ul li a:after {
 }
 
 body.dark-mode .btn-primary {
-  background-color: #03020f;
-  color: #fff;
+  background-color: #fed100;
+  color: #000;
 }
 
 body.dark-mode .course-card {
-  background-color: #06041f;
-  color: #fff;
+  background-color: #1E2022;
+  color: #00;
 }
 
 body.dark-mode .course-header {
-  background: #06041f;
+  background: #1E2022;
 }
 
 body.dark-mode .course-price,
 body.dark-mode .course-meta {
-  background-color: #02010d;
+  background-color: #000;
   border-color: #000;
 }
 
 /* تغيير خلفية قسم الفوركس في الوضع الداكن لتصبح سوداء */
 body.dark-mode .forex {
-  background-color: #01000a;
+  background-color: #1E2122;
 }
 
 /* تحويل مربعات "تعلم من الخبراء" والبطاقات داخل قسم الفوركس إلى خلفيات داكنة */
 body.dark-mode .feature-card,
 body.dark-mode .forex-feature {
-  background-color: #01000a !important;
+  background-color: #1E2122 !important;
   color: #fff !important;
   box-shadow: none;
 }
@@ -637,7 +637,7 @@ body.dark-mode .course-details ul li {
 }
 
 body.dark-mode .course-details ul li i {
-  color: #2563eb; /* تغيير لون الأيقونات */
+  color: #FED100; /* تغيير لون الأيقونات */
 }
 
 /* تغيير ألوان قسم "تواصل معنا" في الوضع الداكن */
@@ -659,6 +659,6 @@ body.dark-mode .social-links a:hover {
 
 /* تغيير لون الأيقونات */
 body.dark-mode .social-links a i {
-  color: #2563eb !important; /* لون مميز للأيقونات */
+  color: #FED100 !important; /* لون مميز للأيقونات */
 }
 
