@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -6,8 +7,15 @@
   <title>LCA </title>
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LCA </title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
+<body class="dark-mode">
+
   <!-- هيدر باللغة العربية -->
   <header id="header-ar" class="header">
     <div class="container">
@@ -63,19 +71,56 @@
       </div>
     </div>
   </header>
-
-  <!-- المحتوى باللغة العربية -->
-  <div id="content-ar">
-    <section class="hero" id="home">
-      <div class="container">
-        <div class="hero-content">
-          <h1>مرحبًا بكم في  LCA</h1>
-          <h2>إستراتيجية تداول احترافية مع مؤشرات ذكية 75$ فقط</h2>
-          <a href="#courses" class="btn btn-primary">اشتري الإستراتيجية الآن</a>
-        </div>
+<!-- المحتوى باللغة العربية -->
+<div id="content-ar">
+  <section class="hero" id="home">
+    <div class="container">
+      <div class="hero-content">
+        <h1>مرحبًا بكم في LCA</h1>
+        <h2>إستراتيجية تداول احترافية مع مؤشرات ذكية 75$ فقط</h2>
+        <a href="#courses" class="btn btn-primary">اشتري الإستراتيجية الآن</a>
       </div>
-    </section>
+    </div>
+  </section>
 
+  <!-- TradingView Widget -->
+  <div class="tradingview-widget-container">
+    <div id="tradingview_ticker"></div>
+    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
+    {
+        "symbols": [
+            { "proName": "FOREXCOM:XAUUSD", "title": "Gold (XAU/USD)" },
+            { "proName": "FOREXCOM:EURUSD", "title": "EUR/USD" },
+            { "proName": "FOREXCOM:GBPUSD", "title": "GBP/USD" },
+            { "proName": "FOREXCOM:USDJPY", "title": "USD/JPY" },
+            { "proName": "FOREXCOM:USDCHF", "title": "USD/CHF" },
+            { "proName": "FOREXCOM:AUDUSD", "title": "AUD/USD" },
+            { "proName": "FOREXCOM:USDCAD", "title": "USD/CAD" },
+            { "proName": "FOREXCOM:NZDUSD", "title": "NZD/USD" },
+            { "proName": "FOREXCOM:EURJPY", "title": "EUR/JPY" },
+            { "proName": "FOREXCOM:GBPJPY", "title": "GBP/JPY" },
+            { "proName": "FOREXCOM:EURGBP", "title": "EUR/GBP" },
+            { "proName": "FOREXCOM:CHFJPY", "title": "CHF/JPY" },
+            { "proName": "FOREXCOM:EURCHF", "title": "EUR/CHF" },
+            { "proName": "FOREXCOM:EURAUD", "title": "EUR/AUD" },
+            { "proName": "FOREXCOM:GBPAUD", "title": "GBP/AUD" },
+            { "proName": "FOREXCOM:AUDJPY", "title": "AUD/JPY" },
+            { "proName": "FOREXCOM:GBPCAD", "title": "GBP/CAD" },
+            { "proName": "FOREXCOM:EURCAD", "title": "EUR/CAD" },
+            { "proName": "FOREXCOM:NZDJPY", "title": "NZD/JPY" },
+            { "proName": "FOREXCOM:AUDNZD", "title": "AUD/NZD" },
+            { "proName": "FOREXCOM:CADJPY", "title": "CAD/JPY" },
+            { "proName": "FOREXCOM:GBPNZD", "title": "GBP/NZD" }
+        ],
+        "showSymbolLogo": true,
+        "colorTheme": "dark",
+        "isTransparent": false,
+        "displayMode": "regular",
+        "locale": "ar"
+    }
+    </script>
+  </div>
+</div>
     <section class="features" id="features">
       <div class="container">
         <div class="section-header">
@@ -184,6 +229,109 @@
         </div>
       </div>
     </section>
+    <!-- TradingView Widget -->
+    <div class="tradingview-widget-container">
+        <div id="tradingview_ticker"></div>
+        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
+        {
+            "symbols": [
+                {
+                    "proName": "FOREXCOM:XAUUSD",
+                    "title": "Gold (XAU/USD)"
+                },
+                {
+                    "proName": "FOREXCOM:EURUSD",
+                    "title": "EUR/USD"
+                },
+                {
+                    "proName": "FOREXCOM:GBPUSD",
+                    "title": "GBP/USD"
+                },
+                {
+                    "proName": "FOREXCOM:USDJPY",
+                    "title": "USD/JPY"
+                },
+                {
+                    "proName": "FOREXCOM:USDCHF",
+                    "title": "USD/CHF"
+                },
+                {
+                    "proName": "FOREXCOM:AUDUSD",
+                    "title": "AUD/USD"
+                },
+                {
+                    "proName": "FOREXCOM:USDCAD",
+                    "title": "USD/CAD"
+                },
+                {
+                    "proName": "FOREXCOM:NZDUSD",
+                    "title": "NZD/USD"
+                },
+                {
+                    "proName": "FOREXCOM:EURJPY",
+                    "title": "EUR/JPY"
+                },
+                {
+                    "proName": "FOREXCOM:GBPJPY",
+                    "title": "GBP/JPY"
+                },
+                {
+                    "proName": "FOREXCOM:EURGBP",
+                    "title": "EUR/GBP"
+                },
+                {
+                    "proName": "FOREXCOM:CHFJPY",
+                    "title": "CHF/JPY"
+                },
+                {
+                    "proName": "FOREXCOM:EURCHF",
+                    "title": "EUR/CHF"
+                },
+                {
+                    "proName": "FOREXCOM:EURAUD",
+                    "title": "EUR/AUD"
+                },
+                {
+                    "proName": "FOREXCOM:GBPAUD",
+                    "title": "GBP/AUD"
+                },
+                {
+                    "proName": "FOREXCOM:AUDJPY",
+                    "title": "AUD/JPY"
+                },
+                {
+                    "proName": "FOREXCOM:GBPCAD",
+                    "title": "GBP/CAD"
+                },
+                {
+                    "proName": "FOREXCOM:EURCAD",
+                    "title": "EUR/CAD"
+                },
+                {
+                    "proName": "FOREXCOM:NZDJPY",
+                    "title": "NZD/JPY"
+                },
+                {
+                    "proName": "FOREXCOM:AUDNZD",
+                    "title": "AUD/NZD"
+                },
+                {
+                    "proName": "FOREXCOM:CADJPY",
+                    "title": "CAD/JPY"
+                },
+                {
+                    "proName": "FOREXCOM:GBPNZD",
+                    "title": "GBP/NZD"
+                }
+            ],
+            "showSymbolLogo": true,
+            "colorTheme": "light",
+            "isTransparent": false,
+            "displayMode": "regular",
+            "locale": "ar"
+        }
+        </script>
+    </div>
 
     <section class="features" id="features">
       <div class="container">
