@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -7,13 +6,7 @@
   <title>LCA </title>
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LCA </title>
-  <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body>
 <body class="dark-mode">
 
   <!-- هيدر باللغة العربية -->
@@ -31,8 +24,8 @@
       </nav>
       <!-- مبدل اللغات -->
       <div class="language-switcher">
-        <a href="#" id="arabic" class="active">عربي</a> | 
-        <a href="#" id="english">English</a>
+        <a href="#" id="ar-link" class="active">عربي</a> | 
+        <a href="#" id="en-link">English</a>
       </div>
       <!-- زر تبديل الوضع (دارك/وايت مود) -->
       <div class="mode-toggle">
@@ -59,8 +52,8 @@
       </nav>
       <!-- Language Switcher -->
       <div class="language-switcher">
-        <a href="#" id="arabic" class="">عربي</a> | 
-        <a href="#" id="english" class="active">English</a>
+        <a href="#" id="ar-link-en">عربي</a> | 
+        <a href="#" id="en-link-en" class="active">English</a>
       </div>
       <!-- Dark/Light Mode Toggle -->
       <div class="mode-toggle">
@@ -71,68 +64,69 @@
       </div>
     </div>
   </header>
-<!-- المحتوى باللغة العربية -->
-<div id="content-ar">
-  <section class="hero" id="home">
-    <div class="container">
-      <div class="hero-content">
-        <h1>اهلا بكم في LCA</h1>
-        <h2>نضام تداول احترافي LCAV99🌍 </h2>
-        <a href="#courses" class="btn btn-primary">اشتري النضام الآن</a>
-      </div>
-    </div>
-  </section>
 
-  <!-- TradingView Widget -->
-  <div class="tradingview-widget-container">
-    <div id="tradingview_ticker"></div>
-    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
-    {
-        "symbols": [
-            { "proName": "FOREXCOM:XAUUSD", "title": "Gold (XAU/USD)" },
-            { "proName": "FOREXCOM:EURUSD", "title": "EUR/USD" },
-            { "proName": "FOREXCOM:GBPUSD", "title": "GBP/USD" },
-            { "proName": "FOREXCOM:USDJPY", "title": "USD/JPY" },
-            { "proName": "FOREXCOM:USDCHF", "title": "USD/CHF" },
-            { "proName": "FOREXCOM:AUDUSD", "title": "AUD/USD" },
-            { "proName": "FOREXCOM:USDCAD", "title": "USD/CAD" },
-            { "proName": "FOREXCOM:NZDUSD", "title": "NZD/USD" },
-            { "proName": "FOREXCOM:EURJPY", "title": "EUR/JPY" },
-            { "proName": "FOREXCOM:GBPJPY", "title": "GBP/JPY" },
-            { "proName": "FOREXCOM:EURGBP", "title": "EUR/GBP" },
-            { "proName": "FOREXCOM:CHFJPY", "title": "CHF/JPY" },
-            { "proName": "FOREXCOM:EURCHF", "title": "EUR/CHF" },
-            { "proName": "FOREXCOM:EURAUD", "title": "EUR/AUD" },
-            { "proName": "FOREXCOM:GBPAUD", "title": "GBP/AUD" },
-            { "proName": "FOREXCOM:AUDJPY", "title": "AUD/JPY" },
-            { "proName": "FOREXCOM:GBPCAD", "title": "GBP/CAD" },
-            { "proName": "FOREXCOM:EURCAD", "title": "EUR/CAD" },
-            { "proName": "FOREXCOM:NZDJPY", "title": "NZD/JPY" },
-            { "proName": "FOREXCOM:AUDNZD", "title": "AUD/NZD" },
-            { "proName": "FOREXCOM:CADJPY", "title": "CAD/JPY" },
-            { "proName": "FOREXCOM:GBPNZD", "title": "GBP/NZD" }
-        ],
-        "showSymbolLogo": true,
-        "colorTheme": "dark",
-        "isTransparent": false,
-        "displayMode": "regular",
-        "locale": "ar"
-    }
-    </script>
-  </div>
-</div>
+  <!-- المحتوى باللغة العربية -->
+  <div id="content-ar">
+    <section class="hero" id="home">
+      <div class="container">
+        <div class="hero-content">
+          <h1>اهلا بكم في LCA</h1>
+          <h2>نظام تداول احترافي LCAV99🌍 </h2>
+          <a href="#courses" class="btn btn-primary">اشتري النظام الآن</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- TradingView Widget -->
+    <div class="tradingview-widget-container">
+      <div id="tradingview_ticker_ar"></div>
+      <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
+      {
+          "symbols": [
+              { "proName": "FOREXCOM:XAUUSD", "title": "Gold (XAU/USD)" },
+              { "proName": "FOREXCOM:EURUSD", "title": "EUR/USD" },
+              { "proName": "FOREXCOM:GBPUSD", "title": "GBP/USD" },
+              { "proName": "FOREXCOM:USDJPY", "title": "USD/JPY" },
+              { "proName": "FOREXCOM:USDCHF", "title": "USD/CHF" },
+              { "proName": "FOREXCOM:AUDUSD", "title": "AUD/USD" },
+              { "proName": "FOREXCOM:USDCAD", "title": "USD/CAD" },
+              { "proName": "FOREXCOM:NZDUSD", "title": "NZD/USD" },
+              { "proName": "FOREXCOM:EURJPY", "title": "EUR/JPY" },
+              { "proName": "FOREXCOM:GBPJPY", "title": "GBP/JPY" },
+              { "proName": "FOREXCOM:EURGBP", "title": "EUR/GBP" },
+              { "proName": "FOREXCOM:CHFJPY", "title": "CHF/JPY" },
+              { "proName": "FOREXCOM:EURCHF", "title": "EUR/CHF" },
+              { "proName": "FOREXCOM:EURAUD", "title": "EUR/AUD" },
+              { "proName": "FOREXCOM:GBPAUD", "title": "GBP/AUD" },
+              { "proName": "FOREXCOM:AUDJPY", "title": "AUD/JPY" },
+              { "proName": "FOREXCOM:GBPCAD", "title": "GBP/CAD" },
+              { "proName": "FOREXCOM:EURCAD", "title": "EUR/CAD" },
+              { "proName": "FOREXCOM:NZDJPY", "title": "NZD/JPY" },
+              { "proName": "FOREXCOM:AUDNZD", "title": "AUD/NZD" },
+              { "proName": "FOREXCOM:CADJPY", "title": "CAD/JPY" },
+              { "proName": "FOREXCOM:GBPNZD", "title": "GBP/NZD" }
+          ],
+          "showSymbolLogo": true,
+          "colorTheme": "dark",
+          "isTransparent": false,
+          "displayMode": "regular",
+          "locale": "ar"
+      }
+      </script>
+    </div>
+
     <section class="features" id="features">
       <div class="container">
         <div class="section-header">
-          <h2>مميزات النضام</h2>
+          <h2>مميزات النظام</h2>
         </div>
         <div class="features-grid">
           <div class="feature-card">
             <div class="feature-icon">
               <i class="fas fa-chart-line"></i>
             </div>
-            <h3>نضام تداول ذكي</h3>
-            <p> تداول باحتراف مع نضام LCA</p>
+            <h3>نظام تداول ذكي</h3>
+            <p> تداول باحتراف مع نظام LCA</p>
           </div>
           <div class="feature-card">
             <div class="feature-icon">
@@ -155,21 +149,21 @@
     <section class="courses" id="courses">
       <div class="container">
         <div class="section-header">
-          <h2>نضامLCA الحصري</h2>
-          <p>احصل على النضام الكامل بخصم 30%</p>
+          <h2>نظام LCA الحصري</h2>
+          <p>احصل على النظام الكامل بخصم 30%</p>
         </div>
         <div class="courses-grid">
           <div class="course-card featured">
             <div class="course-badge">العرض الحصري</div>
             <div class="course-header">
-              <h3>استراتجيه lca </h3>
+              <h3>استراتجيه LCA </h3>
             </div>
             <div class="course-price">
               <h4>السعر: <span>100$</span> بدلًا من <del>140$</del></h4>
             </div>
             <div class="course-details">
               <ul>
-                <li><i class="fas fa-check"></i>  نضام التداول  مع موشرات LCA  </li>
+                <li><i class="fas fa-check"></i>  نظام التداول  مع مؤشرات LCA  </li>
                 <li><i class="fas fa-check"></i> دليل استخدام مفصل</li>
                 <li><i class="fas fa-check"></i>   فيديو تعليمي</li>
                 <li><i class="fas fa-check"></i> دعم فني   </li>
@@ -203,16 +197,17 @@
             <div class="social-links">
               <a href="https://t.me/lcafxsclp" class="social-link"><i class="fab fa-telegram-plane"></i> تليجرام</a>
               <a href="https://wa.me/905393011147" class="social-link"><i class="fab fa-whatsapp"></i> واتساب</a>
-<a href="https://www.instagram.com/lca__group?igsh=dXBxb2wzcjN3NWFv&utm_source=qr" class="social-link">
-  <i class="fab fa-instagram"></i> إنستقرام
-<a href="https://x.com/lca0fx?s=21&t=Ng1ER4VAoZfJdhI3q_w-1w" class="social-link">
-  <i class="fab fa-twitter"></i> تويتر
-</a>
+              <a href="https://www.instagram.com/lca__group?igsh=dXBxb2wzcjN3NWFv&utm_source=qr" class="social-link">
+                <i class="fab fa-instagram"></i> إنستقرام
+              </a>
+              <a href="https://x.com/lca0fx?s=21&t=Ng1ER4VAoZfJdhI3q_w-1w" class="social-link">
+                <i class="fab fa-twitter"></i> تويتر
+              </a>
             </div>
           </div>
         </div>
         <div class="footer-bottom">
-          <p>&copy; 2021 LCA. جميع الحقوق محفوظة.</p>
+          <p>&copy; 2024 LCA. جميع الحقوق محفوظة.</p>
         </div>
       </div>
     </footer>
@@ -224,141 +219,76 @@
       <div class="container">
         <div class="hero-content">
           <h1>Welcome to LCA</h1>
-          <h2>Professional Trading Strategy with $75 Smart Indicators</h2>
-          <a href="#courses" class="btn btn-primary">Buy Strategy Now</a>
+          <h2>Professional Trading System LCAV99🌍</h2>
+          <a href="#courses" class="btn btn-primary">Buy System Now</a>
         </div>
       </div>
     </section>
-    <!-- TradingView Widget -->
+    
+    <!-- TradingView Widget for English -->
     <div class="tradingview-widget-container">
-        <div id="tradingview_ticker"></div>
-        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
-        {
-            "symbols": [
-                {
-                    "proName": "FOREXCOM:XAUUSD",
-                    "title": "Gold (XAU/USD)"
-                },
-                {
-                    "proName": "FOREXCOM:EURUSD",
-                    "title": "EUR/USD"
-                },
-                {
-                    "proName": "FOREXCOM:GBPUSD",
-                    "title": "GBP/USD"
-                },
-                {
-                    "proName": "FOREXCOM:USDJPY",
-                    "title": "USD/JPY"
-                },
-                {
-                    "proName": "FOREXCOM:USDCHF",
-                    "title": "USD/CHF"
-                },
-                {
-                    "proName": "FOREXCOM:AUDUSD",
-                    "title": "AUD/USD"
-                },
-                {
-                    "proName": "FOREXCOM:USDCAD",
-                    "title": "USD/CAD"
-                },
-                {
-                    "proName": "FOREXCOM:NZDUSD",
-                    "title": "NZD/USD"
-                },
-                {
-                    "proName": "FOREXCOM:EURJPY",
-                    "title": "EUR/JPY"
-                },
-                {
-                    "proName": "FOREXCOM:GBPJPY",
-                    "title": "GBP/JPY"
-                },
-                {
-                    "proName": "FOREXCOM:EURGBP",
-                    "title": "EUR/GBP"
-                },
-                {
-                    "proName": "FOREXCOM:CHFJPY",
-                    "title": "CHF/JPY"
-                },
-                {
-                    "proName": "FOREXCOM:EURCHF",
-                    "title": "EUR/CHF"
-                },
-                {
-                    "proName": "FOREXCOM:EURAUD",
-                    "title": "EUR/AUD"
-                },
-                {
-                    "proName": "FOREXCOM:GBPAUD",
-                    "title": "GBP/AUD"
-                },
-                {
-                    "proName": "FOREXCOM:AUDJPY",
-                    "title": "AUD/JPY"
-                },
-                {
-                    "proName": "FOREXCOM:GBPCAD",
-                    "title": "GBP/CAD"
-                },
-                {
-                    "proName": "FOREXCOM:EURCAD",
-                    "title": "EUR/CAD"
-                },
-                {
-                    "proName": "FOREXCOM:NZDJPY",
-                    "title": "NZD/JPY"
-                },
-                {
-                    "proName": "FOREXCOM:AUDNZD",
-                    "title": "AUD/NZD"
-                },
-                {
-                    "proName": "FOREXCOM:CADJPY",
-                    "title": "CAD/JPY"
-                },
-                {
-                    "proName": "FOREXCOM:GBPNZD",
-                    "title": "GBP/NZD"
-                }
-            ],
-            "showSymbolLogo": true,
-            "colorTheme": "light",
-            "isTransparent": false,
-            "displayMode": "regular",
-            "locale": "ar"
-        }
-        </script>
+      <div id="tradingview_ticker_en"></div>
+      <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
+      {
+          "symbols": [
+              { "proName": "FOREXCOM:XAUUSD", "title": "Gold (XAU/USD)" },
+              { "proName": "FOREXCOM:EURUSD", "title": "EUR/USD" },
+              { "proName": "FOREXCOM:GBPUSD", "title": "GBP/USD" },
+              { "proName": "FOREXCOM:USDJPY", "title": "USD/JPY" },
+              { "proName": "FOREXCOM:USDCHF", "title": "USD/CHF" },
+              { "proName": "FOREXCOM:AUDUSD", "title": "AUD/USD" },
+              { "proName": "FOREXCOM:USDCAD", "title": "USD/CAD" },
+              { "proName": "FOREXCOM:NZDUSD", "title": "NZD/USD" },
+              { "proName": "FOREXCOM:EURJPY", "title": "EUR/JPY" },
+              { "proName": "FOREXCOM:GBPJPY", "title": "GBP/JPY" },
+              { "proName": "FOREXCOM:EURGBP", "title": "EUR/GBP" },
+              { "proName": "FOREXCOM:CHFJPY", "title": "CHF/JPY" },
+              { "proName": "FOREXCOM:EURCHF", "title": "EUR/CHF" },
+              { "proName": "FOREXCOM:EURAUD", "title": "EUR/AUD" },
+              { "proName": "FOREXCOM:GBPAUD", "title": "GBP/AUD" },
+              { "proName": "FOREXCOM:AUDJPY", "title": "AUD/JPY" },
+              { "proName": "FOREXCOM:GBPCAD", "title": "GBP/CAD" },
+              { "proName": "FOREXCOM:EURCAD", "title": "EUR/CAD" },
+              { "proName": "FOREXCOM:NZDJPY", "title": "NZD/JPY" },
+              { "proName": "FOREXCOM:AUDNZD", "title": "AUD/NZD" },
+              { "proName": "FOREXCOM:CADJPY", "title": "CAD/JPY" },
+              { "proName": "FOREXCOM:GBPNZD", "title": "GBP/NZD" }
+          ],
+          "showSymbolLogo": true,
+          "colorTheme": "dark",
+          "isTransparent": false,
+          "displayMode": "regular",
+          "locale": "en"
+      }
+      </script>
     </div>
 
     <section class="features" id="features">
       <div class="container">
         <div class="section-header">
-          <h2>Strategy Features</h2>
+          <h2>System Features</h2>
         </div>
         <div class="features-grid">
           <div class="feature-card">
             <div class="feature-icon">
               <i class="fas fa-chart-line"></i>
             </div>
-            <h3>Smart Indicators</h3>
-            <p>3 Professional Analysis Indicators</p>
+            <h3>Smart Trading System</h3>
+            <p>Trade professionally with LCA system</p>
           </div>
           <div class="feature-card">
             <div class="feature-icon">
               <i class="fas fa-video"></i>
             </div>
-            <h3>Video Tutorials</h3>
-            <p>5 Hours of Practical Guides</p>
+            <h3>Tutorial Videos</h3>
+            <p>Practical explanation for using indicators</p>
           </div>
           <div class="feature-card">
             <div class="feature-icon">
               <i class="fas fa-headset"></i>
             </div>
             <h3>Technical Support</h3>
-            <p>72 Hours Direct Support</p>
+            <p>Direct support for 3 days after purchase</p>
           </div>
         </div>
       </div>
@@ -367,24 +297,24 @@
     <section class="courses" id="courses">
       <div class="container">
         <div class="section-header">
-          <h2>Exclusive LCA Strategy</h2>
-          <p>Get Full Package with 50% Discount</p>
+          <h2>Exclusive LCA System</h2>
+          <p>Get the complete system with 30% discount</p>
         </div>
         <div class="courses-grid">
           <div class="course-card featured">
-            <div class="course-badge">Special Offer</div>
+            <div class="course-badge">Exclusive Offer</div>
             <div class="course-header">
-              <h3>Professional Indicators Package</h3>
+              <h3>LCA Strategy</h3>
             </div>
             <div class="course-price">
-              <h4>Price: <span>$75</span> Instead of <del>$120</del></h4>
+              <h4>Price: <span>$100</span> Instead of <del>$140</del></h4>
             </div>
             <div class="course-details">
               <ul>
-                <li><i class="fas fa-check"></i> 3 Smart Trading Indicators</li>
-                <li><i class="fas fa-check"></i> Detailed User Guide</li>
-                <li><i class="fas fa-check"></i> 5 Hours Video Tutorials</li>
-                <li><i class="fas fa-check"></i> 72 Hours Support</li>
+                <li><i class="fas fa-check"></i> Trading system with LCA indicators</li>
+                <li><i class="fas fa-check"></i> Detailed user guide</li>
+                <li><i class="fas fa-check"></i> Tutorial video</li>
+                <li><i class="fas fa-check"></i> Technical support</li>
               </ul>
             </div>
             <div class="course-actions">
@@ -400,7 +330,7 @@
         <div class="footer-content">
           <div class="footer-logo">
             <h3>LCA</h3>
-            <p>Trade Smart with LCA Indicators</p>
+            <p>Trade smartly with LCA indicators</p>
           </div>
           <div class="footer-links">
             <h4>Quick Links</h4>
@@ -414,12 +344,13 @@
             <h4>Contact Us</h4>
             <div class="social-links">
               <a href="https://t.me/lcafxsclp" class="social-link"><i class="fab fa-telegram-plane"></i> Telegram</a>
-              <a href="https://api.whatsapp.com/send/?phone=905393011147&text&type=phone_number&app_absent=0" class="social-link"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+              <a href="https://wa.me/905393011147" class="social-link"><i class="fab fa-whatsapp"></i> WhatsApp</a>
               <a href="https://www.instagram.com/lca__group?igsh=dXBxb2wzcjN3NWFv&utm_source=qr" class="social-link">
-  <i class="fab fa-instagram"></i> instgram
-<a href="https://x.com/lca0fx?s=21&t=Ng1ER4VAoZfJdhI3q_w-1w" class="social-link">
-  <i class="fab fa-twitter"></i> twitter
-</a>
+                <i class="fab fa-instagram"></i> Instagram
+              </a>
+              <a href="https://x.com/lca0fx?s=21&t=Ng1ER4VAoZfJdhI3q_w-1w" class="social-link">
+                <i class="fab fa-twitter"></i> Twitter
+              </a>
             </div>
           </div>
         </div>
@@ -455,47 +386,56 @@
       });
     });
 
-    // تبديل اللغة
+    // تبديل اللغة - تحسين الدالة
     function switchToArabic() {
       document.documentElement.lang = "ar";
       document.documentElement.dir = "rtl";
+      
       // تفعيل الروابط المناسبة
-      document.querySelectorAll('.language-switcher a').forEach(link => {
+      document.querySelectorAll('#ar-link, #ar-link-en').forEach(link => {
+        link.classList.add('active');
+      });
+      document.querySelectorAll('#en-link, #en-link-en').forEach(link => {
         link.classList.remove('active');
       });
-      document.querySelector('#header-ar .language-switcher a#arabic').classList.add('active');
 
       // تبديل الهيدر والمحتوى
       document.getElementById('header-ar').style.display = "block";
       document.getElementById('header-en').style.display = "none";
       document.getElementById('content-ar').style.display = "block";
       document.getElementById('content-en').style.display = "none";
-      document.title = "LCA - نضام التداول بالمؤشرات ب75$";
+      document.title = "LCA - نظام التداول بالمؤشرات";
     }
 
     function switchToEnglish() {
       document.documentElement.lang = "en";
       document.documentElement.dir = "ltr";
-      document.querySelectorAll('.language-switcher a').forEach(link => {
+      
+      // تفعيل الروابط المناسبة
+      document.querySelectorAll('#ar-link, #ar-link-en').forEach(link => {
         link.classList.remove('active');
       });
-      document.querySelector('#header-en .language-switcher a#english').classList.add('active');
+      document.querySelectorAll('#en-link, #en-link-en').forEach(link => {
+        link.classList.add('active');
+      });
 
+      // تبديل الهيدر والمحتوى
       document.getElementById('header-ar').style.display = "none";
       document.getElementById('header-en').style.display = "block";
       document.getElementById('content-ar').style.display = "none";
       document.getElementById('content-en').style.display = "block";
-      document.title = "LCA - Trading Strategy with $75 Indicators";
+      document.title = "LCA - Trading System with Indicators";
     }
 
-    document.querySelectorAll('#arabic').forEach(link => {
+    // إضافة مستمعي الأحداث للروابط
+    document.querySelectorAll('#ar-link, #ar-link-en').forEach(link => {
       link.addEventListener('click', function(e) {
         e.preventDefault();
         switchToArabic();
       });
     });
 
-    document.querySelectorAll('#english').forEach(link => {
+    document.querySelectorAll('#en-link, #en-link-en').forEach(link => {
       link.addEventListener('click', function(e) {
         e.preventDefault();
         switchToEnglish();
