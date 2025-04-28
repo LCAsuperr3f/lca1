@@ -11,6 +11,70 @@
   --box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
   --transition: all 0.3s ease-in-out;
 }
+/* ===== تنسيقات قسم الأسئلة الشائعة ===== */
+.faq-section {
+  padding: 80px 0;
+  background-color: #f9fafb;
+}
+
+body.dark-mode .faq-section {
+  background-color: #1a1c1e;
+}
+
+.faq-section .section-header {
+  margin-bottom: 40px;
+}
+
+.faq-section .faq-items details {
+  margin-bottom: 20px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background-color: #fff;
+  overflow: hidden;
+  transition: var(--transition);
+}
+
+body.dark-mode .faq-section .faq-items details {
+  border-color: #333;
+  background-color: #111;
+}
+
+.faq-section .faq-items summary {
+  padding: 15px 20px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  position: relative;
+}
+
+.faq-section .faq-items summary::-webkit-details-marker {
+  display: none;
+}
+
+.faq-section .faq-items summary::after {
+  content: '+';
+  position: absolute;
+  right: 20px;
+  font-size: 1.2rem;
+}
+
+.faq-section .faq-items details[open] summary::after {
+  content: '−';
+}
+
+body.dark-mode .faq-section .faq-items summary {
+  color: #fff;
+}
+
+.faq-section .faq-items p {
+  padding: 0 20px 15px;
+  line-height: 1.6;
+  color: #4a5568;
+}
+
+body.dark-mode .faq-section .faq-items p {
+  color: #ccc;
+}
 
 * {
   margin: 0;
