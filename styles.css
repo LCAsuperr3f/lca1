@@ -222,6 +222,66 @@ ul {
   cursor: pointer;
   color: var(--primary-color);
 }
+/* ===== قسم الفوركس / Forex section ===== */
+.forex {
+  background-color: #f1f5f9;
+  padding: 80px 0;
+}
+
+.forex-features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+  margin-top: 40px;
+}
+
+.forex-feature {
+  text-align: center;
+  padding: 30px;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: var(--box-shadow);
+  transition: var(--transition);
+}
+
+.forex-feature:hover {
+  transform: translateY(-10px);
+}
+
+.forex-feature-icon {
+  width: 70px;
+  height: 70px;
+  background-color: rgba(37, 99, 235, 0.1);
+  color: var(--primary-color);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto 20px;
+  font-size: 1.8rem;
+}
+
+.forex-feature h3 {
+  font-size: 1.3rem;
+  margin-bottom: 15px;
+  font-weight: 700;
+}
+
+/* Dark mode adjustments */
+body.dark-mode .forex {
+  background-color: #1E2122;
+}
+
+body.dark-mode .forex-feature {
+  background-color: #1E2122 !important;
+  color: #fff !important;
+  box-shadow: none;
+}
+
+body.dark-mode .forex-feature-icon {
+  background-color: rgba(254, 209, 0, 0.1);
+  color: var(--primary-color) !important;
+}
 
 /* ===== الأقسام الرئيسية ===== */
 .hero {
