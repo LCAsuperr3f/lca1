@@ -6,6 +6,49 @@
   <title>LCA </title>
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* تحديث ألوان الوضع الفاتح */
+    body:not(.dark-mode) {
+      background-color: var(--light-color);
+    }
+    
+    body:not(.dark-mode) .header {
+      background-color: var(--light-color);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+    }
+
+    body:not(.dark-mode) .feature-card,
+    body:not(.dark-mode) .course-card,
+    body:not(.dark-mode) .forex-feature {
+      background-color: var(--light-color);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.03);
+    }
+
+    body:not(.dark-mode) .footer {
+      background-color: var(--light-color);
+      border-top: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    /* تحديث ألوان النصوص في الوضع الفاتح */
+    body:not(.dark-mode) {
+      color: var(--dark-color);
+    }
+
+    body:not(.dark-mode) a {
+      color: var(--dark-color);
+    }
+
+    /* تحديث ألوان الأزرار في الوضع الفاتح */
+    body:not(.dark-mode) .btn-primary {
+      background-color: var(--primary-color);
+      color: var(--dark-color);
+    }
+
+    body:not(.dark-mode) .btn-primary:hover {
+      background-color: var(--primary-dark);
+      box-shadow: 0 5px 15px rgba(254, 209, 0, 0.2);
+    }
+  </style>
 </head>
 <body class="dark-mode">
 
@@ -18,7 +61,8 @@
         <i class="fas fa-bars"></i>
       </div>
       <div class="logo">
-        <img src="1.png" alt="LCA Logo" style="height: 70px;">
+        <img src="1.png" alt="LCA Logo" class="dark-logo" style="height: 70px;">
+        <img src="1w.png" alt="LCA Logo" class="light-logo" style="height: 70px; display: none;">
       </div>
       <!-- القائمة الرئيسية بعد الشعار -->
       <nav class="main-nav">
@@ -49,7 +93,8 @@
         <i class="fas fa-bars"></i>
       </div>
       <div class="logo">
-        <img src="1.png" alt="LCA Logo" style="height: 70px;">
+        <img src="1.png" alt="LCA Logo" class="dark-logo" style="height: 70px;">
+        <img src="1w.png" alt="LCA Logo" class="light-logo" style="height: 70px; display: none;">
       </div>
       <!-- القائمة الرئيسية بعد الشعار -->
       <nav class="main-nav">
@@ -97,43 +142,82 @@
 
 
     <img src="4.png" alt="صورة" class="full-screen-image">
-    <!-- TradingView Widget -->
-    <div class="tradingview-widget-container">
-      <div id="tradingview_ticker_ar"></div>
+    <!-- شريط TradingView للوضع الفاتح -->
+    <div class="tradingview-widget-container light-mode-widget" style="display: none;">
+      <div id="tradingview_ticker_light"></div>
       <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
       {
-          "symbols": [
-              { "proName": "FOREXCOM:XAUUSD", "title": "Gold (XAU/USD)" },
-              { "proName": "FOREXCOM:EURUSD", "title": "EUR/USD" },
-              { "proName": "FOREXCOM:GBPUSD", "title": "GBP/USD" },
-              { "proName": "FOREXCOM:USDJPY", "title": "USD/JPY" },
-              { "proName": "FOREXCOM:USDCHF", "title": "USD/CHF" },
-              { "proName": "FOREXCOM:AUDUSD", "title": "AUD/USD" },
-              { "proName": "FOREXCOM:USDCAD", "title": "USD/CAD" },
-              { "proName": "FOREXCOM:NZDUSD", "title": "NZD/USD" },
-              { "proName": "FOREXCOM:EURJPY", "title": "EUR/JPY" },
-              { "proName": "FOREXCOM:GBPJPY", "title": "GBP/JPY" },
-              { "proName": "FOREXCOM:EURGBP", "title": "EUR/GBP" },
-              { "proName": "FOREXCOM:CHFJPY", "title": "CHF/JPY" },
-              { "proName": "FOREXCOM:EURCHF", "title": "EUR/CHF" },
-              { "proName": "FOREXCOM:EURAUD", "title": "EUR/AUD" },
-              { "proName": "FOREXCOM:GBPAUD", "title": "GBP/AUD" },
-              { "proName": "FOREXCOM:AUDJPY", "title": "AUD/JPY" },
-              { "proName": "FOREXCOM:GBPCAD", "title": "GBP/CAD" },
-              { "proName": "FOREXCOM:EURCAD", "title": "EUR/CAD" },
-              { "proName": "FOREXCOM:NZDJPY", "title": "NZD/JPY" },
-              { "proName": "FOREXCOM:AUDNZD", "title": "AUD/NZD" },
-              { "proName": "FOREXCOM:CADJPY", "title": "CAD/JPY" },
-              { "proName": "FOREXCOM:GBPNZD", "title": "GBP/NZD" }
-          ],
-          "showSymbolLogo": true,
-          "colorTheme": "dark",
-          "isTransparent": false,
-          "displayMode": "regular",
-          "locale": "ar"
+        "symbols": [
+          { "proName": "FOREXCOM:XAUUSD", "title": "Gold (XAU/USD)" },
+          { "proName": "FOREXCOM:EURUSD", "title": "EUR/USD" },
+          { "proName": "FOREXCOM:GBPUSD", "title": "GBP/USD" },
+          { "proName": "FOREXCOM:USDJPY", "title": "USD/JPY" },
+          { "proName": "FOREXCOM:USDCHF", "title": "USD/CHF" },
+          { "proName": "FOREXCOM:AUDUSD", "title": "AUD/USD" },
+          { "proName": "FOREXCOM:USDCAD", "title": "USD/CAD" },
+          { "proName": "FOREXCOM:NZDUSD", "title": "NZD/USD" },
+          { "proName": "FOREXCOM:EURJPY", "title": "EUR/JPY" },
+          { "proName": "FOREXCOM:GBPJPY", "title": "GBP/JPY" },
+          { "proName": "FOREXCOM:EURGBP", "title": "EUR/GBP" },
+          { "proName": "FOREXCOM:CHFJPY", "title": "CHF/JPY" },
+          { "proName": "FOREXCOM:EURCHF", "title": "EUR/CHF" },
+          { "proName": "FOREXCOM:EURAUD", "title": "EUR/AUD" },
+          { "proName": "FOREXCOM:GBPAUD", "title": "GBP/AUD" },
+          { "proName": "FOREXCOM:AUDJPY", "title": "AUD/JPY" },
+          { "proName": "FOREXCOM:GBPCAD", "title": "GBP/CAD" },
+          { "proName": "FOREXCOM:EURCAD", "title": "EUR/CAD" },
+          { "proName": "FOREXCOM:NZDJPY", "title": "NZD/JPY" },
+          { "proName": "FOREXCOM:AUDNZD", "title": "AUD/NZD" },
+          { "proName": "FOREXCOM:CADJPY", "title": "CAD/JPY" },
+          { "proName": "FOREXCOM:GBPNZD", "title": "GBP/NZD" }
+        ],
+        "showSymbolLogo": true,
+        "colorTheme": "light",
+        "isTransparent": false,
+        "displayMode": "regular",
+        "locale": "ar"
       }
       </script>
     </div>
+
+    <!-- شريط TradingView للوضع الداكن -->
+    <div class="tradingview-widget-container dark-mode-widget">
+      <div id="tradingview_ticker_dark"></div>
+      <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
+      {
+        "symbols": [
+          { "proName": "FOREXCOM:XAUUSD", "title": "Gold (XAU/USD)" },
+          { "proName": "FOREXCOM:EURUSD", "title": "EUR/USD" },
+          { "proName": "FOREXCOM:GBPUSD", "title": "GBP/USD" },
+          { "proName": "FOREXCOM:USDJPY", "title": "USD/JPY" },
+          { "proName": "FOREXCOM:USDCHF", "title": "USD/CHF" },
+          { "proName": "FOREXCOM:AUDUSD", "title": "AUD/USD" },
+          { "proName": "FOREXCOM:USDCAD", "title": "USD/CAD" },
+          { "proName": "FOREXCOM:NZDUSD", "title": "NZD/USD" },
+          { "proName": "FOREXCOM:EURJPY", "title": "EUR/JPY" },
+          { "proName": "FOREXCOM:GBPJPY", "title": "GBP/JPY" },
+          { "proName": "FOREXCOM:EURGBP", "title": "EUR/GBP" },
+          { "proName": "FOREXCOM:CHFJPY", "title": "CHF/JPY" },
+          { "proName": "FOREXCOM:EURCHF", "title": "EUR/CHF" },
+          { "proName": "FOREXCOM:EURAUD", "title": "EUR/AUD" },
+          { "proName": "FOREXCOM:GBPAUD", "title": "GBP/AUD" },
+          { "proName": "FOREXCOM:AUDJPY", "title": "AUD/JPY" },
+          { "proName": "FOREXCOM:GBPCAD", "title": "GBP/CAD" },
+          { "proName": "FOREXCOM:EURCAD", "title": "EUR/CAD" },
+          { "proName": "FOREXCOM:NZDJPY", "title": "NZD/JPY" },
+          { "proName": "FOREXCOM:AUDNZD", "title": "AUD/NZD" },
+          { "proName": "FOREXCOM:CADJPY", "title": "CAD/JPY" },
+          { "proName": "FOREXCOM:GBPNZD", "title": "GBP/NZD" }
+        ],
+        "showSymbolLogo": true,
+        "colorTheme": "dark",
+        "isTransparent": false,
+        "displayMode": "regular",
+        "locale": "ar"
+      }
+      </script>
+    </div>
+
 <!-- قسم الفوركس — العربية -->
 <section class="forex" id="forex">
   <div class="container">
@@ -345,43 +429,82 @@
 
 <img src="4.png" alt="صورة" class="background-image">
 
-    <!-- TradingView Widget for English -->
-    <div class="tradingview-widget-container">
-      <div id="tradingview_ticker_en"></div>
+    <!-- شريط TradingView للوضع الفاتح -->
+    <div class="tradingview-widget-container light-mode-widget" style="display: none;">
+      <div id="tradingview_ticker_light"></div>
       <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
       {
-          "symbols": [
-              { "proName": "FOREXCOM:XAUUSD", "title": "Gold (XAU/USD)" },
-              { "proName": "FOREXCOM:EURUSD", "title": "EUR/USD" },
-              { "proName": "FOREXCOM:GBPUSD", "title": "GBP/USD" },
-              { "proName": "FOREXCOM:USDJPY", "title": "USD/JPY" },
-              { "proName": "FOREXCOM:USDCHF", "title": "USD/CHF" },
-              { "proName": "FOREXCOM:AUDUSD", "title": "AUD/USD" },
-              { "proName": "FOREXCOM:USDCAD", "title": "USD/CAD" },
-              { "proName": "FOREXCOM:NZDUSD", "title": "NZD/USD" },
-              { "proName": "FOREXCOM:EURJPY", "title": "EUR/JPY" },
-              { "proName": "FOREXCOM:GBPJPY", "title": "GBP/JPY" },
-              { "proName": "FOREXCOM:EURGBP", "title": "EUR/GBP" },
-              { "proName": "FOREXCOM:CHFJPY", "title": "CHF/JPY" },
-              { "proName": "FOREXCOM:EURCHF", "title": "EUR/CHF" },
-              { "proName": "FOREXCOM:EURAUD", "title": "EUR/AUD" },
-              { "proName": "FOREXCOM:GBPAUD", "title": "GBP/AUD" },
-              { "proName": "FOREXCOM:AUDJPY", "title": "AUD/JPY" },
-              { "proName": "FOREXCOM:GBPCAD", "title": "GBP/CAD" },
-              { "proName": "FOREXCOM:EURCAD", "title": "EUR/CAD" },
-              { "proName": "FOREXCOM:NZDJPY", "title": "NZD/JPY" },
-              { "proName": "FOREXCOM:AUDNZD", "title": "AUD/NZD" },
-              { "proName": "FOREXCOM:CADJPY", "title": "CAD/JPY" },
-              { "proName": "FOREXCOM:GBPNZD", "title": "GBP/NZD" }
-          ],
-          "showSymbolLogo": true,
-          "colorTheme": "dark",
-          "isTransparent": false,
-          "displayMode": "regular",
-          "locale": "en"
+        "symbols": [
+          { "proName": "FOREXCOM:XAUUSD", "title": "Gold (XAU/USD)" },
+          { "proName": "FOREXCOM:EURUSD", "title": "EUR/USD" },
+          { "proName": "FOREXCOM:GBPUSD", "title": "GBP/USD" },
+          { "proName": "FOREXCOM:USDJPY", "title": "USD/JPY" },
+          { "proName": "FOREXCOM:USDCHF", "title": "USD/CHF" },
+          { "proName": "FOREXCOM:AUDUSD", "title": "AUD/USD" },
+          { "proName": "FOREXCOM:USDCAD", "title": "USD/CAD" },
+          { "proName": "FOREXCOM:NZDUSD", "title": "NZD/USD" },
+          { "proName": "FOREXCOM:EURJPY", "title": "EUR/JPY" },
+          { "proName": "FOREXCOM:GBPJPY", "title": "GBP/JPY" },
+          { "proName": "FOREXCOM:EURGBP", "title": "EUR/GBP" },
+          { "proName": "FOREXCOM:CHFJPY", "title": "CHF/JPY" },
+          { "proName": "FOREXCOM:EURCHF", "title": "EUR/CHF" },
+          { "proName": "FOREXCOM:EURAUD", "title": "EUR/AUD" },
+          { "proName": "FOREXCOM:GBPAUD", "title": "GBP/AUD" },
+          { "proName": "FOREXCOM:AUDJPY", "title": "AUD/JPY" },
+          { "proName": "FOREXCOM:GBPCAD", "title": "GBP/CAD" },
+          { "proName": "FOREXCOM:EURCAD", "title": "EUR/CAD" },
+          { "proName": "FOREXCOM:NZDJPY", "title": "NZD/JPY" },
+          { "proName": "FOREXCOM:AUDNZD", "title": "AUD/NZD" },
+          { "proName": "FOREXCOM:CADJPY", "title": "CAD/JPY" },
+          { "proName": "FOREXCOM:GBPNZD", "title": "GBP/NZD" }
+        ],
+        "showSymbolLogo": true,
+        "colorTheme": "light",
+        "isTransparent": false,
+        "displayMode": "regular",
+        "locale": "en"
       }
       </script>
     </div>
+
+    <!-- شريط TradingView للوضع الداكن -->
+    <div class="tradingview-widget-container dark-mode-widget">
+      <div id="tradingview_ticker_dark"></div>
+      <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
+      {
+        "symbols": [
+          { "proName": "FOREXCOM:XAUUSD", "title": "Gold (XAU/USD)" },
+          { "proName": "FOREXCOM:EURUSD", "title": "EUR/USD" },
+          { "proName": "FOREXCOM:GBPUSD", "title": "GBP/USD" },
+          { "proName": "FOREXCOM:USDJPY", "title": "USD/JPY" },
+          { "proName": "FOREXCOM:USDCHF", "title": "USD/CHF" },
+          { "proName": "FOREXCOM:AUDUSD", "title": "AUD/USD" },
+          { "proName": "FOREXCOM:USDCAD", "title": "USD/CAD" },
+          { "proName": "FOREXCOM:NZDUSD", "title": "NZD/USD" },
+          { "proName": "FOREXCOM:EURJPY", "title": "EUR/JPY" },
+          { "proName": "FOREXCOM:GBPJPY", "title": "GBP/JPY" },
+          { "proName": "FOREXCOM:EURGBP", "title": "EUR/GBP" },
+          { "proName": "FOREXCOM:CHFJPY", "title": "CHF/JPY" },
+          { "proName": "FOREXCOM:EURCHF", "title": "EUR/CHF" },
+          { "proName": "FOREXCOM:EURAUD", "title": "EUR/AUD" },
+          { "proName": "FOREXCOM:GBPAUD", "title": "GBP/AUD" },
+          { "proName": "FOREXCOM:AUDJPY", "title": "AUD/JPY" },
+          { "proName": "FOREXCOM:GBPCAD", "title": "GBP/CAD" },
+          { "proName": "FOREXCOM:EURCAD", "title": "EUR/CAD" },
+          { "proName": "FOREXCOM:NZDJPY", "title": "NZD/JPY" },
+          { "proName": "FOREXCOM:AUDNZD", "title": "AUD/NZD" },
+          { "proName": "FOREXCOM:CADJPY", "title": "CAD/JPY" },
+          { "proName": "FOREXCOM:GBPNZD", "title": "GBP/NZD" }
+        ],
+        "showSymbolLogo": true,
+        "colorTheme": "dark",
+        "isTransparent": false,
+        "displayMode": "regular",
+        "locale": "en"
+      }
+      </script>
+    </div>
+
 <!-- Forex section — English -->
 <section class="forex" id="forex">
   <div class="container">
@@ -577,14 +700,51 @@
       toggle.addEventListener('click', function() {
         document.body.classList.toggle('dark-mode');
         var icon = this.querySelector('i');
+        
+        // تبديل عرض الشريطين
+        const lightWidget = document.querySelector('.light-mode-widget');
+        const darkWidget = document.querySelector('.dark-mode-widget');
+        
+        // تبديل الشعارات
+        const darkLogos = document.querySelectorAll('.dark-logo');
+        const lightLogos = document.querySelectorAll('.light-logo');
+        
         if (document.body.classList.contains('dark-mode')) {
           icon.classList.remove('fa-moon');
           icon.classList.add('fa-sun');
+          lightWidget.style.display = 'none';
+          darkWidget.style.display = 'block';
+          darkLogos.forEach(logo => logo.style.display = 'block');
+          lightLogos.forEach(logo => logo.style.display = 'none');
         } else {
           icon.classList.remove('fa-sun');
           icon.classList.add('fa-moon');
+          lightWidget.style.display = 'block';
+          darkWidget.style.display = 'none';
+          darkLogos.forEach(logo => logo.style.display = 'none');
+          lightLogos.forEach(logo => logo.style.display = 'block');
         }
       });
+    });
+
+    // تحديث عرض الشريط والشعار عند تحميل الصفحة
+    document.addEventListener('DOMContentLoaded', function() {
+      const lightWidget = document.querySelector('.light-mode-widget');
+      const darkWidget = document.querySelector('.dark-mode-widget');
+      const darkLogos = document.querySelectorAll('.dark-logo');
+      const lightLogos = document.querySelectorAll('.light-logo');
+      
+      if (document.body.classList.contains('dark-mode')) {
+        lightWidget.style.display = 'none';
+        darkWidget.style.display = 'block';
+        darkLogos.forEach(logo => logo.style.display = 'block');
+        lightLogos.forEach(logo => logo.style.display = 'none');
+      } else {
+        lightWidget.style.display = 'block';
+        darkWidget.style.display = 'none';
+        darkLogos.forEach(logo => logo.style.display = 'none');
+        lightLogos.forEach(logo => logo.style.display = 'block');
+      }
     });
 
     // تبديل اللغة - تحسين الدالة
