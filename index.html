@@ -48,6 +48,96 @@
       background-color: var(--primary-dark);
       box-shadow: 0 5px 15px rgba(254, 209, 0, 0.2);
     }
+
+    /* إضافة تأثيرات حركية للقسم الرئيسي */
+    .hero {
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* تحديث محتوى القسم الرئيسي */
+    .hero-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* إضافة تأثيرات حركية للقسم الرئيسي */
+    .hero-content h1 {
+      animation: fadeInDown 1s ease-out;
+      position: relative;
+    }
+
+    .hero-content h2 {
+      animation: fadeInUp 1s ease-out 0.5s;
+      animation-fill-mode: both;
+      position: relative;
+    }
+
+    .hero-content .btn-primary {
+      animation: pulse 2s infinite;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-content .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .hero-content .btn-primary::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        120deg,
+        transparent,
+        rgba(255, 255, 255, 0.3),
+        transparent
+      );
+      transition: 0.5s;
+    }
+
+    .hero-content .btn-primary:hover::before {
+      left: 100%;
+    }
+
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.05);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
   </style>
 </head>
 <body class="dark-mode">
@@ -70,6 +160,9 @@
         <img src="1w.png" alt="LCA Logo" class="light-logo" style="height: 70px; display: none;">
       </div>
       <nav class="main-nav">
+        <div class="close-menu">
+          <i class="fas fa-times"></i>
+        </div>
         <ul>
           <li><a href="#home" class="active">الرئيسية</a></li>
           <li><a href="#courses">الإستراتيجية</a></li>
@@ -114,6 +207,9 @@
         <img src="1w.png" alt="LCA Logo" class="light-logo" style="height: 70px; display: none;">
       </div>
       <nav class="main-nav">
+        <div class="close-menu">
+          <i class="fas fa-times"></i>
+        </div>
         <ul>
           <li><a href="#home" class="active">Home</a></li>
           <li><a href="#courses">Strategy</a></li>
@@ -160,6 +256,9 @@
         <img src="1w.png" alt="LCA Logo" class="light-logo" style="height: 70px; display: none;">
       </div>
       <nav class="main-nav">
+        <div class="close-menu">
+          <i class="fas fa-times"></i>
+        </div>
         <ul>
           <li><a href="#home" class="active">Ana Sayfa</a></li>
           <li><a href="#courses">Strateji</a></li>
@@ -390,7 +489,7 @@
               <h3>موشر LCA </h3>
             </div>
             <div class="course-price">
-              <h4>السعر: <span>150$</span> بدلًا من <del>230$</del></h4>
+              <h4>السعر: <span id="displayPrice">$150</span> بدلًا من <del>230$</del></h4>
             </div>
             <div class="course-details">
               <ul>
@@ -674,7 +773,7 @@
               <h3>LCA Indicator</h3>
             </div>
             <div class="course-price">
-              <h4>Price: <span>$150</span> Instead of <del>$230</del></h4>
+              <h4>Price: <span id="displayPrice">$150</span> Instead of <del>$230</del></h4>
             </div>
             <div class="course-details">
               <ul>
@@ -927,7 +1026,7 @@
               <h3>LCA Göstergesi</h3>
             </div>
             <div class="course-price">
-              <h4>Fiyat: <span>150$</span> Yerine <del>230$</del></h4>
+              <h4>Fiyat: <span id="displayPrice">$150</span> Yerine <del>230$</del></h4>
             </div>
             <div class="course-details">
               <ul>
@@ -1020,27 +1119,51 @@
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       // تفعيل القائمة في الأجهزة المحمولة
-      const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
-      const mainNav = document.querySelector('.main-nav');
+      const mobileMenuBtns = document.querySelectorAll('.mobile-menu-btn');
+      const mainNavs = document.querySelectorAll('.main-nav');
+      const closeMenuBtns = document.querySelectorAll('.close-menu');
       const overlay = document.querySelector('.mobile-menu-overlay');
       const body = document.body;
 
-      function toggleMenu() {
-        mainNav.classList.toggle('active');
+      function toggleMenu(event) {
+        const clickedBtn = event.currentTarget;
+        const currentHeader = clickedBtn.closest('header');
+        const currentNav = currentHeader.querySelector('.main-nav');
+        
+        currentNav.classList.toggle('active');
         overlay.classList.toggle('active');
-        mobileMenuBtn.classList.toggle('active');
-        body.style.overflow = mainNav.classList.contains('active') ? 'hidden' : '';
+        clickedBtn.classList.toggle('active');
+        body.style.overflow = currentNav.classList.contains('active') ? 'hidden' : '';
       }
 
-      // إضافة مستمعي الأحداث
-      mobileMenuBtn.addEventListener('click', toggleMenu);
-      overlay.addEventListener('click', toggleMenu);
+      // إضافة مستمعي الأحداث لجميع أزرار القائمة
+      mobileMenuBtns.forEach(btn => {
+        btn.addEventListener('click', toggleMenu);
+      });
+
+      // إضافة مستمعي الأحداث لجميع أزرار الإغلاق
+      closeMenuBtns.forEach(btn => {
+        btn.addEventListener('click', toggleMenu);
+      });
+
+      overlay.addEventListener('click', () => {
+        mainNavs.forEach(nav => nav.classList.remove('active'));
+        mobileMenuBtns.forEach(btn => btn.classList.remove('active'));
+        overlay.classList.remove('active');
+        body.style.overflow = '';
+      });
 
       // إغلاق القائمة عند النقر على أي رابط
       document.querySelectorAll('.main-nav a').forEach(link => {
         link.addEventListener('click', () => {
-          if (mainNav.classList.contains('active')) {
-            toggleMenu();
+          const currentNav = link.closest('.main-nav');
+          const currentBtn = currentNav.parentElement.querySelector('.mobile-menu-btn');
+          
+          if (currentNav.classList.contains('active')) {
+            currentNav.classList.remove('active');
+            currentBtn.classList.remove('active');
+            overlay.classList.remove('active');
+            body.style.overflow = '';
           }
         });
       });
@@ -1175,6 +1298,24 @@
           behavior: 'smooth'
         });
       });
+
+      // التحقق من وضع الصيانة
+      function checkMaintenanceMode() {
+        const maintenanceMode = localStorage.getItem('maintenanceMode') === 'true';
+        if (maintenanceMode) {
+          window.location.href = 'maintenance.html';
+        }
+      }
+
+      // تحديث السعر المعروض
+      function updateDisplayPrice() {
+        const price = localStorage.getItem('currentPrice') || '150';
+        document.getElementById('displayPrice').textContent = price;
+      }
+
+      // تشغيل الدوال عند تحميل الصفحة
+      checkMaintenanceMode();
+      updateDisplayPrice();
     });
   </script>
 </body>
