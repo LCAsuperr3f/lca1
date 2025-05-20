@@ -412,8 +412,8 @@
 
         // بيانات تسجيل الدخول (مشفرة)
         const ADMIN_CREDENTIALS = {
-            username: '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', // LCA2024Admin
-            password: '4813494d137e1631bba301d5acab6e7bb7aa74ce1185d456565ef51d737677b2' // LCA@Secure#2024!
+            username: 'admin',
+            password: 'admin'
         };
 
         // إضافة حماية ضد محاولات تسجيل الدخول المتكررة
@@ -605,11 +605,8 @@
             }
 
             try {
-                const hashedUsername = await sha256(username);
-                const hashedPassword = await sha256(password);
-
-                if (hashedUsername === ADMIN_CREDENTIALS.username && 
-                    hashedPassword === ADMIN_CREDENTIALS.password) {
+                if (username === ADMIN_CREDENTIALS.username && 
+                    password === ADMIN_CREDENTIALS.password) {
                     localStorage.setItem('isLoggedIn', 'true');
                     // إضافة رمز جلسة فريد
                     const sessionToken = await generateSessionToken();
