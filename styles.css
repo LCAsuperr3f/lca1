@@ -209,14 +209,19 @@ body.dark-mode [lang="tr"] .language-switcher a.active {
   color: var(--dark-color);
   margin-right: 15px;
   transition: var(--transition);
+  z-index: 1002;
+}
+
+.mode-toggle:hover {
+  transform: scale(1.1);
 }
 
 /* ===== الأجهزة المحمولة ===== */
-.mobile-menu-btn {
+.mobile-menu-btn,
+.mobile-menu-overlay,
+.mobile-language-switcher,
+.mobile-mode-toggle {
   display: none;
-  font-size: 1.5rem;
-  cursor: pointer;
-  color: var(--primary-color);
 }
 
 /* ===== قسم الفوركس / Forex section ===== */
@@ -862,22 +867,48 @@ body.dark-mode .hero-content p {
   color: var(--light-color);
 }
 
-/* ===== القائمة المنسدلة للهواتف ===== */
+/* ===== القائمة المتنقلة ===== */
 @media (max-width: 768px) {
   .mobile-menu-btn {
     display: block;
+    font-size: 24px;
+    color: var(--dark-color);
+    z-index: 1001;
+    cursor: pointer;
+    padding: 10px;
+    transition: all 0.3s ease;
+    position: relative;
+    right: 0;
+  }
+
+  .mobile-menu-btn:hover {
+    transform: scale(1.1);
+  }
+
+  .mobile-menu-btn.active {
+    right: 300px;
+  }
+
+  .mobile-menu-overlay {
+    display: none;
+  }
+
+  .mobile-menu-overlay.active {
+    display: none;
   }
 
   .main-nav {
     position: fixed;
-    top: 80px;
-    right: -100%;
-    width: 45%;
-    height: calc(100vh - 80px);
-    background-color: var(--light-color);
-    transition: var(--transition);
+    top: 0;
+    right: -300px;
+    width: 300px;
+    height: 100vh;
+    background: var(--light-color);
+    padding: 80px 25px 25px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 1000;
-    box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+    box-shadow: -5px 0 25px rgba(0, 0, 0, 0.15);
   }
 
   .main-nav.active {
@@ -886,19 +917,137 @@ body.dark-mode .hero-content p {
 
   .main-nav ul {
     flex-direction: column;
-    padding: 10px;
+    margin-bottom: 30px;
   }
 
   .main-nav ul li {
-    margin: 8px 0;
+    margin: 12px 0;
+    opacity: 0;
+    transform: translateX(20px);
+    transition: all 0.3s ease;
   }
+
+  .main-nav.active ul li {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .main-nav ul li:nth-child(1) { transition-delay: 0.1s; }
+  .main-nav ul li:nth-child(2) { transition-delay: 0.2s; }
+  .main-nav ul li:nth-child(3) { transition-delay: 0.3s; }
+  .main-nav ul li:nth-child(4) { transition-delay: 0.4s; }
 
   .main-nav ul li a {
-    font-size: 0.9rem;
+    font-size: 18px;
+    font-weight: 500;
+    display: block;
+    padding: 12px 15px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    color: var(--dark-color);
   }
 
+  .main-nav ul li a:hover,
+  .main-nav ul li a.active {
+    background: var(--primary-color);
+    color: var(--dark-color);
+    transform: translateX(5px);
+  }
+
+  .mobile-language-switcher,
+  .mobile-mode-toggle {
+    display: block;
+    margin-top: 25px;
+    padding-top: 25px;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+  .mobile-language-switcher h4,
+  .mobile-mode-toggle h4 {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: var(--dark-color);
+  }
+
+  .language-links {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .language-links a {
+    padding: 12px 15px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    background: rgba(0, 0, 0, 0.03);
+  }
+
+  .language-links a:hover,
+  .language-links a.active {
+    background: var(--primary-color);
+    color: var(--dark-color);
+    transform: translateX(5px);
+  }
+
+  .toggle-switch {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 15px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 500;
+    background: rgba(0, 0, 0, 0.03);
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .toggle-switch:hover {
+    background: var(--primary-color);
+    transform: translateX(5px);
+  }
+
+  .toggle-switch i {
+    font-size: 18px;
+  }
+
+  /* تعديل زر العودة للأعلى */
+  .scroll-to-top {
+    z-index: 998;
+  }
+
+  /* تعديلات الوضع الداكن */
   body.dark-mode .main-nav {
-    background-color: var(--dark-surface);
+    background: var(--dark-bg);
+    box-shadow: -5px 0 25px rgba(0, 0, 0, 0.3);
+  }
+
+  body.dark-mode .main-nav ul li a {
+    color: var(--dark-text);
+  }
+
+  body.dark-mode .mobile-language-switcher h4,
+  body.dark-mode .mobile-mode-toggle h4 {
+    color: var(--dark-text);
+  }
+
+  body.dark-mode .language-links a {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--dark-text);
+  }
+
+  body.dark-mode .toggle-switch {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--dark-text);
+  }
+
+  /* إخفاء عناصر سطح المكتب في وضع الجوال */
+  .header .language-switcher,
+  .header .mode-toggle {
+    display: none;
   }
 }
 
@@ -907,8 +1056,8 @@ body.dark-mode .hero-content p {
   position: fixed;
   bottom: 30px;
   right: 30px;
-  width: 50px;
-  height: 50px;
+  width: 45px;
+  height: 45px;
   background-color: var(--primary-color);
   color: var(--dark-color);
   border-radius: 50%;
@@ -918,69 +1067,85 @@ body.dark-mode .hero-content p {
   cursor: pointer;
   opacity: 0;
   visibility: hidden;
-  transition: var(--transition);
-  z-index: 1000;
+  transition: all 0.3s ease;
+  z-index: 99;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  border: 2px solid var(--primary-color);
 }
 
-.scroll-to-top.active {
-  opacity: 1;
-  visibility: visible;
+/* إخفاء زر الصعود للأعلى عند فتح القائمة المتنقلة */
+.main-nav.active ~ .scroll-to-top,
+.mobile-menu-btn.active ~ .scroll-to-top {
+  opacity: 0;
+  visibility: hidden;
 }
 
-.scroll-to-top:hover {
-  background-color: var(--primary-dark);
-  transform: translateY(-3px);
+.scroll-to-top i {
+  font-size: 20px;
+  transition: transform 0.3s ease;
 }
 
-body.dark-mode .scroll-to-top {
-  background-color: var(--primary-color);
-  color: var(--dark-color);
+.scroll-to-top:hover i {
+  transform: translateY(-2px);
 }
 
-body:not(.dark-mode) .scroll-to-top {
-  background-color: var(--dark-color);
-  color: var(--light-color);
-}
-
-/* ===== دعم اللغة التركية ===== */
-[lang="tr"] {
-  font-family: 'Roboto', sans-serif;
-  direction: ltr;
-}
-
-[lang="tr"] .header .container {
-  flex-direction: row-reverse;
-}
-
-[lang="tr"] .main-nav ul li {
-  margin-right: 25px;
-  margin-left: 0;
-}
-
-[lang="tr"] .language-switcher {
-  margin-left: 15px;
-  margin-right: 0;
-}
-
-[lang="tr"] .mode-toggle {
-  margin-left: 15px;
-  margin-right: 0;
-}
-
+/* تعديلات للغة التركية */
 [lang="tr"] .scroll-to-top {
   left: 30px;
   right: auto;
 }
 
-/* تعديل اتجاه العناصر في الوضع الداكن للغة التركية */
-body.dark-mode [lang="tr"] .language-switcher a {
+/* ===== مبدل الوضع الداكن/الفاتح ===== */
+.mode-toggle {
+  cursor: pointer;
+  font-size: 1.5rem;
+  color: var(--dark-color);
+  margin-right: 15px;
+  transition: var(--transition);
+  z-index: 1002;
+}
+
+.mode-toggle:hover {
+  transform: scale(1.1);
+}
+
+.mobile-mode-toggle .toggle-switch {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 15px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 500;
+  background: rgba(0, 0, 0, 0.03);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 1002;
+}
+
+.mobile-mode-toggle .toggle-switch:hover {
+  background: var(--primary-color);
+  transform: translateX(5px);
+}
+
+/* تعديلات الوضع الداكن */
+body.dark-mode .mode-toggle {
+  color: var(--primary-color);
+}
+
+body.dark-mode .mobile-mode-toggle .toggle-switch {
+  background: rgba(255, 255, 255, 0.05);
   color: var(--dark-text);
 }
 
-body.dark-mode [lang="tr"] .language-switcher a.active {
-  color: var(--primary-color);
-  background-color: rgba(254, 209, 0, 0.1);
+/* تعديلات للغة التركية */
+[lang="tr"] .mode-toggle {
+  margin-left: 15px;
+  margin-right: 0;
+}
+
+[lang="tr"] .mobile-mode-toggle .toggle-switch:hover {
+  transform: translateX(-5px);
 }
 
 /* تحديث ألوان الوضع الفاتح */
@@ -1048,7 +1213,7 @@ body:not(.dark-mode) .course-price h4 {
 }
 
 body:not(.dark-mode) .course-price span {
-  color: var(--primary-color);
+  color: var(س--primary-color);
 }
 
 body:not(.dark-mode) .course-details ul li {
