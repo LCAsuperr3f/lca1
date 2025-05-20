@@ -53,13 +53,16 @@
 <body class="dark-mode">
   <!-- زر العودة للأعلى -->
   <div class="scroll-to-top">
-    <i class="fas fa-arrow-up"></i>
+    <i class="fas fa-chevron-up"></i>
   </div>
+
+  <!-- إضافة خلفية شفافة للقائمة المتنقلة -->
+  <div class="mobile-menu-overlay"></div>
 
   <!-- هيدر باللغة العربية -->
   <header id="header-ar" class="header">
     <div class="container">
-      <div class="mobile-menu-btn" style="float: left;">
+      <div class="mobile-menu-btn">
         <i class="fas fa-bars"></i>
       </div>
       <div class="logo">
@@ -73,6 +76,21 @@
           <li><a href="#features">المميزات</a></li>
           <li><a href="#faq">الأسئلة الشائعة</a></li>
         </ul>
+        <div class="mobile-language-switcher">
+          <h4>اختر اللغة</h4>
+          <div class="language-links">
+            <a href="#" id="ar-link-mobile" class="active">عربي</a>
+            <a href="#" id="en-link-mobile">English</a>
+            <a href="#" id="tr-link-mobile">Türkçe</a>
+          </div>
+        </div>
+        <div class="mobile-mode-toggle">
+          <h4>الوضع</h4>
+          <div class="toggle-switch">
+            <i class="fas fa-moon"></i>
+            <span>الوضع الداكن</span>
+          </div>
+        </div>
       </nav>
       <div class="language-switcher">
         <a href="#" id="ar-link" class="active">عربي</a> | 
@@ -102,6 +120,23 @@
           <li><a href="#features">Features</a></li>
           <li><a href="#faq">FAQ</a></li>
         </ul>
+        <!-- إضافة مبدل اللغة للجوال -->
+        <div class="mobile-language-switcher">
+          <h4>Select Language</h4>
+          <div class="language-links">
+            <a href="#" id="ar-link-mobile-en">عربي</a>
+            <a href="#" id="en-link-mobile-en" class="active">English</a>
+            <a href="#" id="tr-link-mobile-en">Türkçe</a>
+          </div>
+        </div>
+        <!-- إضافة زر الوضع الداكن/الفاتح للجوال -->
+        <div class="mobile-mode-toggle">
+          <h4>Theme</h4>
+          <div class="toggle-switch">
+            <i class="fas fa-moon"></i>
+            <span>Dark Mode</span>
+          </div>
+        </div>
       </nav>
       <div class="language-switcher">
         <a href="#" id="ar-link-en">عربي</a> | 
@@ -131,6 +166,23 @@
           <li><a href="#features">Özellikler</a></li>
           <li><a href="#faq">SSS</a></li>
         </ul>
+        <!-- إضافة مبدل اللغة للجوال -->
+        <div class="mobile-language-switcher">
+          <h4>Dil Seçin</h4>
+          <div class="language-links">
+            <a href="#" id="ar-link-mobile-tr">عربي</a>
+            <a href="#" id="en-link-mobile-tr">English</a>
+            <a href="#" id="tr-link-mobile-tr" class="active">Türkçe</a>
+          </div>
+        </div>
+        <!-- إضافة زر الوضع الداكن/الفاتح للجوال -->
+        <div class="mobile-mode-toggle">
+          <h4>Tema</h4>
+          <div class="toggle-switch">
+            <i class="fas fa-moon"></i>
+            <span>Karanlık Mod</span>
+          </div>
+        </div>
       </nav>
       <div class="language-switcher">
         <a href="#" id="ar-link-tr">عربي</a> | 
@@ -966,190 +1018,161 @@
   </div>
 
   <script>
-    // تفعيل القائمة في الأجهزة المحمولة
-    document.querySelectorAll('.mobile-menu-btn').forEach(btn => {
-      btn.addEventListener('click', function() {
-        document.querySelectorAll('.main-nav ul').forEach(nav => {
-          nav.classList.toggle('active');
+    document.addEventListener('DOMContentLoaded', function() {
+      // تفعيل القائمة في الأجهزة المحمولة
+      const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+      const mainNav = document.querySelector('.main-nav');
+      const overlay = document.querySelector('.mobile-menu-overlay');
+      const body = document.body;
+
+      function toggleMenu() {
+        mainNav.classList.toggle('active');
+        overlay.classList.toggle('active');
+        mobileMenuBtn.classList.toggle('active');
+        body.style.overflow = mainNav.classList.contains('active') ? 'hidden' : '';
+      }
+
+      // إضافة مستمعي الأحداث
+      mobileMenuBtn.addEventListener('click', toggleMenu);
+      overlay.addEventListener('click', toggleMenu);
+
+      // إغلاق القائمة عند النقر على أي رابط
+      document.querySelectorAll('.main-nav a').forEach(link => {
+        link.addEventListener('click', () => {
+          if (mainNav.classList.contains('active')) {
+            toggleMenu();
+          }
         });
       });
-    });
 
-    // تحديث تبديل الوضع
-    document.querySelectorAll('.mode-toggle').forEach(function(toggle) {
-      toggle.addEventListener('click', function() {
+      // وظائف تبديل اللغة
+      function switchToArabic() {
+        document.documentElement.lang = 'ar';
+        document.documentElement.dir = 'rtl';
+        document.getElementById('header-ar').style.display = 'block';
+        document.getElementById('header-en').style.display = 'none';
+        document.getElementById('header-tr').style.display = 'none';
+        document.getElementById('content-ar').style.display = 'block';
+        document.getElementById('content-en').style.display = 'none';
+        document.getElementById('content-tr').style.display = 'none';
+        
+        // تحديث الروابط النشطة
+        document.querySelectorAll('[id^="ar-link"]').forEach(link => link.classList.add('active'));
+        document.querySelectorAll('[id^="en-link"]').forEach(link => link.classList.remove('active'));
+        document.querySelectorAll('[id^="tr-link"]').forEach(link => link.classList.remove('active'));
+      }
+
+      function switchToEnglish() {
+        document.documentElement.lang = 'en';
+        document.documentElement.dir = 'ltr';
+        document.getElementById('header-ar').style.display = 'none';
+        document.getElementById('header-en').style.display = 'block';
+        document.getElementById('header-tr').style.display = 'none';
+        document.getElementById('content-ar').style.display = 'none';
+        document.getElementById('content-en').style.display = 'block';
+        document.getElementById('content-tr').style.display = 'none';
+        
+        // تحديث الروابط النشطة
+        document.querySelectorAll('[id^="ar-link"]').forEach(link => link.classList.remove('active'));
+        document.querySelectorAll('[id^="en-link"]').forEach(link => link.classList.add('active'));
+        document.querySelectorAll('[id^="tr-link"]').forEach(link => link.classList.remove('active'));
+      }
+
+      function switchToTurkish() {
+        document.documentElement.lang = 'tr';
+        document.documentElement.dir = 'ltr';
+        document.getElementById('header-ar').style.display = 'none';
+        document.getElementById('header-en').style.display = 'none';
+        document.getElementById('header-tr').style.display = 'block';
+        document.getElementById('content-ar').style.display = 'none';
+        document.getElementById('content-en').style.display = 'none';
+        document.getElementById('content-tr').style.display = 'block';
+        
+        // تحديث الروابط النشطة
+        document.querySelectorAll('[id^="ar-link"]').forEach(link => link.classList.remove('active'));
+        document.querySelectorAll('[id^="en-link"]').forEach(link => link.classList.remove('active'));
+        document.querySelectorAll('[id^="tr-link"]').forEach(link => link.classList.add('active'));
+      }
+
+      // إضافة مستمعي الأحداث لروابط اللغة
+      document.querySelectorAll('[id^="ar-link"]').forEach(link => {
+        link.addEventListener('click', function(e) {
+          e.preventDefault();
+          switchToArabic();
+        });
+      });
+
+      document.querySelectorAll('[id^="en-link"]').forEach(link => {
+        link.addEventListener('click', function(e) {
+          e.preventDefault();
+          switchToEnglish();
+        });
+      });
+
+      document.querySelectorAll('[id^="tr-link"]').forEach(link => {
+        link.addEventListener('click', function(e) {
+          e.preventDefault();
+          switchToTurkish();
+        });
+      });
+
+      // تحديث تبديل الوضع للجوال وسطح المكتب
+      function toggleDarkMode() {
         document.body.classList.toggle('dark-mode');
-        var icon = this.querySelector('i');
+        const isDarkMode = document.body.classList.contains('dark-mode');
         
-        // تبديل عرض الشريطين
-        const lightWidgets = document.querySelectorAll('.light-mode-widget');
-        const darkWidgets = document.querySelectorAll('.dark-mode-widget');
+        // تحديث الأيقونات والنصوص
+        document.querySelectorAll('.mode-toggle i').forEach(icon => {
+          icon.className = isDarkMode ? 'fas fa-sun' : 'fas fa-moon';
+        });
         
-        // تبديل الشعارات
-        const darkLogos = document.querySelectorAll('.dark-logo');
-        const lightLogos = document.querySelectorAll('.light-logo');
+        document.querySelectorAll('.mobile-mode-toggle .toggle-switch span').forEach(text => {
+          text.textContent = isDarkMode ? 
+            (document.documentElement.lang === 'ar' ? 'الوضع الفاتح' : 
+             document.documentElement.lang === 'tr' ? 'Aydınlık Mod' : 'Light Mode') :
+            (document.documentElement.lang === 'ar' ? 'الوضع الداكن' : 
+             document.documentElement.lang === 'tr' ? 'Karanlık Mod' : 'Dark Mode');
+        });
         
-        if (document.body.classList.contains('dark-mode')) {
-          icon.classList.remove('fa-moon');
-          icon.classList.add('fa-sun');
-          lightWidgets.forEach(function(widget) { widget.style.display = 'none'; });
-          darkWidgets.forEach(function(widget) { widget.style.display = 'block'; });
-          darkLogos.forEach(function(logo) { logo.style.display = 'block'; });
-          lightLogos.forEach(function(logo) { logo.style.display = 'none'; });
+        // تحديث شعار الموقع
+        document.querySelectorAll('.dark-logo').forEach(logo => {
+          logo.style.display = isDarkMode ? 'block' : 'none';
+        });
+        document.querySelectorAll('.light-logo').forEach(logo => {
+          logo.style.display = isDarkMode ? 'none' : 'block';
+        });
+        
+        // تحديث شريط TradingView
+        document.querySelectorAll('.light-mode-widget').forEach(widget => {
+          widget.style.display = isDarkMode ? 'none' : 'block';
+        });
+        document.querySelectorAll('.dark-mode-widget').forEach(widget => {
+          widget.style.display = isDarkMode ? 'block' : 'none';
+        });
+      }
+
+      // إضافة مستمعي الأحداث لزر تبديل الوضع
+      document.querySelectorAll('.mode-toggle, .mobile-mode-toggle .toggle-switch').forEach(toggle => {
+        toggle.addEventListener('click', toggleDarkMode);
+      });
+
+      // زر العودة للأعلى
+      const scrollToTopBtn = document.querySelector('.scroll-to-top');
+      
+      window.addEventListener('scroll', () => {
+        if (window.pageYOffset > 300 && !document.querySelector('.main-nav.active')) {
+          scrollToTopBtn.style.opacity = '1';
+          scrollToTopBtn.style.visibility = 'visible';
         } else {
-          icon.classList.remove('fa-sun');
-          icon.classList.add('fa-moon');
-          lightWidgets.forEach(function(widget) { widget.style.display = 'block'; });
-          darkWidgets.forEach(function(widget) { widget.style.display = 'none'; });
-          darkLogos.forEach(function(logo) { logo.style.display = 'none'; });
-          lightLogos.forEach(function(logo) { logo.style.display = 'block'; });
+          scrollToTopBtn.style.opacity = '0';
+          scrollToTopBtn.style.visibility = 'hidden';
         }
       });
-    });
 
-    // تحديث عرض الشريط والشعار عند تحميل الصفحة
-    document.addEventListener('DOMContentLoaded', function() {
-      const lightWidget = document.querySelector('.light-mode-widget');
-      const darkWidget = document.querySelector('.dark-mode-widget');
-      const darkLogos = document.querySelectorAll('.dark-logo');
-      const lightLogos = document.querySelectorAll('.light-logo');
-      
-      if (document.body.classList.contains('dark-mode')) {
-        lightWidget.style.display = 'none';
-        darkWidget.style.display = 'block';
-        darkLogos.forEach(logo => logo.style.display = 'block');
-        lightLogos.forEach(logo => logo.style.display = 'none');
-      } else {
-        lightWidget.style.display = 'block';
-        darkWidget.style.display = 'none';
-        darkLogos.forEach(logo => logo.style.display = 'none');
-        lightLogos.forEach(logo => logo.style.display = 'block');
-      }
-    });
-
-    // تبديل اللغة - تحسين الدالة
-    function switchToArabic() {
-      document.documentElement.lang = "ar";
-      document.documentElement.dir = "rtl";
-      
-      // تفعيل الروابط المناسبة
-      document.querySelectorAll('#ar-link, #ar-link-en, #ar-link-tr').forEach(link => {
-        link.classList.add('active');
-      });
-      document.querySelectorAll('#en-link, #en-link-en, #en-link-tr, #tr-link, #tr-link-en, #tr-link-tr').forEach(link => {
-        link.classList.remove('active');
-      });
-
-      // تبديل الهيدر والمحتوى
-      document.getElementById('header-ar').style.display = "block";
-      document.getElementById('header-en').style.display = "none";
-      document.getElementById('header-tr').style.display = "none";
-      document.getElementById('content-ar').style.display = "block";
-      document.getElementById('content-en').style.display = "none";
-      document.getElementById('content-tr').style.display = "none";
-      document.title = "LCA - نظام التداول بالمؤشرات";
-    }
-
-    function switchToEnglish() {
-      document.documentElement.lang = "en";
-      document.documentElement.dir = "ltr";
-      
-      // تفعيل الروابط المناسبة
-      document.querySelectorAll('#en-link, #en-link-en, #en-link-tr').forEach(link => {
-        link.classList.add('active');
-      });
-      document.querySelectorAll('#ar-link, #ar-link-en, #ar-link-tr, #tr-link, #tr-link-en, #tr-link-tr').forEach(link => {
-        link.classList.remove('active');
-      });
-
-      // تبديل الهيدر والمحتوى
-      document.getElementById('header-ar').style.display = "none";
-      document.getElementById('header-en').style.display = "block";
-      document.getElementById('header-tr').style.display = "none";
-      document.getElementById('content-ar').style.display = "none";
-      document.getElementById('content-en').style.display = "block";
-      document.getElementById('content-tr').style.display = "none";
-      document.title = "LCA - Trading System with Indicators";
-    }
-
-    function switchToTurkish() {
-      document.documentElement.lang = "tr";
-      document.documentElement.dir = "ltr";
-      
-      // تفعيل الروابط المناسبة
-      document.querySelectorAll('#tr-link, #tr-link-en, #tr-link-tr').forEach(function(link) {
-        link.classList.add('active');
-      });
-      document.querySelectorAll('#ar-link, #ar-link-en, #ar-link-tr, #en-link, #en-link-en, #en-link-tr').forEach(function(link) {
-        link.classList.remove('active');
-      });
-
-      // تبديل الهيدر والمحتوى
-      const headers = document.querySelectorAll('.header');
-      const contents = document.querySelectorAll('[id^="content-"]');
-      
-      headers.forEach(function(header) { header.style.display = 'none'; });
-      contents.forEach(function(content) { content.style.display = 'none'; });
-      
-      document.getElementById('header-tr').style.display = 'block';
-      document.getElementById('content-tr').style.display = 'block';
-      
-      document.title = "LCA - Göstergelerle İşlem Sistemi";
-    }
-
-    // إضافة مستمعي الأحداث للروابط
-    document.querySelectorAll('#ar-link, #ar-link-en, #ar-link-tr').forEach(link => {
-      link.addEventListener('click', function(e) {
-        e.preventDefault();
-        switchToArabic();
-      });
-    });
-
-    document.querySelectorAll('#en-link, #en-link-en, #en-link-tr').forEach(link => {
-      link.addEventListener('click', function(e) {
-        e.preventDefault();
-        switchToEnglish();
-      });
-    });
-
-    document.querySelectorAll('#tr-link, #tr-link-en, #tr-link-tr').forEach(link => {
-      link.addEventListener('click', function(e) {
-        e.preventDefault();
-        switchToTurkish();
-      });
-    });
-
-    // زر العودة للأعلى
-    const scrollToTopBtn = document.querySelector('.scroll-to-top');
-
-    window.addEventListener('scroll', () => {
-      if (window.pageYOffset > 300) {
-        scrollToTopBtn.classList.add('active');
-      } else {
-        scrollToTopBtn.classList.remove('active');
-      }
-    });
-
-    scrollToTopBtn.addEventListener('click', () => {
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-      });
-    });
-
-    // تحسين القائمة المنسدلة للهواتف
-    document.querySelectorAll('.mobile-menu-btn').forEach(btn => {
-      btn.addEventListener('click', function() {
-        const nav = this.closest('.header').querySelector('.main-nav');
-        nav.classList.toggle('active');
-      });
-    });
-
-    // إغلاق القائمة عند النقر على أي رابط
-    document.querySelectorAll('.main-nav a').forEach(link => {
-      link.addEventListener('click', () => {
-        document.querySelectorAll('.main-nav').forEach(nav => {
-          nav.classList.remove('active');
+      scrollToTopBtn.addEventListener('click', () => {
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth'
         });
       });
     });
