@@ -51,20 +51,21 @@
   </style>
 </head>
 <body class="dark-mode">
-
+  <!-- زر العودة للأعلى -->
+  <div class="scroll-to-top">
+    <i class="fas fa-arrow-up"></i>
+  </div>
 
   <!-- هيدر باللغة العربية -->
   <header id="header-ar" class="header">
     <div class="container">
-      <!-- قمنا بتغيير ترتيب العناصر: زر القائمة أولاً على اليسار، ثم الشعار -->
       <div class="mobile-menu-btn" style="float: left;">
         <i class="fas fa-bars"></i>
       </div>
       <div class="logo">
         <img src="1.png" alt="LCA Logo" class="dark-logo" style="height: 70px;">
-        <img src="1.png" alt="LCA Logo" class="light-logo" style="height: 70px; display: none;">
+        <img src="1w.png" alt="LCA Logo" class="light-logo" style="height: 70px; display: none;">
       </div>
-      <!-- القائمة الرئيسية بعد الشعار -->
       <nav class="main-nav">
         <ul>
           <li><a href="#home" class="active">الرئيسية</a></li>
@@ -73,22 +74,20 @@
           <li><a href="#faq">الأسئلة الشائعة</a></li>
         </ul>
       </nav>
-      <!-- مبدل اللغات -->
       <div class="language-switcher">
         <a href="#" id="ar-link" class="active">عربي</a> | 
-        <a href="#" id="en-link">English</a>
+        <a href="#" id="en-link">English</a> |
+        <a href="#" id="tr-link">Türkçe</a>
       </div>
-      <!-- زر تبديل الوضع (دارك/وايت مود) -->
       <div class="mode-toggle">
         <i class="fas fa-moon"></i>
       </div>
     </div>
   </header>
 
-  <!-- هيدر باللغة الإنجليزية (مخفي افتراضيًا) -->
+  <!-- هيدر باللغة الإنجليزية -->
   <header id="header-en" class="header" style="display: none;">
     <div class="container">
-      <!-- قمنا بتغيير ترتيب العناصر: زر القائمة أولاً على اليمين، ثم الشعار -->
       <div class="mobile-menu-btn" style="float: right;">
         <i class="fas fa-bars"></i>
       </div>
@@ -96,7 +95,6 @@
         <img src="1.png" alt="LCA Logo" class="dark-logo" style="height: 70px;">
         <img src="1w.png" alt="LCA Logo" class="light-logo" style="height: 70px; display: none;">
       </div>
-      <!-- القائمة الرئيسية بعد الشعار -->
       <nav class="main-nav">
         <ul>
           <li><a href="#home" class="active">Home</a></li>
@@ -105,17 +103,47 @@
           <li><a href="#faq">FAQ</a></li>
         </ul>
       </nav>
-      <!-- Language Switcher -->
       <div class="language-switcher">
         <a href="#" id="ar-link-en">عربي</a> | 
-        <a href="#" id="en-link-en" class="active">English</a>
+        <a href="#" id="en-link-en" class="active">English</a> |
+        <a href="#" id="tr-link-en">Türkçe</a>
       </div>
-      <!-- Dark/Light Mode Toggle -->
       <div class="mode-toggle">
         <i class="fas fa-moon"></i>
       </div>
     </div>
-  </header>  <!-- المحتوى باللغة العربية -->
+  </header>
+
+  <!-- هيدر باللغة التركية -->
+  <header id="header-tr" class="header" style="display: none;">
+    <div class="container">
+      <div class="mobile-menu-btn" style="float: right;">
+        <i class="fas fa-bars"></i>
+      </div>
+      <div class="logo">
+        <img src="1.png" alt="LCA Logo" class="dark-logo" style="height: 70px;">
+        <img src="1w.png" alt="LCA Logo" class="light-logo" style="height: 70px; display: none;">
+      </div>
+      <nav class="main-nav">
+        <ul>
+          <li><a href="#home" class="active">Ana Sayfa</a></li>
+          <li><a href="#courses">Strateji</a></li>
+          <li><a href="#features">Özellikler</a></li>
+          <li><a href="#faq">SSS</a></li>
+        </ul>
+      </nav>
+      <div class="language-switcher">
+        <a href="#" id="ar-link-tr">عربي</a> | 
+        <a href="#" id="en-link-tr">English</a> |
+        <a href="#" id="tr-link-tr" class="active">Türkçe</a>
+      </div>
+      <div class="mode-toggle">
+        <i class="fas fa-moon"></i>
+      </div>
+    </div>
+  </header>
+
+  <!-- المحتوى باللغة العربية -->
   <div id="content-ar">
     <section class="hero" id="home">
       <div class="container">
@@ -583,8 +611,7 @@
 
     <img src="3.png" alt="صورة" class="full-screen-image">
 
-      <div class="container">
-        <div class="section-header">
+
           <h2>Exclusive LCA Indicator</h2>
           <p>Get the complete indicator with 30% discount</p>
         </div>
@@ -685,6 +712,259 @@
     </footer>
   </div>
 
+  <!-- المحتوى باللغة التركية -->
+  <div id="content-tr" style="display: none;">
+    <section class="hero" id="home">
+      <div class="container">
+        <div class="hero-content">
+          <h1>LCA'ya Hoş Geldiniz</h1>
+          <h2>Profesyonel Trading Göstergesi NEXT CANDEL</h2>
+          <a href="#courses" class="btn btn-primary">Göstergeyi Şimdi Satın Al</a>
+        </div>
+      </div>
+    </section>
+
+    <img src="4.png" alt="Trading" class="full-screen-image">
+
+    <!-- شريط TradingView للوضع الفاتح -->
+    <div class="tradingview-widget-container light-mode-widget" style="display: none;">
+      <div id="tradingview_ticker_light_tr"></div>
+      <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
+      {
+        "symbols": [
+          { "proName": "FOREXCOM:XAUUSD", "title": "Gold (XAU/USD)" },
+          { "proName": "FOREXCOM:EURUSD", "title": "EUR/USD" },
+          { "proName": "FOREXCOM:GBPUSD", "title": "GBP/USD" },
+          { "proName": "FOREXCOM:USDJPY", "title": "USD/JPY" },
+          { "proName": "FOREXCOM:USDCHF", "title": "USD/CHF" },
+          { "proName": "FOREXCOM:AUDUSD", "title": "AUD/USD" },
+          { "proName": "FOREXCOM:USDCAD", "title": "USD/CAD" },
+          { "proName": "FOREXCOM:NZDUSD", "title": "NZD/USD" },
+          { "proName": "FOREXCOM:EURJPY", "title": "EUR/JPY" },
+          { "proName": "FOREXCOM:GBPJPY", "title": "GBP/JPY" },
+          { "proName": "FOREXCOM:EURGBP", "title": "EUR/GBP" },
+          { "proName": "FOREXCOM:CHFJPY", "title": "CHF/JPY" },
+          { "proName": "FOREXCOM:EURCHF", "title": "EUR/CHF" },
+          { "proName": "FOREXCOM:EURAUD", "title": "EUR/AUD" },
+          { "proName": "FOREXCOM:GBPAUD", "title": "GBP/AUD" },
+          { "proName": "FOREXCOM:AUDJPY", "title": "AUD/JPY" },
+          { "proName": "FOREXCOM:GBPCAD", "title": "GBP/CAD" },
+          { "proName": "FOREXCOM:EURCAD", "title": "EUR/CAD" },
+          { "proName": "FOREXCOM:NZDJPY", "title": "NZD/JPY" },
+          { "proName": "FOREXCOM:AUDNZD", "title": "AUD/NZD" },
+          { "proName": "FOREXCOM:CADJPY", "title": "CAD/JPY" },
+          { "proName": "FOREXCOM:GBPNZD", "title": "GBP/NZD" }
+        ],
+        "showSymbolLogo": true,
+        "colorTheme": "light",
+        "isTransparent": false,
+        "displayMode": "regular",
+        "locale": "tr"
+      }
+      </script>
+    </div>
+
+    <!-- شريط TradingView للوضع الداكن -->
+    <div class="tradingview-widget-container dark-mode-widget">
+      <div id="tradingview_ticker_dark_tr"></div>
+      <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
+      {
+        "symbols": [
+          { "proName": "FOREXCOM:XAUUSD", "title": "Gold (XAU/USD)" },
+          { "proName": "FOREXCOM:EURUSD", "title": "EUR/USD" },
+          { "proName": "FOREXCOM:GBPUSD", "title": "GBP/USD" },
+          { "proName": "FOREXCOM:USDJPY", "title": "USD/JPY" },
+          { "proName": "FOREXCOM:USDCHF", "title": "USD/CHF" },
+          { "proName": "FOREXCOM:AUDUSD", "title": "AUD/USD" },
+          { "proName": "FOREXCOM:USDCAD", "title": "USD/CAD" },
+          { "proName": "FOREXCOM:NZDUSD", "title": "NZD/USD" },
+          { "proName": "FOREXCOM:EURJPY", "title": "EUR/JPY" },
+          { "proName": "FOREXCOM:GBPJPY", "title": "GBP/JPY" },
+          { "proName": "FOREXCOM:EURGBP", "title": "EUR/GBP" },
+          { "proName": "FOREXCOM:CHFJPY", "title": "CHF/JPY" },
+          { "proName": "FOREXCOM:EURCHF", "title": "EUR/CHF" },
+          { "proName": "FOREXCOM:EURAUD", "title": "EUR/AUD" },
+          { "proName": "FOREXCOM:GBPAUD", "title": "GBP/AUD" },
+          { "proName": "FOREXCOM:AUDJPY", "title": "AUD/JPY" },
+          { "proName": "FOREXCOM:GBPCAD", "title": "GBP/CAD" },
+          { "proName": "FOREXCOM:EURCAD", "title": "EUR/CAD" },
+          { "proName": "FOREXCOM:NZDJPY", "title": "NZD/JPY" },
+          { "proName": "FOREXCOM:AUDNZD", "title": "AUD/NZD" },
+          { "proName": "FOREXCOM:CADJPY", "title": "CAD/JPY" },
+          { "proName": "FOREXCOM:GBPNZD", "title": "GBP/NZD" }
+        ],
+        "showSymbolLogo": true,
+        "colorTheme": "dark",
+        "isTransparent": false,
+        "displayMode": "regular",
+        "locale": "tr"
+      }
+      </script>
+    </div>
+
+    <!-- قسم الفوركس — التركية -->
+    <section class="forex" id="forex">
+      <div class="container">
+        <div class="section-header">
+          <h2>LCA ile Forex Trading</h2>
+          <p>Forex, dünyanın en büyük finansal piyasası olan döviz ticaret piyasasıdır. LCA stratejisi ile forex piyasasında profesyonel olarak nasıl işlem yapılacağını, piyasa hareketlerini anlamayı ve kâr elde etmek için doğru kararları vermeyi öğreneceksiniz.</p>
+        </div>
+        <div class="forex-features">
+          <div class="forex-feature">
+            <div class="forex-feature-icon"><i class="fas fa-globe"></i></div>
+            <h3>Global Trading</h3>
+            <p>Döviz, emtia ve endekslerde işlem yapmayı öğrenin.</p>
+          </div>
+          <div class="forex-feature">
+            <div class="forex-feature-icon"><i class="fas fa-chart-line"></i></div>
+            <h3>Piyasa Analizi</h3>
+            <p>Piyasayı analiz etmeyi ve veriye dayalı kararlar almayı öğrenin.</p>
+          </div>
+          <div class="forex-feature">
+            <div class="forex-feature-icon"><i class="fas fa-shield-alt"></i></div>
+            <h3>Risk Yönetimi</h3>
+            <p>Hesabınızı korumak için risk yönetimi stratejilerini öğrenin.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="features" id="features">
+      <div class="container">
+        <div class="section-header">
+          <h2>Gösterge Özellikleri</h2>
+        </div>
+        <div class="features-grid">
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-chart-line"></i>
+            </div>
+            <h3>Akıllı Trading Göstergesi</h3>
+            <p>LCA göstergesi ile profesyonel işlem yapın</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-video"></i>
+            </div>
+            <h3>Eğitim Videoları</h3>
+            <p>Göstergelerin kullanımı için pratik açıklamalar</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-headset"></i>
+            </div>
+            <h3>Teknik Destek</h3>
+            <p>Satın alma sonrası 3 gün boyunca doğrudan destek</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="courses" id="courses">
+      <div class="container">
+        <div class="section-header">
+          <img src="2.png" alt="Trading" class="full-screen-image">
+          <img src="3.png" alt="Trading" class="full-screen-image">
+          <h2>Özel LCA Göstergesi</h2>
+          <p>Tam göstergeyi %30 indirimle alın</p>
+        </div>
+        <div class="courses-grid">
+          <div class="course-card featured">
+            <div class="course-badge">Özel Teklif</div>
+            <div class="course-header">
+              <h3>LCA Göstergesi</h3>
+            </div>
+            <div class="course-price">
+              <h4>Fiyat: <span>150$</span> Yerine <del>230$</del></h4>
+            </div>
+            <div class="course-details">
+              <ul>
+                <li><i class="fas fa-check"></i> LCA göstergeleri ile trading</li>
+                <li><i class="fas fa-check"></i> Detaylı kullanım kılavuzu</li>
+                <li><i class="fas fa-check"></i> Eğitim videosu</li>
+                <li><i class="fas fa-check"></i> Teknik destek</li>
+              </ul>
+            </div>
+            <div class="course-actions">
+              <a href="https://t.me/LCAV99" class="btn btn-primary" target="_blank">Paketi Satın Al</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- قسم الأسئلة الشائعة بالتركية -->
+    <section class="faq-section" id="faq">
+      <div class="container">
+        <div class="section-header">
+          <h2>Sıkça Sorulan Sorular</h2>
+        </div>
+        <div class="faq-items">
+          <details>
+            <summary>Trading göstergesini nasıl satın alabilirim?</summary>
+            <p>Göstergeyi satın almak için Strateji bölümündeki "Paketi Satın Al" düğmesine tıklayın ve Telegram bağlantısına yönlendirileceksiniz.</p>
+          </details>
+          <details>
+            <summary>Satın alma sonrası teknik destek mevcut mu?</summary>
+            <p>Evet, satın alma sonrası 3 gün boyunca doğrudan teknik destek sunuyoruz.</p>
+          </details>
+          <details>
+            <summary>Gösterge önceden deneyim gerektiriyor mu?</summary>
+            <p>Hayır, hem yeni başlayanlar hem de profesyoneller için tasarlanmıştır ve bir kılavuz ve eğitim videosu içerir.</p>
+          </details>
+          <details>
+            <summary>Hangi ödeme yöntemleri mevcut?</summary>
+            <p>USDT ve BTCUSD ile ödeme destekliyoruz.</p>
+          </details>
+          <details>
+            <summary>Gösterge tüm zaman dilimlerinde ve varlıklarda çalışıyor mu?</summary>
+            <p>Evet, gösterge tüm farklı varlıklar ve zaman dilimlerinde çalışacak şekilde tasarlanmıştır.</p>
+          </details>
+          <details>
+            <summary>Satın alma sonrası göstergeyi nasıl alacağım?</summary>
+            <p>Gösterge TradingView hesabınızda aktifleştirilecektir.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-logo">
+            <h3>LCA</h3>
+            <p>LCA göstergeleri ile akıllıca işlem yapın</p>
+          </div>
+          <div class="footer-links">
+            <h4>Hızlı Bağlantılar</h4>
+            <ul>
+              <li><a href="#home">Ana Sayfa</a></li>
+              <li><a href="#courses">Satın Al</a></li>
+              <li><a href="#features">Özellikler</a></li>
+              <li><a href="#faq">SSS</a></li>
+            </ul>
+          </div>
+          <div class="footer-follow-us">
+            <h4>Bize Ulaşın</h4>
+            <div class="social-links">
+              <a href="https://t.me/LCAV99" class="social-link"><i class="fab fa-telegram-plane"></i> Telegram</a>
+              <a href="https://wa.me/905393011147" class="social-link"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+              <a href="https://www.instagram.com/lca__group?igsh=dXBxb2wzcjN3NWFv&utm_source=qr" class="social-link">
+                <i class="fab fa-instagram"></i> Instagram
+              </a>
+              <a href="https://x.com/lca0fx?s=21&t=Ng1ER4VAoZfJdhI3q_w-1w" class="social-link">
+                <i class="fab fa-twitter"></i> Twitter
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>&copy; 2024 LCA. Tüm Hakları Saklıdır.</p>
+        </div>
+      </div>
+    </footer>
+  </div>
+
   <script>
     // تفعيل القائمة في الأجهزة المحمولة
     document.querySelectorAll('.mobile-menu-btn').forEach(btn => {
@@ -695,15 +975,15 @@
       });
     });
 
-    // تبديل الوضع (دارك/وايت مود)
-    document.querySelectorAll('.mode-toggle').forEach(toggle => {
+    // تحديث تبديل الوضع
+    document.querySelectorAll('.mode-toggle').forEach(function(toggle) {
       toggle.addEventListener('click', function() {
         document.body.classList.toggle('dark-mode');
         var icon = this.querySelector('i');
         
         // تبديل عرض الشريطين
-        const lightWidget = document.querySelector('.light-mode-widget');
-        const darkWidget = document.querySelector('.dark-mode-widget');
+        const lightWidgets = document.querySelectorAll('.light-mode-widget');
+        const darkWidgets = document.querySelectorAll('.dark-mode-widget');
         
         // تبديل الشعارات
         const darkLogos = document.querySelectorAll('.dark-logo');
@@ -712,17 +992,17 @@
         if (document.body.classList.contains('dark-mode')) {
           icon.classList.remove('fa-moon');
           icon.classList.add('fa-sun');
-          lightWidget.style.display = 'none';
-          darkWidget.style.display = 'block';
-          darkLogos.forEach(logo => logo.style.display = 'block');
-          lightLogos.forEach(logo => logo.style.display = 'none');
+          lightWidgets.forEach(function(widget) { widget.style.display = 'none'; });
+          darkWidgets.forEach(function(widget) { widget.style.display = 'block'; });
+          darkLogos.forEach(function(logo) { logo.style.display = 'block'; });
+          lightLogos.forEach(function(logo) { logo.style.display = 'none'; });
         } else {
           icon.classList.remove('fa-sun');
           icon.classList.add('fa-moon');
-          lightWidget.style.display = 'block';
-          darkWidget.style.display = 'none';
-          darkLogos.forEach(logo => logo.style.display = 'none');
-          lightLogos.forEach(logo => logo.style.display = 'block');
+          lightWidgets.forEach(function(widget) { widget.style.display = 'block'; });
+          darkWidgets.forEach(function(widget) { widget.style.display = 'none'; });
+          darkLogos.forEach(function(logo) { logo.style.display = 'none'; });
+          lightLogos.forEach(function(logo) { logo.style.display = 'block'; });
         }
       });
     });
@@ -753,18 +1033,20 @@
       document.documentElement.dir = "rtl";
       
       // تفعيل الروابط المناسبة
-      document.querySelectorAll('#ar-link, #ar-link-en').forEach(link => {
+      document.querySelectorAll('#ar-link, #ar-link-en, #ar-link-tr').forEach(link => {
         link.classList.add('active');
       });
-      document.querySelectorAll('#en-link, #en-link-en').forEach(link => {
+      document.querySelectorAll('#en-link, #en-link-en, #en-link-tr, #tr-link, #tr-link-en, #tr-link-tr').forEach(link => {
         link.classList.remove('active');
       });
 
       // تبديل الهيدر والمحتوى
       document.getElementById('header-ar').style.display = "block";
       document.getElementById('header-en').style.display = "none";
+      document.getElementById('header-tr').style.display = "none";
       document.getElementById('content-ar').style.display = "block";
       document.getElementById('content-en').style.display = "none";
+      document.getElementById('content-tr').style.display = "none";
       document.title = "LCA - نظام التداول بالمؤشرات";
     }
 
@@ -773,33 +1055,102 @@
       document.documentElement.dir = "ltr";
       
       // تفعيل الروابط المناسبة
-      document.querySelectorAll('#ar-link, #ar-link-en').forEach(link => {
-        link.classList.remove('active');
-      });
-      document.querySelectorAll('#en-link, #en-link-en').forEach(link => {
+      document.querySelectorAll('#en-link, #en-link-en, #en-link-tr').forEach(link => {
         link.classList.add('active');
+      });
+      document.querySelectorAll('#ar-link, #ar-link-en, #ar-link-tr, #tr-link, #tr-link-en, #tr-link-tr').forEach(link => {
+        link.classList.remove('active');
       });
 
       // تبديل الهيدر والمحتوى
       document.getElementById('header-ar').style.display = "none";
       document.getElementById('header-en').style.display = "block";
+      document.getElementById('header-tr').style.display = "none";
       document.getElementById('content-ar').style.display = "none";
       document.getElementById('content-en').style.display = "block";
+      document.getElementById('content-tr').style.display = "none";
       document.title = "LCA - Trading System with Indicators";
     }
 
+    function switchToTurkish() {
+      document.documentElement.lang = "tr";
+      document.documentElement.dir = "ltr";
+      
+      // تفعيل الروابط المناسبة
+      document.querySelectorAll('#tr-link, #tr-link-en, #tr-link-tr').forEach(function(link) {
+        link.classList.add('active');
+      });
+      document.querySelectorAll('#ar-link, #ar-link-en, #ar-link-tr, #en-link, #en-link-en, #en-link-tr').forEach(function(link) {
+        link.classList.remove('active');
+      });
+
+      // تبديل الهيدر والمحتوى
+      const headers = document.querySelectorAll('.header');
+      const contents = document.querySelectorAll('[id^="content-"]');
+      
+      headers.forEach(function(header) { header.style.display = 'none'; });
+      contents.forEach(function(content) { content.style.display = 'none'; });
+      
+      document.getElementById('header-tr').style.display = 'block';
+      document.getElementById('content-tr').style.display = 'block';
+      
+      document.title = "LCA - Göstergelerle İşlem Sistemi";
+    }
+
     // إضافة مستمعي الأحداث للروابط
-    document.querySelectorAll('#ar-link, #ar-link-en').forEach(link => {
+    document.querySelectorAll('#ar-link, #ar-link-en, #ar-link-tr').forEach(link => {
       link.addEventListener('click', function(e) {
         e.preventDefault();
         switchToArabic();
       });
     });
 
-    document.querySelectorAll('#en-link, #en-link-en').forEach(link => {
+    document.querySelectorAll('#en-link, #en-link-en, #en-link-tr').forEach(link => {
       link.addEventListener('click', function(e) {
         e.preventDefault();
         switchToEnglish();
+      });
+    });
+
+    document.querySelectorAll('#tr-link, #tr-link-en, #tr-link-tr').forEach(link => {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        switchToTurkish();
+      });
+    });
+
+    // زر العودة للأعلى
+    const scrollToTopBtn = document.querySelector('.scroll-to-top');
+
+    window.addEventListener('scroll', () => {
+      if (window.pageYOffset > 300) {
+        scrollToTopBtn.classList.add('active');
+      } else {
+        scrollToTopBtn.classList.remove('active');
+      }
+    });
+
+    scrollToTopBtn.addEventListener('click', () => {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    });
+
+    // تحسين القائمة المنسدلة للهواتف
+    document.querySelectorAll('.mobile-menu-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const nav = this.closest('.header').querySelector('.main-nav');
+        nav.classList.toggle('active');
+      });
+    });
+
+    // إغلاق القائمة عند النقر على أي رابط
+    document.querySelectorAll('.main-nav a').forEach(link => {
+      link.addEventListener('click', () => {
+        document.querySelectorAll('.main-nav').forEach(nav => {
+          nav.classList.remove('active');
+        });
       });
     });
   </script>
