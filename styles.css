@@ -3,77 +3,21 @@
 
 :root {
   --primary-color: #FED100;
-  --primary-dark: #FED100;
+  --primary-dark: #E5BE00;
   --secondary-color: #FED100;
-  --dark-color: #FED100;
-  --light-color: #FED100;
-  --gray-color: ##FED100;
+  --dark-color: #333333;
+  --light-color: #FFFFFF;
+  --gray-color: #4A5568;
   --box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
   --transition: all 0.3s ease-in-out;
-}
-/* ===== تنسيقات قسم الأسئلة الشائعة ===== */
-.faq-section {
-  padding: 80px 0;
-  background-color: #f9fafb;
-}
-
-body.dark-mode .faq-section {
-  background-color: #1a1c1e;
-}
-
-.faq-section .section-header {
-  margin-bottom: 40px;
-}
-
-.faq-section .faq-items details {
-  margin-bottom: 20px;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  background-color: #fff;
-  overflow: hidden;
-  transition: var(--transition);
-}
-
-body.dark-mode .faq-section .faq-items details {
-  border-color: #333;
-  background-color: #111;
-}
-
-.faq-section .faq-items summary {
-  padding: 15px 20px;
-  font-size: 1.1rem;
-  font-weight: 600;
-  cursor: pointer;
-  position: relative;
-}
-
-.faq-section .faq-items summary::-webkit-details-marker {
-  display: none;
-}
-
-.faq-section .faq-items summary::after {
-  content: '+';
-  position: absolute;
-  right: 20px;
-  font-size: 1.2rem;
-}
-
-.faq-section .faq-items details[open] summary::after {
-  content: '−';
-}
-
-body.dark-mode .faq-section .faq-items summary {
-  color: #fff;
-}
-
-.faq-section .faq-items p {
-  padding: 0 20px 15px;
-  line-height: 1.6;
-  color: #4a5568;
-}
-
-body.dark-mode .faq-section .faq-items p {
-  color: #ccc;
+  
+  /* ألوان الوضع الداكن */
+  --dark-bg: #121212;
+  --dark-surface: #1E1E1E;
+  --dark-surface-lighter: #2A2A2A;
+  --dark-text: #FFFFFF;
+  --dark-text-secondary: #AAAAAA;
+  --dark-border: #333333;
 }
 
 * {
@@ -124,13 +68,13 @@ ul {
 
 .btn-primary {
   background-color: var(--primary-color);
-  color: white;
+  color: var(--dark-color);
 }
 
 .btn-primary:hover {
   background-color: var(--primary-dark);
   transform: translateY(-3px);
-  box-shadow: 0 5px 15px rgba(37, 99, 235, 0.3);
+  box-shadow: 0 5px 15px rgba(254, 209, 0, 0.3);
 }
 
 /* ===== رأس الصفحة ===== */
@@ -222,6 +166,7 @@ ul {
   cursor: pointer;
   color: var(--primary-color);
 }
+
 /* ===== قسم الفوركس / Forex section ===== */
 .forex {
   background-color: #f1f5f9;
@@ -251,7 +196,7 @@ ul {
 .forex-feature-icon {
   width: 70px;
   height: 70px;
-  background-color: rgba(37, 99, 235, 0.1);
+  background-color: rgba(254, 209, 0, 0.1);
   color: var(--primary-color);
   border-radius: 50%;
   display: flex;
@@ -265,22 +210,6 @@ ul {
   font-size: 1.3rem;
   margin-bottom: 15px;
   font-weight: 700;
-}
-
-/* Dark mode adjustments */
-body.dark-mode .forex {
-  background-color: #1E2122;
-}
-
-body.dark-mode .forex-feature {
-  background-color: #1E2122 !important;
-  color: #fff !important;
-  box-shadow: none;
-}
-
-body.dark-mode .forex-feature-icon {
-  background-color: rgba(254, 209, 0, 0.1);
-  color: var(--primary-color) !important;
 }
 
 /* ===== الأقسام الرئيسية ===== */
@@ -377,7 +306,7 @@ body.dark-mode .forex-feature-icon {
 .feature-icon {
   width: 80px;
   height: 80px;
-  background-color: rgba(37, 99, 235, 0.1);
+  background-color: rgba(254, 209, 0, 0.1);
   border-radius: 50%;
   display: flex;
   justify-content: center;
@@ -422,45 +351,6 @@ body.dark-mode .forex-feature-icon {
   display: block;
 }
 
-.forex-features {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 30px;
-  margin-top: 50px;
-}
-
-.forex-feature {
-  text-align: center;
-  padding: 30px;
-  background-color: white;
-  border-radius: 10px;
-  box-shadow: var(--box-shadow);
-  transition: var(--transition);
-}
-
-.forex-feature:hover {
-  transform: translateY(-10px);
-}
-
-.forex-feature-icon {
-  width: 70px;
-  height: 70px;
-  background-color: rgba(37, 99, 235, 0.1);
-  color: var(--secondary-color);
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 0 auto 20px;
-  font-size: 1.8rem;
-}
-
-.forex-feature h3 {
-  font-size: 1.3rem;
-  margin-bottom: 15px;
-  font-weight: 700;
-}
-
 /* ===== قسم الدورات ===== */
 .courses-grid {
   display: grid;
@@ -496,7 +386,7 @@ body.dark-mode .forex-feature-icon {
 
 .course-header {
   background: linear-gradient(to right, var(--primary-color), var(--primary-dark));
-  color: white;
+  color: var(--dark-color);
   padding: 20px;
   text-align: center;
 }
@@ -528,15 +418,36 @@ body.dark-mode .forex-feature-icon {
   padding: 20px;
 }
 
+.course-details ul {
+  text-align: center;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 15px;
+}
+
 .course-details ul li {
-  margin-bottom: 10px;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  padding: 10px 15px;
+  border-radius: 8px;
+  font-size: 1.1rem;
   display: flex;
   align-items: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.course-details ul li:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
 }
 
 .course-details ul li i {
-  color: var(--secondary-color);
-  margin-left: 10px;
+  margin-left: 8px;
+  font-size: 1.2rem;
+  color: var(--primary-color);
 }
 
 .course-meta {
@@ -563,6 +474,54 @@ body.dark-mode .forex-feature-icon {
   padding: 20px;
   display: flex;
   justify-content: center;
+}
+
+/* ===== قسم الأسئلة الشائعة ===== */
+.faq-section {
+  padding: 80px 0;
+  background-color: #f9fafb;
+}
+
+.faq-section .section-header {
+  margin-bottom: 40px;
+}
+
+.faq-section .faq-items details {
+  margin-bottom: 20px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background-color: #fff;
+  overflow: hidden;
+  transition: var(--transition);
+}
+
+.faq-section .faq-items summary {
+  padding: 15px 20px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  position: relative;
+}
+
+.faq-section .faq-items summary::-webkit-details-marker {
+  display: none;
+}
+
+.faq-section .faq-items summary::after {
+  content: '+';
+  position: absolute;
+  right: 20px;
+  font-size: 1.2rem;
+}
+
+.faq-section .faq-items details[open] summary::after {
+  content: '−';
+}
+
+.faq-section .faq-items p {
+  padding: 0 20px 15px;
+  line-height: 1.6;
+  color: #4a5568;
 }
 
 /* ===== قسم التذييل ===== */
@@ -629,160 +588,208 @@ body.dark-mode .forex-feature-icon {
   transform: translateY(-3px);
 }
 
-/* ===== الوضع الداكن (Dark Mode) ===== */
+/* ===== الوضع الداكن (Dark Mode) - تحسين الألوان ===== */
 body.dark-mode {
-  background-color: #000;
-  color: #fff;
+  background-color: var(--dark-bg);
+  color: var(--dark-text);
 }
 
 body.dark-mode a {
-  color: #fff;
+  color: var(--dark-text);
 }
 
+/* تحسين رأس الصفحة في الوضع الداكن */
 body.dark-mode .header {
-  background-color: #000;
+  background-color: rgba(18, 18, 18, 0.95);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .logo h1 {
+  color: var(--primary-color);
+  text-shadow: 0 0 10px rgba(254, 209, 0, 0.3);
+}
+
+body.dark-mode .main-nav ul li a {
+  color: var(--dark-text);
 }
 
 body.dark-mode .main-nav ul li a:after {
-  background-color: #fff;
+  background-color: var(--primary-color);
 }
 
-body.dark-mode .btn-primary {
-  background-color: #fed100;
-  color: #000;
-}
-
-body.dark-mode .course-card {
-  background-color: #1E2022;
-  color: #00;
-}
-
-body.dark-mode .course-header {
-  background: #1E2022;
-}
-
-body.dark-mode .course-price,
-body.dark-mode .course-meta {
-  background-color: #000;
-  border-color: #000;
-}
-
-/* تغيير خلفية قسم الفوركس في الوضع الداكن لتصبح سوداء */
-body.dark-mode .forex {
-  background-color: #1E2122;
-}
-
-/* تحويل مربعات "تعلم من الخبراء" والبطاقات داخل قسم الفوركس إلى خلفيات داكنة */
-body.dark-mode .feature-card,
-body.dark-mode .forex-feature {
-  background-color: #1E2122 !important;
-  color: #fff !important;
-  box-shadow: none;
-}
-
-/* تحويل عناوين الأقسام في الوضع الداكن إلى أبيض */
-body.dark-mode .section-header h2 {
-  color: #fff !important;
-}
-
-/* ===== تعديل الوضع الداكن للقسم الأخير (الفوتر) ===== */
-body.dark-mode .footer {
-  background-color: #000; /* خلفية سوداء في الوضع الداكن */
-  color: #fff;           /* نصوص بيضاء */
-}
-
-body.dark-mode .footer a {
-  color: #fff;           /* تغيير لون الروابط إلى الأبيض */
-}
-
-body.dark-mode .footer h3,
-body.dark-mode .footer h4,
-body.dark-mode .footer p {
-  color: #fff;
-}
-/* تحسين تصميم قائمة تفاصيل الدورة بشكل أكثر أناقة */
-.course-details ul {
-  text-align: center;
-  padding: 0;
-  list-style: none;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 15px;
-}
-
-.course-details ul li {
-  background: #f1f5f9;
-  border: 1px solid #e2e8f0;
-  padding: 10px 15px;
-  border-radius: 8px;
-  font-size: 1.1rem;
-  display: flex;
-  align-items: center;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.course-details ul li:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-}
-
-.course-details ul li i {
-  margin-left: 8px;
-  font-size: 1.2rem;
+body.dark-mode .mode-toggle {
   color: var(--primary-color);
 }
 
-
-/* ===== الأجهزة المحمولة (Responsive) ===== */
-@media (max-width: 768px) {
-  .mobile-menu-btn {
-    display: block;
-  }
-  .main-nav ul {
-    flex-direction: column;
-    display: none;
-  }
-  .main-nav ul.active {
-    display: block;
-  }
-  .language-switcher, .mode-toggle {
-    margin-right: 0;
-  }
+/* تحسين الأزرار في الوضع الداكن */
+body.dark-mode .btn-primary {
+  background-color: var(--primary-color);
+  color: var(--dark-color);
 }
 
-/* روابط سريعة (روابط إضافية) */
-/* يمكنك إضافة المزيد من التنسيقات إذا لزم الأمر */
-/* تعديل ألوان النصوص في الوضع الداكن */
+body.dark-mode .btn-primary:hover {
+  background-color: var(--primary-dark);
+  box-shadow: 0 5px 15px rgba(254, 209, 0, 0.3);
+}
+
+/* تحسين قسم الفوركس في الوضع الداكن */
+body.dark-mode .forex {
+  background-color: var(--dark-bg);
+}
+
+body.dark-mode .forex-feature {
+  background-color: var(--dark-surface);
+  color: var(--dark-text);
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+}
+
+body.dark-mode .forex-feature:hover {
+  box-shadow: 0 8px 25px rgba(254, 209, 0, 0.15);
+}
+
+body.dark-mode .forex-feature-icon {
+  background-color: rgba(254, 209, 0, 0.1);
+  color: var(--primary-color);
+}
+
+/* تحسين عناوين الأقسام في الوضع الداكن */
+body.dark-mode .section-header h2 {
+  color: var(--dark-text);
+}
+
+body.dark-mode .section-header p {
+  color: var(--dark-text-secondary);
+}
+
+/* تحسين بطاقات الميزات في الوضع الداكن */
+body.dark-mode .feature-card {
+  background-color: var(--dark-surface);
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+}
+
+body.dark-mode .feature-card:hover {
+  box-shadow: 0 8px 25px rgba(254, 209, 0, 0.15);
+}
+
+body.dark-mode .feature-icon {
+  background-color: rgba(254, 209, 0, 0.1);
+  color: var(--primary-color);
+}
+
+/* تحسين قسم الدورات في الوضع الداكن */
+body.dark-mode .course-card {
+  background-color: var(--dark-surface);
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+}
+
+body.dark-mode .course-card:hover {
+  box-shadow: 0 8px 25px rgba(254, 209, 0, 0.15);
+}
+
+body.dark-mode .course-header {
+  background: linear-gradient(to right, var(--primary-color), var(--primary-dark));
+  color: var(--dark-color);
+}
+
+body.dark-mode .course-badge {
+  background-color: var(--primary-color);
+  color: var(--dark-color);
+}
+
+body.dark-mode .course-price {
+  background-color: var(--dark-surface-lighter);
+  border-color: var(--dark-border);
+}
+
+body.dark-mode .course-price h4 {
+  color: var(--dark-text-secondary);
+}
+
+body.dark-mode .course-price span {
+  color: var(--primary-color);
+}
+
 body.dark-mode .course-details ul li {
-  background: #111 !important; /* خلفية داكنة */
-  color: #fff !important; /* نص أبيض */
-  border-color: #333; /* حدود داكنة */
+  background-color: var(--dark-surface-lighter);
+  border-color: var(--dark-border);
+  color: var(--dark-text);
+}
+
+body.dark-mode .course-details ul li:hover {
+  box-shadow: 0 10px 20px rgba(254, 209, 0, 0.1);
 }
 
 body.dark-mode .course-details ul li i {
-  color: #FED100; /* تغيير لون الأيقونات */
+  color: var(--primary-color);
 }
 
-/* تغيير ألوان قسم "تواصل معنا" في الوضع الداكن */
-body.dark-mode .footer-follow-us h4 {
-  color: #fff; /* تغيير لون العنوان إلى الأبيض */
+body.dark-mode .course-meta {
+  background-color: var(--dark-surface-lighter);
+  border-color: var(--dark-border);
 }
 
-body.dark-mode .social-links a {
-  background-color: #111 !important; /* تغيير خلفية الروابط */
-  color: #fff !important; /* تغيير لون النص */
-  border: 1px solid #333; /* إضافة حدود خفيفة */
-  transition: all 0.3s ease-in-out;
+body.dark-mode .course-meta p {
+  color: var(--dark-text-secondary);
 }
 
-body.dark-mode .social-links a:hover {
-  background-color: #222 !important; /* تفتيح لون الخلفية عند التحويم */
-  transform: translateY(-3px);
+body.dark-mode .course-meta p i {
+  color: var(--primary-color);
 }
 
-/* تغيير لون الأيقونات */
-body.dark-mode .social-links a i {
-  color: #FED100 !important; /* لون مميز للأيقونات */
+/* تحسين قسم الأسئلة الشائعة في الوضع الداكن */
+body.dark-mode .faq-section {
+  background-color: var(--dark-bg);
+}
+
+body.dark-mode .faq-section .faq-items details {
+  border-color: var(--dark-border);
+  background-color: var(--dark-surface);
+}
+
+body.dark-mode .faq-section .faq-items summary {
+  color: var(--dark-text);
+}
+
+body.dark-mode .faq-section .faq-items p {
+  color: var(--dark-text-secondary);
+}
+
+/* تحسين قسم التذييل في الوضع الداكن */
+body.dark-mode .footer {
+  background-color: var(--dark-bg);
+  color: var(--dark-text);
+}
+
+body.dark-mode .footer-links ul li a {
+  color: var(--dark-text-secondary);
+}
+
+body.dark-mode .footer-links ul li a:hover {
+  color: var(--primary-color);
+}
+
+body.dark-mode .footer-follow-us .social-link {
+  background-color: var(--dark-surface-lighter);
+  color: var(--dark-text);
+}
+
+body.dark-mode .footer-follow-us .social-link:hover {
+  background-color: var(--primary-color);
+  color: var(--dark-color);
+}
+
+body.dark-mode .footer-follow-us .social-link i {
+  color: var(--primary-color);
+}
+
+body.dark-mode .footer-follow-us .social-link:hover i {
+  color: var(--dark-color);
+}
+
+/* تحسين تجربة المستخدم في الجوال في الوضع الداكن */
+@media (max-width: 768px) {
+  body.dark-mode .mobile-menu-btn {
+    color: var(--primary-color);
+  }
 }
 
