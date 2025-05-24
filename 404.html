@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <title>404 - Page Not Found</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      height: 100vh;
+      background: linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #2d2d2d 100%);
+      color: #ffd700;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      overflow: hidden;
+      position: relative;
+    }
+    
+    /* خلفية متحركة */
+    .animated-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      z-index: -1;
+    }
+    
+    .floating-shapes {
+      position: absolute;
+      width: 100px;
+      height: 100px;
+      background: rgba(255, 215, 0, 0.1);
+      border: 2px solid rgba(255, 215, 0, 0.2);
+      border-radius: 50%;
+      animation: float 6s ease-in-out infinite;
+    }
+    
+    .floating-shapes:nth-child(1) {
+      top: 10%;
+      left: 10%;
+      animation-delay: 0s;
+      width: 80px;
+      height: 80px;
+    }
+    
+    .floating-shapes:nth-child(2) {
+      top: 20%;
+      right: 10%;
+      animation-delay: 2s;
+      width: 120px;
+      height: 120px;
+    }
+    
+    .floating-shapes:nth-child(3) {
+      bottom: 20%;
+      left: 15%;
+      animation-delay: 4s;
+      width: 60px;
+      height: 60px;
+    }
+    
+    .floating-shapes:nth-child(4) {
+      bottom: 30%;
+      right: 20%;
+      animation-delay: 1s;
+      width: 90px;
+      height: 90px;
+    }
+    
+    @keyframes float {
+      0%, 100% {
+        transform: translateY(0px) rotate(0deg);
+        opacity: 0.7;
+      }
+      50% {
+        transform: translateY(-20px) rotate(180deg);
+        opacity: 0.3;
+      }
+    }
+    
+    /* شعار الموقع */
+    .logo {
+      position: absolute;
+      top: 30px;
+      left: 30px;
+      width: 60px;
+      height: 60px;
+      background: rgba(0, 0, 0, 0.8);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(10px);
+      border: 2px solid #ffd700;
+      animation: logoFloat 3s ease-in-out infinite;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+    }
+    
+    .logo:hover {
+      transform: scale(1.1);
+      background: rgba(0, 0, 0, 0.9);
+      box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+    }
+    
+    .logo img {
+      width: 35px;
+      height: 35px;
+      object-fit: contain;
+    }
+    
+    @keyframes logoFloat {
+      0%, 100% {
+        transform: translateY(0px);
+      }
+      50% {
+        transform: translateY(-5px);
+      }
+    }
+    
+    /* كونتينر الخطأ */
+    .error-container {
+      z-index: 10;
+      animation: slideUp 1s ease-out;
+    }
+    
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(50px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .error-code {
+      font-size: 8rem;
+      font-weight: 900;
+      background: linear-gradient(45deg, #ffd700, #ffed4e, #ffd700);
+      background-size: 200% 200%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 20px;
+      animation: glowPulse 2s ease-in-out infinite, gradientShift 3s ease-in-out infinite;
+      text-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+    }
+    
+    @keyframes glowPulse {
+      0%, 100% {
+        filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.8));
+      }
+      50% {
+        filter: drop-shadow(0 0 40px rgba(255, 215, 0, 1));
+      }
+    }
+    
+    @keyframes gradientShift {
+      0%, 100% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+    }
+    
+    .error-message {
+      font-size: 2.2rem;
+      margin-bottom: 20px;
+      animation: fadeInLeft 1s ease-out 0.3s both;
+      font-weight: 600;
+    }
+    
+    @keyframes fadeInLeft {
+      from {
+        opacity: 0;
+        transform: translateX(-30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+    
+    .error-description {
+      font-size: 1.2rem;
+      max-width: 600px;
+      margin: 0 auto 40px auto;
+      color: rgba(255, 215, 0, 0.8);
+      line-height: 1.6;
+      animation: fadeInRight 1s ease-out 0.6s both;
+    }
+    
+    @keyframes fadeInRight {
+      from {
+        opacity: 0;
+        transform: translateX(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+    
+    .buttons {
+      display: flex;
+      gap: 25px;
+      flex-wrap: wrap;
+      justify-content: center;
+      animation: fadeInUp 1s ease-out 0.9s both;
+    }
+    
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .btn {
+      background: linear-gradient(135deg, #ffd700, #ffed4e);
+      color: #000;
+      padding: 15px 35px;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 1.1rem;
+      box-shadow: 0 8px 25px rgba(255, 215, 0, 0.3);
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      position: relative;
+      overflow: hidden;
+      border: 2px solid #ffd700;
+    }
+    
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+      transition: left 0.6s;
+    }
+    
+    .btn:hover::before {
+      left: 100%;
+    }
+    
+    .btn:hover {
+      transform: translateY(-5px) scale(1.05);
+      box-shadow: 0 15px 35px rgba(255, 215, 0, 0.5);
+      background: linear-gradient(135deg, #ffed4e, #ffd700);
+    }
+    
+    .btn:active {
+      transform: translateY(-2px) scale(1.02);
+    }
+    
+    .support-link {
+      background: linear-gradient(135deg, #333333, #1a1a1a);
+      color: #ffd700;
+      border: 2px solid #ffd700;
+    }
+    
+    .support-link:hover {
+      background: linear-gradient(135deg, #1a1a1a, #000000);
+      box-shadow: 0 15px 35px rgba(255, 215, 0, 0.4);
+    }
+    
+    /* تأثيرات الماوس */
+    .interactive-cursor {
+      position: fixed;
+      width: 20px;
+      height: 20px;
+      border: 2px solid rgba(255, 215, 0, 0.8);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transition: all 0.3s ease;
+      opacity: 0;
+    }
+    
+    /* تأثيرات إضافية */
+    .sparkles {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: #ffd700;
+      border-radius: 50%;
+      animation: sparkle 2s linear infinite;
+    }
+    
+    @keyframes sparkle {
+      0% {
+        opacity: 0;
+        transform: scale(0);
+      }
+      50% {
+        opacity: 1;
+        transform: scale(1);
+      }
+      100% {
+        opacity: 0;
+        transform: scale(0);
+      }
+    }
+    
+    /* استجابة للشاشات الصغيرة */
+    @media (max-width: 768px) {
+      .logo {
+        top: 20px;
+        left: 20px;
+        width: 50px;
+        height: 50px;
+      }
+      
+      .error-code {
+        font-size: 5rem;
+      }
+      
+      .error-message {
+        font-size: 1.8rem;
+      }
+      
+      .error-description {
+        font-size: 1rem;
+        padding: 0 20px;
+      }
+      
+      .buttons {
+        flex-direction: column;
+        gap: 15px;
+      }
+      
+      .btn {
+        padding: 12px 30px;
+        font-size: 1rem;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .error-code {
+        font-size: 4rem;
+      }
+      
+      .error-message {
+        font-size: 1.5rem;
+      }
+      
+      .floating-shapes {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- خلفية متحركة -->
+  <div class="animated-bg">
+    <div class="floating-shapes"></div>
+    <div class="floating-shapes"></div>
+    <div class="floating-shapes"></div>
+    <div class="floating-shapes"></div>
+  </div>
+  
+  <!-- شعار الموقع -->
+  <div class="logo" onclick="window.location.href='index.html'">
+    <img src="1.png" alt="Logo" onerror="this.style.display='none'; this.parentElement.innerHTML='<div style=\'color:#ffd700;font-size:24px;font-weight:bold;text-shadow: 0 0 10px #ffd700;\'>✦</div>'">
+  </div>
+  
+  <!-- مؤشر تفاعلي -->
+  <div class="interactive-cursor" id="cursor"></div>
+  
+  <!-- محتوى الصفحة -->
+  <div class="error-container">
+    <div class="error-code">404</div>
+    <div class="error-message">Oops! Page Not Found</div>
+    <p class="error-description">
+      The page you're looking for seems to have vanished into the digital void. 
+      Don't worry though, even the best explorers sometimes take a wrong turn in cyberspace!
+    </p>
+    <div class="buttons">
+      <a href="index.html" class="btn" id="homeBtn">
+        🏠 Return Home
+      </a>
+      <a href="https://t.me/LCAV99" class="btn support-link" target="_blank" id="supportBtn">
+        💬 Contact Support
+      </a>
+    </div>
+  </div>
+
+  <script>
+    // مؤشر تفاعلي
+    const cursor = document.getElementById('cursor');
+    let mouseX = 0, mouseY = 0;
+    let cursorX = 0, cursorY = 0;
+    
+    document.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      cursor.style.opacity = '1';
+    });
+    
+    document.addEventListener('mouseleave', () => {
+      cursor.style.opacity = '0';
+    });
+    
+    function animateCursor() {
+      cursorX += (mouseX - cursorX) * 0.1;
+      cursorY += (mouseY - cursorY) * 0.1;
+      cursor.style.left = cursorX + 'px';
+      cursor.style.top = cursorY + 'px';
+      requestAnimationFrame(animateCursor);
+    }
+    animateCursor();
+    
+    // تأثيرات الأزرار
+    const buttons = document.querySelectorAll('.btn');
+    buttons.forEach(btn => {
+      btn.addEventListener('mouseenter', () => {
+        cursor.style.transform = 'scale(2)';
+        cursor.style.backgroundColor = 'rgba(255, 215, 0, 0.3)';
+      });
+      
+      btn.addEventListener('mouseleave', () => {
+        cursor.style.transform = 'scale(1)';
+        cursor.style.backgroundColor = 'transparent';
+      });
+    });
+    
+    // إنشاء نجوم متلألئة
+    function createSparkle(x, y) {
+      const sparkle = document.createElement('div');
+      sparkle.className = 'sparkles';
+      sparkle.style.left = x + 'px';
+      sparkle.style.top = y + 'px';
+      document.body.appendChild(sparkle);
+      
+      setTimeout(() => {
+        sparkle.remove();
+      }, 2000);
+    }
+    
+    // إنشاء نجوم عشوائية
+    setInterval(() => {
+      const x = Math.random() * window.innerWidth;
+      const y = Math.random() * window.innerHeight;
+      createSparkle(x, y);
+    }, 3000);
+    
+    // تأثير النقر على الأزرار
+    buttons.forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        const ripple = document.createElement('span');
+        const rect = this.getBoundingClientRect();
+        const size = Math.max(rect.width, rect.height);
+        const x = e.clientX - rect.left - size / 2;
+        const y = e.clientY - rect.top - size / 2;
+        
+        ripple.style.width = ripple.style.height = size + 'px';
+        ripple.style.left = x + 'px';
+        ripple.style.top = y + 'px';
+        ripple.style.position = 'absolute';
+        ripple.style.borderRadius = '50%';
+        ripple.style.background = 'rgba(255, 255, 255, 0.6)';
+        ripple.style.transform = 'scale(0)';
+        ripple.style.animation = 'ripple 0.6s linear';
+        ripple.style.pointerEvents = 'none';
+        
+        this.appendChild(ripple);
+        
+        setTimeout(() => {
+          ripple.remove();
+        }, 600);
+      });
+    });
+    
+    // إضافة CSS للتأثير المتموج
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes ripple {
+        to {
+          transform: scale(4);
+          opacity: 0;
+        }
+      }
+      .btn {
+        position: relative;
+        overflow: hidden;
+      }
+    `;
+    document.head.appendChild(style);
+    
+    // تأثير اهتزاز لرقم 404
+    const errorCode = document.querySelector('.error-code');
+    setInterval(() => {
+      errorCode.style.animation = 'none';
+      setTimeout(() => {
+        errorCode.style.animation = 'glowPulse 2s ease-in-out infinite, gradientShift 3s ease-in-out infinite';
+      }, 10);
+    }, 5000);
+    
+    // تحسين الأداء
+    document.addEventListener('DOMContentLoaded', () => {
+      // تحسين الرسوم المتحركة للأجهزة الضعيفة
+      if (navigator.hardwareConcurrency < 4) {
+        document.querySelectorAll('.floating-shapes').forEach(shape => {
+          shape.style.display = 'none';
+        });
+      }
+    });
+  </script>
+</body>
+</html>
