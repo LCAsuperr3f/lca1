@@ -14,15 +14,7 @@
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-   <!-- LCA Logosuz Canlı Analiz Paneli -->
-<div class="lca-dashboard-wrapper">
-  <div class="lca-dashboard-header glass-effect">
-    <div class="header-title">🔴 LCA Canlı Analiz Paneli (XAU/USD)</div>
-    <div class="market-sessions">
-      <span class="session active">NY: Açık</span>
-      <span class="session active">Londra: Açık</span>
-      <span class="session inactive">Asya: Kapalı</span>
-    </div>
+ 
   </div>
   <div class="lca-chart-container glass-effect">
     <!-- Logosuz yeni grafik alanı -->
@@ -402,19 +394,7 @@ animate();
           <h1>اهلا بكم في LCA</h1>
           <h2>موشر تداول احترافي NEXT CANDEL🌍 </h2>
           <a href="#courses" class="btn btn-primary">اشتري الموشر الآن</a>
-                    <!-- LCA Analiz Uygulaması HTML Alanı -->
-<div class="lca-dashboard-wrapper">
-  <div class="lca-dashboard-header glass-effect">
-    <div class="header-title">🔴 LCA Canlı Analiz Paneli</div>
-    <div class="market-sessions">
-      <span class="session active">NY: Açık</span>
-      <span class="session active">Londra: Açık</span>
-      <span class="session inactive">Asya: Kapalı</span>
-    </div>
-  </div>
-  <div class="lca-chart-container glass-effect">
-    <div id="tradingview_lca_dashboard"></div>
-  </div>
+                   
 </div>
         </div>
       </div>
@@ -1548,91 +1528,9 @@ animate();
       updateDisplayPrice();
     });
   </script>
-<!-- Logosuz TradingView Lightweight Charts Kütüphanesi -->
-<script src="https://unpkg.com/lightweight-charts@4.1.1/dist/lightweight-charts.standalone.production.js"></script>
 
-<script>
-  const chartContainer = document.getElementById('lca_lightweight_chart');
-
-  // 1. Grafiği Oluştur (Cam Temalı)
-  const chart = LightweightCharts.createChart(chartContainer, {
-    width: chartContainer.clientWidth,
-    height: chartContainer.clientHeight,
-    layout: {
-      background: { type: 'solid', color: 'transparent' },
-      textColor: '#d1d4dc',
-    },
-    grid: {
-      vertLines: { color: 'rgba(255, 255, 255, 0.05)' },
-      horzLines: { color: 'rgba(255, 255, 255, 0.05)' },
-    },
-    crosshair: {
-      mode: LightweightCharts.CrosshairMode.Normal,
-    },
-    rightPriceScale: {
-      borderColor: 'rgba(255, 255, 255, 0.1)',
-    },
-    timeScale: {
-      borderColor: 'rgba(255, 255, 255, 0.1)',
-      timeVisible: true,
-      secondsVisible: false,
-    },
-  });
-
-  // 2. Mum Grafiği Serisi (LCA Yeşil & Kırmızı Renkleri)
-  const candlestickSeries = chart.addCandlestickSeries({
-    upColor: '#00ff88',
-    downColor: '#ff4d4d',
-    borderVisible: false,
-    wickUpColor: '#00ff88',
-    wickDownColor: '#ff4d4d',
-  });
-
-  // 3. Geçmiş Mum Verilerini Çek (PAXGUSDT - Altın Spot)
-  async function loadCandleHistory() {
-    try {
-      const res = await fetch('https://api.binance.com/api/v3/klines?symbol=PAXGUSDT&interval=15m&limit=250');
-      const data = await res.json();
-      const formattedData = data.map(d => ({
-        time: d[0] / 1000,
-        open: parseFloat(d[1]),
-        high: parseFloat(d[2]),
-        low: parseFloat(d[3]),
-        close: parseFloat(d[4]),
-      }));
-      candlestickSeries.setData(formattedData);
-    } catch (err) {
-      console.error("Veri çekme hatası:", err);
-    }
-  }
-
-  loadCandleHistory();
-
-  // 4. Canlı Anlık Fiyat Akışı (WebSocket)
-  const ws = new WebSocket('wss://stream.binance.com:9443/ws/paxgusdt@kline_15m');
-  ws.onmessage = (event) => {
-    const message = JSON.parse(event.data);
-    if (message.k) {
-      const k = message.k;
-      candlestickSeries.update({
-        time: k.t / 1000,
-        open: parseFloat(k.o),
-        high: parseFloat(k.h),
-        low: parseFloat(k.l),
-        close: parseFloat(k.c),
-      });
-    }
-  };
-
-  // 5. Ekran Boyutuna Göre Esneklik
-  window.addEventListener('resize', () => {
-    chart.applyOptions({
-      width: chartContainer.clientWidth,
-      height: chartContainer.clientHeight,
-    });
-  });
-</script>
 </body>
+  
 </html>
 
 
