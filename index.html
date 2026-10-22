@@ -14,28 +14,21 @@
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    /* LCA Analiz Uygulaması Stilleri */
-    
-.lca-dashboard-wrapper {
-  width: 100%; max-width: 1200px; display: flex; flex-direction: column; gap: 15px; margin: 40px auto; padding: 0 15px; box-sizing: border-box;
-}
-.glass-effect {
-  background: rgba(19, 23, 34, 0.6); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-}
-.lca-dashboard-header {
-  display: flex; justify-content: space-between; align-items: center; padding: 15px 20px;
-}
-.header-title { font-weight: bold; font-size: 18px; color: #fff; }
-.market-sessions { display: flex; gap: 10px; font-size: 14px; }
-.session { padding: 6px 12px; border-radius: 6px; background: rgba(255, 255, 255, 0.05); color: #fff; }
-.session.active { color: #00ff88; border: 1px solid rgba(0, 255, 136, 0.3); }
-.session.inactive { color: #ff4d4d; border: 1px solid rgba(255, 77, 77, 0.3); }
-.lca-chart-container { width: 100%; height: 600px; padding: 10px; box-sizing: border-box; }
-#tradingview_lca_dashboard { width: 100%; height: 100%; }
-@media (max-width: 768px) {
-  .lca-dashboard-header { flex-direction: column; gap: 12px; }
-  .lca-chart-container { height: 450px; }
-}
+   <!-- LCA Logosuz Canlı Analiz Paneli -->
+<div class="lca-dashboard-wrapper">
+  <div class="lca-dashboard-header glass-effect">
+    <div class="header-title">🔴 LCA Canlı Analiz Paneli (XAU/USD)</div>
+    <div class="market-sessions">
+      <span class="session active">NY: Açık</span>
+      <span class="session active">Londra: Açık</span>
+      <span class="session inactive">Asya: Kapalı</span>
+    </div>
+  </div>
+  <div class="lca-chart-container glass-effect">
+    <!-- Logosuz yeni grafik alanı -->
+    <div id="lca_lightweight_chart" style="width: 100%; height: 100%;"></div>
+  </div>
+</div
     /* تحديث ألوان الوضع الفاتح */
     body:not(.dark-mode) {
       background-color: var(--light-color);
@@ -1554,26 +1547,88 @@ animate();
       updateDisplayPrice();
     });
   </script>
-  <!-- LCA Analiz Uygulaması JavaScript Kodları -->
-<script src="https://s3.tradingview.com/tv.js"></script>
+<!-- Logosuz TradingView Lightweight Charts Kütüphanesi -->
+<script src="https://unpkg.com/lightweight-charts@4.1.1/dist/lightweight-charts.standalone.production.js"></script>
+
 <script>
-  new TradingView.widget({
-    "autosize": true,
-    "symbol": "OANDA:XAUUSD",
-    "interval": "15",
-    "timezone": "Etc/UTC",
-    "theme": "dark",
-    "style": "1",
-    "locale": "tr",
-    "enable_publishing": false,
-    "backgroundColor": "rgba(19, 23, 34, 0)",
-    "gridColor": "rgba(255,255,255,0.05)",
-    "hide_top_toolbar": false,
-    "hide_legend": false,
-    "save_image": false,
-    "container_id": "tradingview_lca_dashboard",
-    "toolbar_bg": "rgba(19, 23, 34, 0)",
-    "studies": ["Volume@tv-basicstudies"]
+  const chartContainer = document.getElementById('lca_lightweight_chart');
+
+  // 1. Grafiği Oluştur (Cam Temalı)
+  const chart = LightweightCharts.createChart(chartContainer, {
+    width: chartContainer.clientWidth,
+    height: chartContainer.clientHeight,
+    layout: {
+      background: { type: 'solid', color: 'transparent' },
+      textColor: '#d1d4dc',
+    },
+    grid: {
+      vertLines: { color: 'rgba(255, 255, 255, 0.05)' },
+      horzLines: { color: 'rgba(255, 255, 255, 0.05)' },
+    },
+    crosshair: {
+      mode: LightweightCharts.CrosshairMode.Normal,
+    },
+    rightPriceScale: {
+      borderColor: 'rgba(255, 255, 255, 0.1)',
+    },
+    timeScale: {
+      borderColor: 'rgba(255, 255, 255, 0.1)',
+      timeVisible: true,
+      secondsVisible: false,
+    },
+  });
+
+  // 2. Mum Grafiği Serisi (LCA Yeşil & Kırmızı Renkleri)
+  const candlestickSeries = chart.addCandlestickSeries({
+    upColor: '#00ff88',
+    downColor: '#ff4d4d',
+    borderVisible: false,
+    wickUpColor: '#00ff88',
+    wickDownColor: '#ff4d4d',
+  });
+
+  // 3. Geçmiş Mum Verilerini Çek (PAXGUSDT - Altın Spot)
+  async function loadCandleHistory() {
+    try {
+      const res = await fetch('https://api.binance.com/api/v3/klines?symbol=PAXGUSDT&interval=15m&limit=250');
+      const data = await res.json();
+      const formattedData = data.map(d => ({
+        time: d[0] / 1000,
+        open: parseFloat(d[1]),
+        high: parseFloat(d[2]),
+        low: parseFloat(d[3]),
+        close: parseFloat(d[4]),
+      }));
+      candlestickSeries.setData(formattedData);
+    } catch (err) {
+      console.error("Veri çekme hatası:", err);
+    }
+  }
+
+  loadCandleHistory();
+
+  // 4. Canlı Anlık Fiyat Akışı (WebSocket)
+  const ws = new WebSocket('wss://stream.binance.com:9443/ws/paxgusdt@kline_15m');
+  ws.onmessage = (event) => {
+    const message = JSON.parse(event.data);
+    if (message.k) {
+      const k = message.k;
+      candlestickSeries.update({
+        time: k.t / 1000,
+        open: parseFloat(k.o),
+        high: parseFloat(k.h),
+        low: parseFloat(k.l),
+        close: parseFloat(k.c),
+      });
+    }
+  };
+
+  // 5. Ekran Boyutuna Göre Esneklik
+  window.addEventListener('resize', () => {
+    chart.applyOptions({
+      width: chartContainer.clientWidth,
+      height: chartContainer.clientHeight,
+    });
   });
 </script>
 </body>
