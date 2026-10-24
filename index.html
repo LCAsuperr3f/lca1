@@ -1530,7 +1530,1980 @@ animate();
   </script>
 
 </body>
-  
+  <!DOCTYPE html>
+<html lang="en" class="h-full bg-black">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LCA View - Advanced Financial Analysis Platform</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- TradingView Lightweight Charts Library -->
+  <script src="https://unpkg.com/lightweight-charts@4.0.1/dist/lightweight-charts.standalone.production.js"></script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            bgDark: '#000000',
+            bgCard: '#0f1117',
+            bgHover: '#1c202d',
+            gold: '#f0b90b',
+            goldHover: '#d8a508',
+            bullish: '#089981',
+            bearish: '#f23645'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Custom Scrollbars */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #000000; }
+    ::-webkit-scrollbar-thumb { background: #1c202d; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #2a2e39; }
+
+    /* Canvas Drawing Overlay */
+    #drawingCanvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      z-index: 10;
+    }
+    #drawingCanvas.active-draw {
+      pointer-events: auto;
+      cursor: crosshair;
+    }
+    .flash-up { animation: flashGreen 0.4s ease-out; }
+    .flash-down { animation: flashRed 0.4s ease-out; }
+    @keyframes flashGreen { 0% { background-color: rgba(8, 153, 129, 0.4); } 100% { background-color: transparent; } }
+    @keyframes flashRed { 0% { background-color: rgba(242, 54, 69, 0.4); } 100% { background-color: transparent; } }
+  </style>
+</head>
+<body class="h-full font-sans text-gray-200 bg-bgDark flex flex-col overflow-hidden select-none">
+
+  <!-- TOP HEADER / NAVBAR -->
+  <header class="h-14 bg-bgCard border-b border-gray-800 flex items-center justify-between px-4 flex-shrink-0 z-20">
+    <div class="flex items-center gap-4">
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-gold to-yellow-200 flex items-center justify-center font-bold text-bgDark text-lg shadow-lg shadow-gold/20">
+          LCA
+        </div>
+        <span class="font-extrabold tracking-wider text-xl text-white">LCA <span class="text-gold">VIEW</span></span>
+      </div>
+
+      <div class="h-6 w-[1px] bg-gray-800 hidden md:block"></div>
+
+      <!-- Asset / Symbol Dropdown -->
+      <div class="relative">
+        <select id="assetSelect" class="bg-bgDark border border-gray-700 text-white font-semibold rounded-md px-3 py-1.5 text-sm focus:outline-none focus:border-gold cursor-pointer hover:bg-bgHover transition">
+          <optgroup label="Forex & Gold">
+            <option value="XAUUSD" selected>XAU/USD - Gold Spot</option>
+            <option value="EURUSD">EUR/USD - Euro / US Dollar</option>
+            <option value="GBPUSD">GBP/USD - British Pound / USD</option>
+            <option value="USDJPY">USD/JPY - US Dollar / Japanese Yen</option>
+          </optgroup>
+          <optgroup label="Crypto (Live Stream)">
+            <option value="BTCUSDT">BTC/USDT - Bitcoin</option>
+            <option value="ETHUSDT">ETH/USDT - Ethereum</option>
+            <option value="SOLUSDT">SOL/USDT - Solana</option>
+            <option value="BNBUSDT">BNB/USDT - Binance Coin</option>
+          </optgroup>
+          <optgroup label="Stocks & Indices">
+            <option value="AAPL">AAPL - Apple Inc.</option>
+            <option value="TSLA">TSLA - Tesla Inc.</option>
+            <option value="NVDA">NVDA - NVIDIA Corp.</option>
+          </optgroup>
+        </select>
+      </div>
+
+      <!-- Live Price Display -->
+      <div id="priceHeaderBox" class="flex items-center gap-2 px-3 py-1 rounded-md bg-bgDark border border-gray-800 transition">
+        <span id="livePriceText" class="text-lg font-bold text-bullish">0.00</span>
+        <span id="priceChangeText" class="text-xs font-semibold text-bullish bg-bullish/10 px-1.5 py-0.5 rounded">+0.00%</span>
+      </div>
+    </div>
+
+    <!-- Center Timeframe Switcher -->
+    <div class="hidden lg:flex items-center bg-bgDark p-0.5 rounded-md border border-gray-800 text-xs font-medium">
+      <button class="tf-btn px-2.5 py-1 rounded text-gray-400 hover:text-white" data-tf="1m">1M</button>
+      <button class="tf-btn px-2.5 py-1 rounded text-gray-400 hover:text-white" data-tf="5m">5M</button>
+      <button class="tf-btn active px-2.5 py-1 rounded bg-bgHover text-gold font-bold" data-tf="15m">15M</button>
+      <button class="tf-btn px-2.5 py-1 rounded text-gray-400 hover:text-white" data-tf="1h">1H</button>
+      <button class="tf-btn px-2.5 py-1 rounded text-gray-400 hover:text-white" data-tf="4h">4H</button>
+      <button class="tf-btn px-2.5 py-1 rounded text-gray-400 hover:text-white" data-tf="1d">1D</button>
+    </div>
+
+    <!-- Right Controls / Indicator Toggles -->
+    <div class="flex items-center gap-2">
+      <div class="flex items-center gap-1.5 bg-bgDark p-1 rounded-lg border border-gray-800">
+        <button id="toggleLCA" class="px-2.5 py-1 text-xs font-semibold rounded bg-gold/20 text-gold border border-gold/40 flex items-center gap-1.5 transition">
+          <i class="fa-solid fa-wand-magic-sparkles"></i> LCA Prediction
+        </button>
+        <button id="btnOpenIndicatorsModal" class="px-3 py-1 text-xs font-semibold rounded bg-bgHover text-gray-200 hover:text-white border border-gray-700 hover:border-gold flex items-center gap-1.5 transition">
+          <i class="fa-solid fa-chart-line text-gold"></i> Göstergeler (Indicators)
+        </button>
+      </div>
+
+      <button id="btnFullscreen" class="p-2 text-gray-400 hover:text-gold rounded-md bg-bgDark border border-gray-800 hover:bg-bgHover transition">
+        <i class="fa-solid fa-expand"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- MAIN APP CONTAINER -->
+  <div class="flex-1 flex overflow-hidden relative">
+
+    <!-- LEFT TOOLBAR -->
+    <aside class="w-12 bg-bgCard border-r border-gray-800 flex flex-col items-center py-3 gap-3 flex-shrink-0 z-20">
+      <button class="tool-btn active p-2 text-gold rounded hover:bg-bgHover transition" data-tool="cursor" title="Cursor / Select / Edit">
+        <i class="fa-solid fa-arrow-pointer"></i>
+      </button>
+      <button class="tool-btn p-2 text-gray-400 hover:text-gold rounded hover:bg-bgHover transition" data-tool="brush" title="Fırça (Brush)">
+        <i class="fa-solid fa-paint-brush"></i>
+      </button>
+      <button class="tool-btn p-2 text-gray-400 hover:text-gold rounded hover:bg-bgHover transition" data-tool="trendline" title="Trendline">
+        <i class="fa-solid fa-slash"></i>
+      </button>
+      <button class="tool-btn p-2 text-gray-400 hover:text-gold rounded hover:bg-bgHover transition" data-tool="horizontal" title="Horizontal Line">
+        <i class="fa-solid fa-minus"></i>
+      </button>
+      <button class="tool-btn p-2 text-gray-400 hover:text-gold rounded hover:bg-bgHover transition" data-tool="rectangle" title="Support/Resistance Zone">
+        <i class="fa-regular fa-square"></i>
+      </button>
+      <button class="tool-btn p-2 text-gray-400 hover:text-gold rounded hover:bg-bgHover transition" data-tool="fibonacci" title="Fibonacci Retracement">
+        <i class="fa-solid fa-layer-group"></i>
+      </button>
+
+      <div class="w-6 h-[1px] bg-gray-800 my-1"></div>
+
+      <button id="clearDrawings" class="p-2 text-gray-400 hover:text-bearish rounded hover:bg-bgHover transition" title="Clear All Drawings">
+        <i class="fa-solid fa-trash-can"></i>
+      </button>
+    </aside>
+
+    <!-- CENTER CHART AREA -->
+    <main class="flex-1 flex flex-col relative overflow-hidden bg-bgDark">
+
+      <div class="absolute top-2 left-3 z-10 flex flex-wrap items-center gap-3 text-xs font-mono bg-bgCard/90 backdrop-blur-md px-3 py-1.5 rounded-md border border-gray-800/80 shadow-md">
+        <span class="font-bold text-gold" id="symbolLabel">XAUUSD</span>
+        <span class="text-gray-400">O: <strong id="ohlcO" class="text-white">0.00</strong></span>
+        <span class="text-gray-400">H: <strong id="ohlcH" class="text-white">0.00</strong></span>
+        <span class="text-gray-400">L: <strong id="ohlcL" class="text-white">0.00</strong></span>
+        <span class="text-gray-400">C: <strong id="ohlcC" class="text-white">0.00</strong></span>
+      </div>
+
+      <!-- FLOATING DRAWING TOOLBAR (Appears when drawing or selecting) -->
+      <div id="drawingToolbar" class="hidden absolute top-14 left-3 z-30 bg-bgCard/95 backdrop-blur-md border border-gray-700/80 p-2.5 rounded-xl shadow-2xl flex items-center gap-3 text-xs select-none">
+        <!-- Colors -->
+        <div class="flex items-center gap-2 border-r border-gray-800 pr-3">
+          <span class="text-[10px] text-gray-400 font-semibold uppercase">Renk:</span>
+          <div class="relative flex items-center gap-1.5">
+            <button class="draw-color-btn w-5 h-5 rounded-full bg-white border border-gray-600 hover:scale-110 transition ring-2 ring-gold" data-color="#ffffff" title="Beyaz"></button>
+            <button class="draw-color-btn w-5 h-5 rounded-full bg-yellow-400 border border-gray-600 hover:scale-110 transition" data-color="#f0b90b" title="Altın / Sarı"></button>
+            <button class="draw-color-btn w-5 h-5 rounded-full bg-cyan-400 border border-gray-600 hover:scale-110 transition" data-color="#22d3ee" title="Camgöbeği"></button>
+            <button class="draw-color-btn w-5 h-5 rounded-full bg-pink-500 border border-gray-600 hover:scale-110 transition" data-color="#ec4899" title="Pembe"></button>
+            <button class="draw-color-btn w-5 h-5 rounded-full bg-emerald-400 border border-gray-600 hover:scale-110 transition" data-color="#10b981" title="Yeşil"></button>
+            
+            <!-- Custom Color Picker Input -->
+            <label for="customColorPicker" class="w-6 h-6 rounded-full bg-gradient-to-tr from-red-500 via-green-500 to-blue-500 border border-gray-500 flex items-center justify-center cursor-pointer hover:scale-110 transition shadow-inner relative overflow-hidden" title="İstediğin Tüm Renkler (Özel Renk)">
+              <input type="color" id="customColorPicker" value="#f0b90b" class="absolute inset-0 opacity-0 cursor-pointer w-full h-full">
+            </label>
+          </div>
+        </div>
+
+        <!-- Thickness -->
+        <div class="flex items-center gap-1.5 border-r border-gray-800 pr-3">
+          <span class="text-[10px] text-gray-400 font-semibold uppercase">Kalınlık:</span>
+          <button class="draw-width-btn px-2 py-0.5 rounded bg-bgHover text-gray-300 hover:text-gold font-mono text-xs transition" data-width="1">1px</button>
+          <button class="draw-width-btn px-2 py-0.5 rounded bg-bgHover text-gray-300 hover:text-gold font-mono text-xs transition active-width bg-gold/20 text-gold" data-width="2">2px</button>
+          <button class="draw-width-btn px-2 py-0.5 rounded bg-bgHover text-gray-300 hover:text-gold font-mono text-xs transition" data-width="4">4px</button>
+        </div>
+
+        <!-- Delete active drawing -->
+        <button id="btnDeleteActiveDrawing" class="hidden px-2.5 py-1 bg-bearish/20 text-bearish hover:bg-bearish hover:text-white rounded-lg font-bold transition flex items-center gap-1 text-xs">
+          <i class="fa-solid fa-trash-can"></i> Sil
+        </button>
+      </div>
+
+      <div id="activePositionBanner" class="hidden absolute top-2 right-3 z-10 flex items-center gap-3 bg-bgCard/90 border border-gold/40 px-3 py-1.5 rounded-lg shadow-xl backdrop-blur-md">
+        <div class="text-xs">
+          <span id="posTypeTag" class="font-bold px-1.5 py-0.5 rounded text-[10px] bg-bullish text-white">BUY</span>
+          <span id="posDetailsText" class="font-mono text-white text-xs ml-1">0.80 Lot @ 2728.50</span>
+          <span id="posPnLText" class="font-mono font-bold text-bullish ml-2">+$0.00</span>
+        </div>
+        <button id="btnClosePosition" class="px-2 py-1 bg-bearish/20 hover:bg-bearish text-bearish hover:text-white border border-bearish/40 rounded text-xs font-bold transition flex items-center gap-1">
+          <i class="fa-solid fa-xmark"></i> İşlemi Kapat
+        </button>
+      </div>
+
+      <div id="chartContainer" class="w-full flex-1 relative bg-black">
+        <canvas id="drawingCanvas"></canvas>
+
+        <div id="drawingContextMenu" class="hidden absolute z-30 bg-bgCard/95 backdrop-blur-md border border-gray-700/80 p-3 rounded-xl shadow-2xl flex flex-col gap-3 text-xs select-none">
+          <div class="flex flex-col gap-1.5 border-b border-gray-800 pb-2">
+            <span class="text-gray-400 font-semibold text-[11px]">Renk Seçenekleri:</span>
+            <div class="flex items-center gap-2">
+              <button class="ctx-color-btn w-6 h-6 rounded-full bg-white border border-gray-600 hover:scale-110 transition" data-color="#ffffff"></button>
+              <button class="ctx-color-btn w-6 h-6 rounded-full bg-yellow-400 border border-gray-600 hover:scale-110 transition" data-color="#f0b90b"></button>
+              <button class="ctx-color-btn w-6 h-6 rounded-full bg-cyan-400 border border-gray-600 hover:scale-110 transition" data-color="#22d3ee"></button>
+              <button class="ctx-color-btn w-6 h-6 rounded-full bg-pink-500 border border-gray-600 hover:scale-110 transition" data-color="#ec4899"></button>
+              <button class="ctx-color-btn w-6 h-6 rounded-full bg-emerald-400 border border-gray-600 hover:scale-110 transition" data-color="#10b981"></button>
+              
+              <!-- Context Menu Custom Color Picker -->
+              <label for="ctxCustomColorPicker" class="w-6 h-6 rounded-full bg-gradient-to-tr from-red-500 via-green-500 to-blue-500 border border-gray-500 flex items-center justify-center cursor-pointer hover:scale-110 transition shadow-inner relative overflow-hidden" title="İstediğin Tüm Renkler">
+                <input type="color" id="ctxCustomColorPicker" value="#f0b90b" class="absolute inset-0 opacity-0 cursor-pointer w-full h-full">
+              </label>
+            </div>
+          </div>
+
+          <div class="flex flex-col gap-1.5 border-b border-gray-800 pb-2">
+            <span class="text-gray-400 font-semibold text-[11px]">Kalınlık Seçenekleri:</span>
+            <div class="flex items-center gap-1.5">
+              <button class="ctx-width-btn px-2.5 py-1 rounded bg-bgHover text-gray-300 hover:text-gold hover:bg-gray-800 font-mono text-xs transition" data-width="1">1px</button>
+              <button class="ctx-width-btn px-2.5 py-1 rounded bg-bgHover text-gray-300 hover:text-gold hover:bg-gray-800 font-mono text-xs transition" data-width="2">2px</button>
+              <button class="ctx-width-btn px-2.5 py-1 rounded bg-bgHover text-gray-300 hover:text-gold hover:bg-gray-800 font-mono text-xs transition" data-width="3">3px</button>
+              <button class="ctx-width-btn px-2.5 py-1 rounded bg-bgHover text-gray-300 hover:text-gold hover:bg-gray-800 font-mono text-xs transition" data-width="4">4px</button>
+            </div>
+          </div>
+
+          <button id="btnDeleteDrawing" class="w-full py-1.5 bg-bearish/20 text-bearish hover:bg-bearish hover:text-white rounded-lg font-bold transition flex items-center justify-center gap-1.5 text-xs">
+            <i class="fa-solid fa-trash-can"></i> Çizimini Sil
+          </button>
+        </div>
+      </div>
+
+      <div id="rsiContainer" class="w-full h-28 border-t border-gray-800 bg-black relative hidden">
+        <div class="absolute top-1 left-3 z-10 text-[10px] font-bold text-indigo-400">RSI (14)</div>
+      </div>
+      <div id="macdContainer" class="w-full h-28 border-t border-gray-800 bg-black relative hidden">
+        <div class="absolute top-1 left-3 z-10 text-[10px] font-bold text-cyan-400">MACD (12, 26, 9)</div>
+      </div>
+    </main>
+
+    <!-- RIGHT SIDEBAR -->
+    <aside class="w-80 bg-bgCard border-l border-gray-800 flex flex-col flex-shrink-0 z-20 overflow-y-auto">
+      
+      <div class="p-4 border-b border-gray-800 bg-gradient-to-r from-bgCard to-bgDark">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-xs font-bold uppercase tracking-wider text-gold flex items-center gap-1.5">
+            <i class="fa-solid fa-brain"></i> LCA Next Candle Engine
+          </span>
+          <span class="text-[10px] bg-gold/10 text-gold font-mono px-2 py-0.5 rounded-full border border-gold/30">REALTIME</span>
+        </div>
+
+        <div id="signalCard" class="p-3.5 rounded-xl bg-bgDark border border-bullish/30 flex items-center justify-between shadow-lg transition-all duration-300">
+          <div>
+            <div class="text-[10px] text-gray-400 font-medium">PREDICTED DIRECTION</div>
+            <div id="signalText" class="text-xl font-black text-bullish tracking-wide flex items-center gap-2">
+              <i class="fa-solid fa-circle-arrow-up"></i> STRONG BUY
+            </div>
+          </div>
+          <div class="text-right">
+            <div class="text-[10px] text-gray-400">WIN RATE</div>
+            <div id="signalAccuracy" class="text-lg font-mono font-bold text-gold">88.4%</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-4 border-b border-gray-800 space-y-3">
+        <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Technical Analytics</h4>
+        
+        <div>
+          <div class="flex justify-between text-xs mb-1">
+            <span class="text-gray-400">Trend Momentum</span>
+            <span id="trendStrengthText" class="font-bold text-bullish">Bullish 76%</span>
+          </div>
+          <div class="w-full bg-bgDark h-2 rounded-full overflow-hidden border border-gray-800">
+            <div id="trendStrengthBar" class="bg-gradient-to-r from-yellow-500 to-bullish h-full rounded-full transition-all duration-500" style="width: 76%"></div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2 text-xs pt-1">
+          <div class="bg-bgDark p-2 rounded-lg border border-gray-800">
+            <div class="text-gray-500 text-[10px]">RESISTANCE (R1)</div>
+            <div id="resistanceVal" class="font-mono font-bold text-bearish">2,745.20</div>
+          </div>
+          <div class="bg-bgDark p-2 rounded-lg border border-gray-800">
+            <div class="text-gray-500 text-[10px]">SUPPORT (S1)</div>
+            <div id="supportVal" class="font-mono font-bold text-bullish">2,710.50</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-4 border-b border-gray-800 space-y-3">
+        <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center justify-between">
+          <span>Position Calculator (MT5 Style)</span>
+          <i class="fa-solid fa-calculator text-gold"></i>
+        </h4>
+
+        <div class="space-y-2 text-xs">
+          <div>
+            <label class="text-gray-400 block mb-1">Account Balance ($)</label>
+            <input type="number" id="calcBalance" value="10000" class="w-full bg-bgDark border border-gray-700 rounded p-1.5 font-mono text-white focus:outline-none focus:border-gold">
+          </div>
+          <div>
+            <label class="text-gray-400 block mb-1">Lot Size</label>
+            <input type="number" id="calcLotInput" value="0.80" step="0.01" class="w-full bg-bgDark border border-gray-700 rounded p-1.5 font-mono text-white focus:outline-none focus:border-gold">
+          </div>
+
+          <div class="p-2.5 bg-bgDark rounded-lg border border-gray-800 space-y-1 mt-2">
+            <div class="flex justify-between text-[11px]">
+              <span class="text-gray-400">Tahmini Risk / Kazanç:</span>
+              <span id="resRiskUSD" class="font-mono font-bold text-gold">$200.00 / $400.00</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-4 space-y-2">
+        <button id="btnBuy" class="w-full py-2.5 bg-bullish hover:bg-emerald-600 text-white font-bold rounded-lg shadow-lg shadow-bullish/20 transition flex items-center justify-center gap-2">
+          <i class="fa-solid fa-arrow-trend-up"></i> SIMULATE BUY
+        </button>
+        <button id="btnSell" class="w-full py-2.5 bg-bearish hover:bg-rose-600 text-white font-bold rounded-lg shadow-lg shadow-bearish/20 transition flex items-center justify-center gap-2">
+          <i class="fa-solid fa-arrow-trend-down"></i> SIMULATE SELL
+        </button>
+      </div>
+
+    </aside>
+  </div>
+
+  <!-- INDICATORS SELECTION MODAL -->
+  <div id="indicatorsModal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center hidden">
+    <div class="bg-bgCard border border-gray-700 w-full max-w-lg rounded-2xl shadow-2xl p-5 overflow-hidden flex flex-col gap-4">
+      <div class="flex items-center justify-between border-b border-gray-800 pb-3">
+        <h3 class="text-lg font-bold text-white flex items-center gap-2">
+          <i class="fa-solid fa-sliders text-gold"></i> Gösterge & Ayarlar (Indicators & Settings)
+        </h3>
+        <button id="btnCloseIndicatorsModal" class="text-gray-400 hover:text-white text-lg">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="space-y-3 max-h-96 overflow-y-auto pr-1">
+        <div class="p-3 bg-bgDark rounded-xl border border-gray-800 transition space-y-2">
+          <label class="flex items-center justify-between cursor-pointer">
+            <div>
+              <div class="font-bold text-sm text-white">EMA (Hareketli Ortalama Üstel)</div>
+              <div class="text-xs text-gray-400">Hızlı ve Yavaş Üstel Hareketli Ortalama</div>
+            </div>
+            <input type="checkbox" id="chkEMA" class="w-5 h-5 accent-gold cursor-pointer">
+          </label>
+          <div class="grid grid-cols-2 gap-2 pt-2 border-t border-gray-800/60 text-xs">
+            <div class="flex items-center gap-2">
+              <span class="text-gray-400">Hızlı Periyot:</span>
+              <input type="number" id="inputEmaFast" value="20" min="1" max="500" class="w-16 bg-bgHover border border-gray-700 rounded px-2 py-1 text-gold font-mono focus:outline-none focus:border-gold">
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-gray-400">Yavaş Periyot:</span>
+              <input type="number" id="inputEmaSlow" value="50" min="1" max="500" class="w-16 bg-bgHover border border-gray-700 rounded px-2 py-1 text-gold font-mono focus:outline-none focus:border-gold">
+            </div>
+          </div>
+        </div>
+
+        <div class="p-3 bg-bgDark rounded-xl border border-gray-800 transition space-y-2">
+          <label class="flex items-center justify-between cursor-pointer">
+            <div>
+              <div class="font-bold text-sm text-white">SMA (Basit Hareketli Ortalama)</div>
+              <div class="text-xs text-gray-400">Basit Trend Ortalaması</div>
+            </div>
+            <input type="checkbox" id="chkSMA" class="w-5 h-5 accent-gold cursor-pointer">
+          </label>
+          <div class="flex items-center gap-2 pt-2 border-t border-gray-800/60 text-xs">
+            <span class="text-gray-400">Periyot:</span>
+            <input type="number" id="inputSmaPeriod" value="100" min="1" max="500" class="w-20 bg-bgHover border border-gray-700 rounded px-2 py-1 text-gold font-mono focus:outline-none focus:border-gold">
+          </div>
+        </div>
+
+        <div class="p-3 bg-bgDark rounded-xl border border-gray-800 transition space-y-2">
+          <label class="flex items-center justify-between cursor-pointer">
+            <div>
+              <div class="font-bold text-sm text-white">RSI (Göreceli Güç Endeksi)</div>
+              <div class="text-xs text-gray-400">Aşırı Alım / Satım Osilatörü</div>
+            </div>
+            <input type="checkbox" id="chkRSI" class="w-5 h-5 accent-gold cursor-pointer">
+          </label>
+          <div class="flex items-center gap-2 pt-2 border-t border-gray-800/60 text-xs">
+            <span class="text-gray-400">Periyot:</span>
+            <input type="number" id="inputRsiPeriod" value="14" min="1" max="100" class="w-20 bg-bgHover border border-gray-700 rounded px-2 py-1 text-gold font-mono focus:outline-none focus:border-gold">
+          </div>
+        </div>
+
+        <div class="p-3 bg-bgDark rounded-xl border border-gray-800 transition space-y-2">
+          <label class="flex items-center justify-between cursor-pointer">
+            <div>
+              <div class="font-bold text-sm text-white">MACD</div>
+              <div class="text-xs text-gray-400">Momentum ve Trend Göstergesi</div>
+            </div>
+            <input type="checkbox" id="chkMACD" class="w-5 h-5 accent-gold cursor-pointer">
+          </label>
+          <div class="grid grid-cols-3 gap-2 pt-2 border-t border-gray-800/60 text-xs">
+            <div class="flex flex-col gap-1">
+              <span class="text-gray-400 text-[10px]">Hızlı:</span>
+              <input type="number" id="inputMacdFast" value="12" min="1" max="100" class="w-full bg-bgHover border border-gray-700 rounded px-1.5 py-1 text-gold font-mono focus:outline-none focus:border-gold">
+            </div>
+            <div class="flex flex-col gap-1">
+              <span class="text-gray-400 text-[10px]">Yavaş:</span>
+              <input type="number" id="inputMacdSlow" value="26" min="1" max="200" class="w-full bg-bgHover border border-gray-700 rounded px-1.5 py-1 text-gold font-mono focus:outline-none focus:border-gold">
+            </div>
+            <div class="flex flex-col gap-1">
+              <span class="text-gray-400 text-[10px]">Sinyal:</span>
+              <input type="number" id="inputMacdSignal" value="9" min="1" max="100" class="w-full bg-bgHover border border-gray-700 rounded px-1.5 py-1 text-gold font-mono focus:outline-none focus:border-gold">
+            </div>
+          </div>
+        </div>
+
+        <div class="p-3 bg-bgDark rounded-xl border border-gray-800 transition space-y-2">
+          <label class="flex items-center justify-between cursor-pointer">
+            <div>
+              <div class="font-bold text-sm text-white">Bollinger Bands</div>
+              <div class="text-xs text-gray-400">Volatilité Kanalları</div>
+            </div>
+            <input type="checkbox" id="chkBB" class="w-5 h-5 accent-gold cursor-pointer">
+          </label>
+          <div class="grid grid-cols-2 gap-2 pt-2 border-t border-gray-800/60 text-xs">
+            <div class="flex items-center gap-2">
+              <span class="text-gray-400">Periyot:</span>
+              <input type="number" id="inputBbPeriod" value="20" min="1" max="200" class="w-16 bg-bgHover border border-gray-700 rounded px-2 py-1 text-gold font-mono focus:outline-none focus:border-gold">
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-gray-400">Sapma (StdDev):</span>
+              <input type="number" id="inputBbStd" value="2" step="0.1" min="0.1" max="10" class="w-16 bg-bgHover border border-gray-700 rounded px-2 py-1 text-gold font-mono focus:outline-none focus:border-gold">
+            </div>
+          </div>
+        </div>
+
+        <div class="p-3 bg-bgDark rounded-xl border border-gray-800 transition space-y-2">
+          <label class="flex items-center justify-between cursor-pointer">
+            <div>
+              <div class="font-bold text-sm text-white">Supertrend Engine</div>
+              <div class="text-xs text-gray-400">ATR Tabanlı Trend Takip Çizgisi</div>
+            </div>
+            <input type="checkbox" id="chkSupertrend" class="w-5 h-5 accent-gold cursor-pointer">
+          </label>
+        </div>
+      </div>
+
+      <div class="flex justify-end pt-2 border-t border-gray-800">
+        <button id="btnApplyIndicators" class="px-5 py-2 bg-gold hover:bg-goldHover text-bgDark font-bold rounded-xl transition">
+          Uygula (Apply)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ORDER MODAL NOTIFICATION -->
+  <div id="orderNotification" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+    <div id="orderNotificationCard" class="px-5 py-4 rounded-xl bg-bgCard border border-gold shadow-2xl flex items-center gap-4">
+      <div id="orderIcon" class="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-lg">
+        <i class="fa-solid fa-check"></i>
+      </div>
+      <div>
+        <div id="orderTitle" class="font-extrabold text-sm text-white">EMİR SİMÜLASYONU</div>
+        <div id="orderDetails" class="text-xs font-mono text-gray-300">BUY 0.80 Lot @ 2728.50</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT LOGIC -->
+  <script>
+    const state = {
+      symbol: 'XAUUSD',
+      timeframe: '15m',
+      currentPrice: 2728.50,
+      prevPrice: 2728.50,
+      ws: null,
+      candles: [],
+      indicators: {
+        lca: true,
+        ema: false,
+        sma: false,
+        rsi: false,
+        macd: false,
+        bb: false,
+        supertrend: false
+      },
+      params: {
+        emaFast: 20,
+        emaSlow: 50,
+        smaPeriod: 100,
+        rsiPeriod: 14,
+        macdFast: 12,
+        macdSlow: 26,
+        macdSignal: 9,
+        bbPeriod: 20,
+        bbStd: 2
+      },
+      currentTool: 'cursor',
+      drawColor: '#f0b90b',
+      drawLineWidth: 2,
+      drawings: [],
+      selectedDrawingIndex: -1,
+      selectedAnchor: null,
+      activePosition: null,
+      draggingLine: null
+    };
+
+    let mainChart = null;
+    let candleSeries = null;
+    let ema20Series = null;
+    let ema50Series = null;
+    let smaSeries = null;
+    let bbUpperSeries = null;
+    let bbLowerSeries = null;
+    let supertrendSeries = null;
+
+    let rsiChart = null;
+    let rsiSeries = null;
+
+    let macdChart = null;
+    let macdLineSeries = null;
+    let macdSignalSeries = null;
+
+    let entryPriceLine = null;
+    let slPriceLine = null;
+    let tpPriceLine = null;
+
+    const assetSelect = document.getElementById('assetSelect');
+    const livePriceText = document.getElementById('livePriceText');
+    const priceChangeText = document.getElementById('priceChangeText');
+    const symbolLabel = document.getElementById('symbolLabel');
+    const chartContainer = document.getElementById('chartContainer');
+    const rsiContainer = document.getElementById('rsiContainer');
+    const macdContainer = document.getElementById('macdContainer');
+    const drawingCanvas = document.getElementById('drawingCanvas');
+    const ctx = drawingCanvas.getContext('2d');
+    const drawingContextMenu = document.getElementById('drawingContextMenu');
+    const drawingToolbar = document.getElementById('drawingToolbar');
+    const btnDeleteActiveDrawing = document.getElementById('btnDeleteActiveDrawing');
+
+    const assetConfigs = {
+      'XAUUSD': { basePrice: 2728.50, decimals: 2, isCrypto: false },
+      'EURUSD': { basePrice: 1.0850, decimals: 5, isCrypto: false },
+      'GBPUSD': { basePrice: 1.2980, decimals: 5, isCrypto: false },
+      'USDJPY': { basePrice: 152.30, decimals: 2, isCrypto: false },
+      'BTCUSDT': { basePrice: 67500.00, decimals: 2, isCrypto: true },
+      'ETHUSDT': { basePrice: 2520.00, decimals: 2, isCrypto: true },
+      'SOLUSDT': { basePrice: 175.00, decimals: 2, isCrypto: true },
+      'BNBUSDT': { basePrice: 590.00, decimals: 2, isCrypto: true },
+      'AAPL': { basePrice: 232.00, decimals: 2, isCrypto: false },
+      'TSLA': { basePrice: 218.00, decimals: 2, isCrypto: false },
+      'NVDA': { basePrice: 138.00, decimals: 2, isCrypto: false }
+    };
+
+    window.addEventListener('load', () => {
+      initCharts();
+      setupDrawingCanvas();
+      loadSymbolData(state.symbol);
+      setupEventListeners();
+      setupCalculator();
+    });
+
+    function initCharts() {
+      const container = document.getElementById('chartContainer');
+      const rsiCont = document.getElementById('rsiContainer');
+      const macdCont = document.getElementById('macdContainer');
+
+      if (!container) return;
+
+      const width = container.clientWidth || 800;
+      const height = container.clientHeight || 500;
+
+      mainChart = LightweightCharts.createChart(container, {
+        width: width,
+        height: height,
+        layout: {
+          background: { color: '#000000' },
+          textColor: '#9B9B9B',
+        },
+        grid: {
+          vertLines: { visible: false },
+          horzLines: { visible: false },
+        },
+        crosshair: {
+          mode: LightweightCharts.CrosshairMode.Normal,
+        },
+        rightPriceScale: {
+          borderColor: '#2a2e39',
+          autoScale: true,
+        },
+        timeScale: {
+          borderColor: '#2a2e39',
+          timeVisible: true,
+          secondsVisible: false,
+        },
+        handleScroll: {
+          mouseWheel: true,
+          pressedMouseMove: true,
+          horzTouchDrag: true,
+          vertTouchDrag: true,
+        },
+        handleScale: {
+          axisPressedMouseMove: true,
+          mouseWheel: true,
+          pinch: true,
+        },
+      });
+
+      candleSeries = mainChart.addCandlestickSeries({
+        upColor: '#089981',
+        downColor: '#f23645',
+        borderUpColor: '#089981',
+        borderDownColor: '#f23645',
+        wickUpColor: '#089981',
+        wickDownColor: '#f23645',
+      });
+
+      ema20Series = mainChart.addLineSeries({ color: '#f0b90b', lineWidth: 1.5, title: 'EMA 20' });
+      ema50Series = mainChart.addLineSeries({ color: '#3b82f6', lineWidth: 1.5, title: 'EMA 50' });
+      smaSeries = mainChart.addLineSeries({ color: '#ec4899', lineWidth: 1.5, title: 'SMA 100' });
+      bbUpperSeries = mainChart.addLineSeries({ color: '#6366f1', lineWidth: 1, title: 'BB Upper' });
+      bbLowerSeries = mainChart.addLineSeries({ color: '#6366f1', lineWidth: 1, title: 'BB Lower' });
+      supertrendSeries = mainChart.addLineSeries({ color: '#10b981', lineWidth: 2, title: 'Supertrend' });
+
+      mainChart.subscribeCrosshairMove(param => {
+        if (!param || !param.time || !param.seriesData) {
+          updateOHLCDisplay(state.candles[state.candles.length - 1]);
+          return;
+        }
+
+        let candleData = param.seriesData.get?.(candleSeries);
+        if (!candleData && param.seriesPrices?.get) {
+          candleData = param.seriesPrices.get(candleSeries);
+        }
+
+        if (candleData) {
+          updateOHLCDisplay({
+            open: candleData.open ?? candleData.value ?? 0,
+            high: candleData.high ?? candleData.value ?? 0,
+            low: candleData.low ?? candleData.value ?? 0,
+            close: candleData.close ?? candleData.value ?? 0
+          });
+        } else {
+          updateOHLCDisplay(state.candles[state.candles.length - 1]);
+        }
+      });
+
+      if (rsiCont) {
+        rsiChart = LightweightCharts.createChart(rsiCont, {
+          width: rsiCont.clientWidth || width,
+          height: rsiCont.clientHeight || 112,
+          layout: { background: { color: '#000000' }, textColor: '#9B9B9B' },
+          grid: { vertLines: { visible: false }, horzLines: { visible: false } },
+          rightPriceScale: { borderColor: '#2a2e39' },
+          timeScale: { visible: false }
+        });
+        rsiSeries = rsiChart.addLineSeries({ color: '#818cf8', lineWidth: 1.5 });
+      }
+
+      if (macdCont) {
+        macdChart = LightweightCharts.createChart(macdCont, {
+          width: macdCont.clientWidth || width,
+          height: macdCont.clientHeight || 112,
+          layout: { background: { color: '#000000' }, textColor: '#9B9B9B' },
+          grid: { vertLines: { visible: false }, horzLines: { visible: false } },
+          rightPriceScale: { borderColor: '#2a2e39' },
+          timeScale: { visible: false }
+        });
+        macdLineSeries = macdChart.addLineSeries({ color: '#38bdf8', lineWidth: 1.5 });
+        macdSignalSeries = macdChart.addLineSeries({ color: '#f43f5e', lineWidth: 1.5 });
+      }
+
+      window.addEventListener('resize', handleResize);
+    }
+
+    function resizeCanvas() {
+      const container = document.getElementById('chartContainer');
+      const canvas = document.getElementById('drawingCanvas');
+      if (!container || !canvas) return;
+      canvas.width = container.clientWidth;
+      canvas.height = container.clientHeight;
+      redrawCanvas();
+    }
+
+    function handleResize() {
+      const container = document.getElementById('chartContainer');
+      const rsiCont = document.getElementById('rsiContainer');
+      const macdCont = document.getElementById('macdContainer');
+
+      if (mainChart && container) {
+        mainChart.applyOptions({ width: container.clientWidth, height: container.clientHeight });
+      }
+      if (rsiChart && rsiCont) {
+        rsiChart.applyOptions({ width: rsiCont.clientWidth, height: rsiCont.clientHeight });
+      }
+      if (macdChart && macdCont) {
+        macdChart.applyOptions({ width: macdCont.clientWidth, height: macdCont.clientHeight });
+      }
+      resizeCanvas();
+    }
+
+    function generateCandleData(basePrice, count = 150) {
+      const data = [];
+      let time = Math.floor(Date.now() / 1000) - count * 900;
+      let close = basePrice;
+
+      for (let i = 0; i < count; i++) {
+        const volatility = basePrice * 0.0025;
+        const open = close;
+        const change = (Math.random() - 0.49) * volatility;
+        close = open + change;
+        const high = Math.max(open, close) + Math.random() * volatility * 0.5;
+        const low = Math.min(open, close) - Math.random() * volatility * 0.5;
+
+        data.push({ time, open, high, low, close });
+        time += 900;
+      }
+      return data;
+    }
+
+    function loadSymbolData(symbol) {
+      state.symbol = symbol;
+      symbolLabel.innerText = symbol;
+
+      if (state.ws) {
+        state.ws.close();
+        state.ws = null;
+      }
+
+      const config = assetConfigs[symbol] || { basePrice: 100, decimals: 2, isCrypto: false };
+      state.candles = generateCandleData(config.basePrice);
+
+      candleSeries.setData(state.candles);
+      updateIndicators();
+
+      const lastCandle = state.candles[state.candles.length - 1];
+      state.currentPrice = lastCandle.close;
+      updatePriceHeader(lastCandle.close, state.candles[0].open, config.decimals);
+      updateOHLCDisplay(lastCandle);
+      updateAISignals();
+
+      if (config.isCrypto) {
+        connectBinanceWebSocket(symbol.toLowerCase());
+      } else {
+        startSimulatedTicks(config);
+      }
+    }
+
+    function connectBinanceWebSocket(symbol) {
+      const wsUrl = `wss://stream.binance.com:9443/ws/${symbol}@ticker`;
+      state.ws = new WebSocket(wsUrl);
+      state.ws.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        handleNewPriceTick(parseFloat(data.c), assetConfigs[state.symbol].decimals);
+      };
+    }
+
+    let simInterval = null;
+    function startSimulatedTicks(config) {
+      if (simInterval) clearInterval(simInterval);
+      simInterval = setInterval(() => {
+        const delta = (Math.random() - 0.495) * (config.basePrice * 0.0004);
+        handleNewPriceTick(state.currentPrice + delta, config.decimals);
+      }, 1000);
+    }
+
+    function handleNewPriceTick(price, decimals) {
+      state.prevPrice = state.currentPrice;
+      state.currentPrice = price;
+
+      updatePriceHeader(price, state.candles[0].open, decimals);
+
+      const lastCandle = state.candles[state.candles.length - 1];
+      lastCandle.high = Math.max(lastCandle.high, price);
+      lastCandle.low = Math.min(lastCandle.low, price);
+      lastCandle.close = price;
+
+      candleSeries.update(lastCandle);
+      updateOHLCDisplay(lastCandle);
+
+      if (state.activePosition) {
+        checkAutoCloseTPandSL(price);
+        if (state.activePosition) {
+          updateActivePositionPnL();
+        }
+      }
+
+      if (Math.random() < 0.2) updateAISignals();
+    }
+
+    function checkAutoCloseTPandSL(currentPrice) {
+      const pos = state.activePosition;
+      if (!pos) return;
+
+      const isBuy = pos.type === 'BUY';
+      let closedBy = null;
+
+      if (isBuy) {
+        if (currentPrice >= pos.tpPrice) closedBy = 'TP';
+        else if (currentPrice <= pos.slPrice) closedBy = 'SL';
+      } else {
+        if (currentPrice <= pos.tpPrice) closedBy = 'TP';
+        else if (currentPrice >= pos.slPrice) closedBy = 'SL';
+      }
+
+      if (closedBy) {
+        const diffPips = isBuy ? (currentPrice - pos.entryPrice) / pos.pipMultiplier : (pos.entryPrice - currentPrice) / pos.pipMultiplier;
+        const finalPnLUSD = diffPips * 10 * pos.lotNumber;
+        const dec = assetConfigs[state.symbol]?.decimals || 2;
+
+        closeActivePosition();
+        showAutoCloseNotification(closedBy, finalPnLUSD, currentPrice, dec);
+      }
+    }
+
+    function updatePriceHeader(price, startPrice, decimals) {
+      const change = price - startPrice;
+      const changePercent = (change / startPrice) * 100;
+      const isUp = change >= 0;
+
+      livePriceText.innerText = price.toFixed(decimals);
+      livePriceText.className = `text-lg font-bold ${isUp ? 'text-bullish' : 'text-bearish'}`;
+
+      priceChangeText.innerText = `${isUp ? '+' : ''}${changePercent.toFixed(2)}%`;
+      priceChangeText.className = `text-xs font-semibold px-1.5 py-0.5 rounded ${
+        isUp ? 'text-bullish bg-bullish/10' : 'text-bearish bg-bearish/10'
+      }`;
+
+      const box = document.getElementById('priceHeaderBox');
+      box.classList.remove('flash-up', 'flash-down');
+      void box.offsetWidth;
+      box.classList.add(price >= state.prevPrice ? 'flash-up' : 'flash-down');
+    }
+
+    function updateOHLCDisplay(c) {
+      if (!c) return;
+      const dec = assetConfigs[state.symbol]?.decimals || 2;
+      document.getElementById('ohlcO').innerText = c.open.toFixed(dec);
+      document.getElementById('ohlcH').innerText = c.high.toFixed(dec);
+      document.getElementById('ohlcL').innerText = c.low.toFixed(dec);
+      document.getElementById('ohlcC').innerText = c.close.toFixed(dec);
+    }
+
+    function updateIndicators() {
+      const closes = state.candles.map(c => c.close);
+
+      if (state.indicators.ema) {
+        const emaFast = calcEMA(closes, state.params.emaFast);
+        const emaSlow = calcEMA(closes, state.params.emaSlow);
+        ema20Series.applyOptions({ title: `EMA ${state.params.emaFast}` });
+        ema50Series.applyOptions({ title: `EMA ${state.params.emaSlow}` });
+        ema20Series.setData(state.candles.map((c, i) => ({ time: c.time, value: emaFast[i] })));
+        ema50Series.setData(state.candles.map((c, i) => ({ time: c.time, value: emaSlow[i] })));
+      } else {
+        ema20Series.setData([]); ema50Series.setData([]);
+      }
+
+      if (state.indicators.sma) {
+        const smaVal = calcSMA(closes, state.params.smaPeriod);
+        smaSeries.applyOptions({ title: `SMA ${state.params.smaPeriod}` });
+        smaSeries.setData(state.candles.map((c, i) => ({ time: c.time, value: smaVal[i] })));
+      } else {
+        smaSeries.setData([]);
+      }
+
+      if (state.indicators.bb) {
+        const { upper, lower } = calcBollingerBands(closes, state.params.bbPeriod, state.params.bbStd);
+        bbUpperSeries.setData(state.candles.map((c, i) => ({ time: c.time, value: upper[i] })));
+        bbLowerSeries.setData(state.candles.map((c, i) => ({ time: c.time, value: lower[i] })));
+      } else {
+        bbUpperSeries.setData([]); bbLowerSeries.setData([]);
+      }
+
+      if (state.indicators.supertrend) {
+        const st = calcSupertrend(state.candles);
+        supertrendSeries.setData(state.candles.map((c, i) => ({ time: c.time, value: st[i] })));
+      } else {
+        supertrendSeries.setData([]);
+      }
+
+      if (state.indicators.rsi) {
+        const rsiVal = calcRSI(closes, state.params.rsiPeriod);
+        rsiSeries.setData(state.candles.map((c, i) => ({ time: c.time, value: rsiVal[i] })));
+      }
+
+      if (state.indicators.macd) {
+        const { macd, signal } = calcMACD(closes, state.params.macdFast, state.params.macdSlow, state.params.macdSignal);
+        macdLineSeries.setData(state.candles.map((c, i) => ({ time: c.time, value: macd[i] })));
+        macdSignalSeries.setData(state.candles.map((c, i) => ({ time: c.time, value: signal[i] })));
+      }
+
+      if (state.indicators.lca) {
+        setLCAPredictionMarkers();
+      } else {
+        candleSeries.setMarkers([]);
+      }
+    }
+
+    function calcEMA(data, period) {
+      const k = 2 / (period + 1);
+      let ema = [data[0]];
+      for (let i = 1; i < data.length; i++) ema.push(data[i] * k + ema[i - 1] * (1 - k));
+      return ema;
+    }
+
+    function calcSMA(data, period) {
+      let sma = [];
+      for (let i = 0; i < data.length; i++) {
+        if (i < period - 1) sma.push(data[i]);
+        else {
+          const sum = data.slice(i - period + 1, i + 1).reduce((a, b) => a + b, 0);
+          sma.push(sum / period);
+        }
+      }
+      return sma;
+    }
+
+    function calcRSI(data, period = 14) {
+      let rsi = new Array(data.length).fill(50);
+      if (data.length <= period) return rsi;
+
+      let gains = 0, losses = 0;
+      for (let i = 1; i <= period; i++) {
+        const diff = data[i] - data[i - 1];
+        if (diff >= 0) gains += diff; else losses -= diff;
+      }
+      let avgGain = gains / period; let avgLoss = losses / period;
+      for (let i = period + 1; i < data.length; i++) {
+        const diff = data[i] - data[i - 1];
+        if (diff >= 0) { avgGain = (avgGain * (period - 1) + diff) / period; avgLoss = (avgLoss * (period - 1)) / period; }
+        else { avgGain = (avgGain * (period - 1)) / period; avgLoss = (avgLoss * (period - 1) - diff) / period; }
+        const rs = avgGain / (avgLoss || 1);
+        rsi[i] = 100 - (100 / (1 + rs));
+      }
+      return rsi;
+    }
+
+    function calcMACD(data, fast = 12, slow = 26, signalPeriod = 9) {
+      const emaFast = calcEMA(data, fast);
+      const emaSlow = calcEMA(data, slow);
+      const macd = emaFast.map((v, i) => v - emaSlow[i]);
+      const signal = calcEMA(macd, signalPeriod);
+      return { macd, signal };
+    }
+
+    function calcBollingerBands(data, period = 20, multiplier = 2) {
+      const sma = calcSMA(data, period);
+      let upper = [], lower = [];
+      for (let i = 0; i < data.length; i++) {
+        if (i < period - 1) { upper.push(data[i]); lower.push(data[i]); continue; }
+        const slice = data.slice(i - period + 1, i + 1);
+        const mean = sma[i];
+        const variance = slice.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / period;
+        const stdDev = Math.sqrt(variance);
+        upper.push(mean + stdDev * multiplier);
+        lower.push(mean - stdDev * multiplier);
+      }
+      return { upper, lower };
+    }
+
+    function calcSupertrend(candles) {
+      return candles.map(c => c.close * 0.995);
+    }
+
+    function setLCAPredictionMarkers() {
+      const markers = [];
+      for (let i = 20; i < state.candles.length; i += 8) {
+        const c = state.candles[i];
+        const prevC = state.candles[i - 1];
+        const isBuy = c.close > prevC.close && Math.random() > 0.3;
+        markers.push({
+          time: c.time,
+          position: isBuy ? 'belowBar' : 'aboveBar',
+          color: isBuy ? '#089981' : '#f23645',
+          shape: isBuy ? 'arrowUp' : 'arrowDown',
+          text: isBuy ? 'LCA BUY' : 'LCA SELL',
+        });
+      }
+      candleSeries.setMarkers(markers);
+    }
+
+    function updateAISignals() {
+      const p = state.currentPrice;
+      const isBullish = p >= state.candles[state.candles.length - 10].close;
+      const confidence = (82 + Math.random() * 12).toFixed(1);
+
+      const signalCard = document.getElementById('signalCard');
+      const signalText = document.getElementById('signalText');
+
+      if (isBullish) {
+        signalText.innerHTML = `<i class="fa-solid fa-circle-arrow-up"></i> STRONG BUY`;
+        signalText.className = 'text-xl font-black text-bullish tracking-wide flex items-center gap-2';
+        signalCard.className = 'p-3.5 rounded-xl bg-bgDark border border-bullish/40 shadow-lg shadow-bullish/10';
+      } else {
+        signalText.innerHTML = `<i class="fa-solid fa-circle-arrow-down"></i> STRONG SELL`;
+        signalText.className = 'text-xl font-black text-bearish tracking-wide flex items-center gap-2';
+        signalCard.className = 'p-3.5 rounded-xl bg-bgDark border border-bearish/40 shadow-lg shadow-bearish/10';
+      }
+
+      document.getElementById('signalAccuracy').innerText = `${confidence}%`;
+      const momentum = isBullish ? 65 + Math.floor(Math.random() * 25) : 15 + Math.floor(Math.floor(Math.random() * 25));
+      document.getElementById('trendStrengthText').innerText = `${isBullish ? 'Bullish' : 'Bearish'} ${momentum}%`;
+      document.getElementById('trendStrengthBar').style.width = `${momentum}%`;
+
+      const dec = assetConfigs[state.symbol]?.decimals || 2;
+      document.getElementById('resistanceVal').innerText = (p * 1.008).toFixed(dec);
+      document.getElementById('supportVal').innerText = (p * 0.992).toFixed(dec);
+    }
+
+    function setupDrawingCanvas() {
+      resizeCanvas();
+      let clickStep = 0;
+      let startX = 0, startY = 0;
+      let isDraggingAnchor = false;
+      let isDraggingEntireDrawing = false;
+      let dragOffsetX = 0, dragOffsetY = 0;
+      let isDrawingBrush = false;
+      let currentBrushPoints = [];
+
+      // --- YENİ: DRAG & SEÇİM MÜDAHALE MANTIĞI (CAPTURING) ---
+      const handleChartInteractionDown = (clientX, clientY, e) => {
+        const rect = chartContainer.getBoundingClientRect();
+        const curX = clientX - rect.left;
+        const curY = clientY - rect.top;
+        
+        // 1. TP / SL Sürükleme Kontrolü (En Yüksek Öncelik)
+        if (state.activePosition && candleSeries) {
+          const tpY = candleSeries.priceToCoordinate(state.activePosition.tpPrice);
+          const slY = candleSeries.priceToCoordinate(state.activePosition.slPrice);
+          const dragTolerance = 25; 
+
+          if (tpY !== null && Math.abs(curY - tpY) <= dragTolerance) {
+            state.draggingLine = 'tp';
+            document.body.style.cursor = 'ns-resize';
+            e.stopPropagation(); 
+            if (e.cancelable) e.preventDefault();
+            return;
+          } else if (slY !== null && Math.abs(curY - slY) <= dragTolerance) {
+            state.draggingLine = 'sl';
+            document.body.style.cursor = 'ns-resize';
+            e.stopPropagation(); 
+            if (e.cancelable) e.preventDefault();
+            return;
+          }
+        }
+
+        // 2. Çizim Seçme ve Kaydırma (Yalnızca "İmleç" modundayken)
+        if (state.currentTool === 'cursor') {
+          // Önce seçili bir çizimin kenar/bağlantı noktasına (Anchor) basılıp basılmadığını kontrol et
+          if (state.selectedDrawingIndex !== -1) {
+            const d = state.drawings[state.selectedDrawingIndex];
+            const anchorClicked = checkAnchorClick(d, curX, curY);
+            if (anchorClicked) {
+              isDraggingAnchor = true;
+              state.selectedAnchor = anchorClicked;
+              document.body.style.cursor = 'crosshair';
+              e.stopPropagation(); // Grafiğin kaymasını engelle
+              if (e.cancelable) e.preventDefault();
+              return;
+            }
+          }
+
+          // Çizimin tamamına basılıp basılmadığını kontrol et (Seçme ve Taşıma)
+          const clickedIndex = findDrawingAtPoint(curX, curY);
+          if (clickedIndex !== -1) {
+            state.selectedDrawingIndex = clickedIndex;
+            isDraggingEntireDrawing = true;
+            dragOffsetX = curX;
+            dragOffsetY = curY;
+            document.body.style.cursor = 'move';
+            
+            showDrawingToolbarSelection();
+            showDrawingContextMenu(clientX, clientY);
+            redrawCanvas();
+            
+            e.stopPropagation(); // Grafiğin kaymasını engelle
+            if (e.cancelable) e.preventDefault();
+            return;
+          }
+
+          // Eğer imleç modunda grafiğin boş bir yerine tıklandıysa çizim seçimini iptal et
+          if (state.selectedDrawingIndex !== -1) {
+            state.selectedDrawingIndex = -1;
+            state.selectedAnchor = null;
+            hideDrawingContextMenu();
+            hideDrawingToolbarSelection();
+            redrawCanvas();
+          }
+        }
+      };
+
+      // Etkileşimleri Lightweight-charts kütüphanesinden önce yakalamak için 'true' (Capturing) kullanıyoruz
+      chartContainer.addEventListener('mousedown', (e) => {
+        handleChartInteractionDown(e.clientX, e.clientY, e);
+      }, true);
+
+      chartContainer.addEventListener('touchstart', (e) => {
+        if (e.touches.length === 1) {
+          handleChartInteractionDown(e.touches[0].clientX, e.touches[0].clientY, e);
+        }
+      }, { passive: false, capture: true });
+      // ---------------------------------------------
+
+
+      // Hareketi işleme fonksiyonu (Hem çizim oluşturma hem de taşıma işlemleri)
+      const handlePointerMove = (clientX, clientY, e) => {
+        const rect = drawingCanvas.getBoundingClientRect();
+        const curX = clientX - rect.left;
+        const curY = clientY - rect.top;
+
+        // TP/SL Çizgi sürükleme işlemi
+        if (state.draggingLine && state.activePosition && candleSeries) {
+          const newPrice = candleSeries.coordinateToPrice(curY);
+          if (newPrice !== null && newPrice > 0) {
+            const dec = assetConfigs[state.symbol]?.decimals || 2;
+            if (state.draggingLine === 'tp') {
+              state.activePosition.tpPrice = newPrice;
+              if (tpPriceLine) candleSeries.removePriceLine(tpPriceLine);
+              tpPriceLine = candleSeries.createPriceLine({
+                price: newPrice,
+                color: '#089981',
+                lineWidth: 2,
+                lineStyle: LightweightCharts.LineStyle.Dashed,
+                axisLabelVisible: true,
+                title: `TP: ${newPrice.toFixed(dec)}`,
+              });
+            } else if (state.draggingLine === 'sl') {
+              state.activePosition.slPrice = newPrice;
+              if (slPriceLine) candleSeries.removePriceLine(slPriceLine);
+              slPriceLine = candleSeries.createPriceLine({
+                price: newPrice,
+                color: '#f23645',
+                lineWidth: 2,
+                lineStyle: LightweightCharts.LineStyle.Dashed,
+                axisLabelVisible: true,
+                title: `SL: ${newPrice.toFixed(dec)}`,
+              });
+            }
+            updateCalcRiskReward();
+            redrawCanvas();
+          }
+          if (e && e.cancelable) e.preventDefault();
+          return;
+        }
+
+        // Çizim kenarlarından (Anchor) boyutlandırma
+        if (isDraggingAnchor && state.selectedDrawingIndex !== -1 && state.selectedAnchor) {
+          const d = state.drawings[state.selectedDrawingIndex];
+          if (d.type === 'horizontal') {
+            d.y1 = curY;
+          } else if (d.type === 'rectangle') {
+            if (state.selectedAnchor === 'tl') { d.x1 = curX; d.y1 = curY; }
+            else if (state.selectedAnchor === 'tr') { d.x2 = curX; d.y1 = curY; }
+            else if (state.selectedAnchor === 'bl') { d.x1 = curX; d.y2 = curY; }
+            else if (state.selectedAnchor === 'br') { d.x2 = curX; d.y2 = curY; }
+          } else if (state.selectedAnchor === 'p1') {
+            d.x1 = curX;
+            d.y1 = curY;
+          } else if (state.selectedAnchor === 'p2') {
+            d.x2 = curX;
+            d.y2 = curY;
+          }
+          redrawCanvas();
+          showDrawingContextMenu(clientX, clientY);
+          if (e && e.cancelable) e.preventDefault();
+          return;
+        }
+
+        // Çizimi komple taşıma işlemi
+        if (isDraggingEntireDrawing && state.selectedDrawingIndex !== -1) {
+          const d = state.drawings[state.selectedDrawingIndex];
+          if (d.type === 'brush' && d.points) {
+            const dx = curX - dragOffsetX;
+            const dy = curY - dragOffsetY;
+            d.points.forEach(p => { p.x += dx; p.y += dy; });
+          } else if (d.type === 'rectangle') {
+            const dx = curX - dragOffsetX;
+            const dy = curY - dragOffsetY;
+            d.x1 += dx; d.y1 += dy;
+            d.x2 += dx; d.y2 += dy;
+          } else {
+            const dx = curX - dragOffsetX;
+            const dy = curY - dragOffsetY;
+            d.x1 += dx; d.y1 += dy;
+            if (d.x2 !== undefined) { d.x2 += dx; d.y2 += dy; }
+          }
+          dragOffsetX = curX;
+          dragOffsetY = curY;
+          redrawCanvas();
+          showDrawingContextMenu(clientX, clientY);
+          if (e && e.cancelable) e.preventDefault();
+          return;
+        }
+
+        // Fırça ile çizme
+        if (isDrawingBrush) {
+          currentBrushPoints.push({ x: curX, y: curY });
+          redrawCanvas();
+          ctx.strokeStyle = state.drawColor;
+          ctx.lineWidth = state.drawLineWidth || 2;
+          ctx.lineCap = 'round';
+          ctx.lineJoin = 'round';
+          ctx.beginPath();
+          ctx.moveTo(currentBrushPoints[0].x, currentBrushPoints[0].y);
+          for (let i = 1; i < currentBrushPoints.length; i++) {
+            ctx.lineTo(currentBrushPoints[i].x, currentBrushPoints[i].y);
+          }
+          ctx.stroke();
+          if (e && e.cancelable) e.preventDefault();
+          return;
+        }
+
+        // Diğer çizimler için öngörüntü oluşturma (Trend, Kutu, Fib vs.)
+        if (clickStep === 1 && state.currentTool !== 'cursor' && state.currentTool !== 'brush') {
+          redrawCanvas();
+          drawPreviewShape(startX, startY, curX, curY, state.currentTool, state.drawColor, state.drawLineWidth || 2, false);
+        }
+      };
+
+      // SADECE YENİ ÇİZİM OLUŞTURMA işlemleri
+      const handlePointerDown = (clientX, clientY, event) => {
+        if (state.currentTool === 'cursor') return; // Cursor işlemleri handleChartInteractionDown içerisinde yapıldı.
+
+        const rect = drawingCanvas.getBoundingClientRect();
+        const curX = clientX - rect.left;
+        const curY = clientY - rect.top;
+
+        if (state.currentTool === 'brush') {
+          isDrawingBrush = true;
+          currentBrushPoints = [{ x: curX, y: curY }];
+          if (event.cancelable) event.preventDefault();
+          return;
+        }
+
+        if (clickStep === 0) {
+          clickStep = 1;
+          startX = curX;
+          startY = curY;
+        } else if (clickStep === 1) {
+          state.drawings.push({
+            type: state.currentTool,
+            x1: startX,
+            y1: startY,
+            x2: curX,
+            y2: curY,
+            color: state.drawColor,
+            lineWidth: state.drawLineWidth || 2
+          });
+          clickStep = 0;
+          state.selectedDrawingIndex = state.drawings.length - 1;
+          showDrawingToolbarSelection();
+          resetToolToCursor();
+          redrawCanvas();
+        }
+      };
+
+      function resetToolToCursor() {
+        state.currentTool = 'cursor';
+        document.querySelectorAll('.tool-btn').forEach(b => {
+          if (b.dataset.tool === 'cursor') {
+            b.classList.add('active', 'text-gold');
+          } else {
+            b.classList.remove('active', 'text-gold');
+          }
+        });
+        drawingCanvas.classList.remove('active-draw');
+        drawingCanvas.style.cursor = 'default';
+      }
+
+      drawingCanvas.addEventListener('mousedown', (e) => handlePointerDown(e.clientX, e.clientY, e));
+
+      window.addEventListener('mousemove', (e) => {
+        handlePointerMove(e.clientX, e.clientY, e);
+      });
+
+      window.addEventListener('mouseup', () => {
+        if (state.draggingLine) {
+          state.draggingLine = null;
+          document.body.style.cursor = ''; 
+        }
+
+        if (isDraggingAnchor) {
+          isDraggingAnchor = false;
+          state.selectedAnchor = null;
+          document.body.style.cursor = '';
+        }
+
+        if (isDraggingEntireDrawing) {
+          isDraggingEntireDrawing = false;
+          document.body.style.cursor = '';
+        }
+
+        if (isDrawingBrush) {
+          isDrawingBrush = false;
+          if (currentBrushPoints.length > 1) {
+            state.drawings.push({
+              type: 'brush',
+              points: currentBrushPoints,
+              color: state.drawColor,
+              lineWidth: state.drawLineWidth || 2
+            });
+            state.selectedDrawingIndex = state.drawings.length - 1;
+            showDrawingToolbarSelection();
+          }
+          currentBrushPoints = [];
+          redrawCanvas();
+        }
+      });
+
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && clickStep === 1) {
+          clickStep = 0;
+          resetToolToCursor();
+          redrawCanvas();
+        }
+      });
+
+      drawingCanvas.addEventListener('touchstart', (e) => {
+        if (e.touches.length === 1) {
+          handlePointerDown(e.touches[0].clientX, e.touches[0].clientY, e);
+        }
+      }, { passive: false });
+
+      window.addEventListener('touchmove', (e) => {
+        if (e.touches.length === 1) {
+          handlePointerMove(e.touches[0].clientX, e.touches[0].clientY, e);
+        }
+      }, { passive: false });
+
+      window.addEventListener('touchend', () => {
+        if (state.draggingLine) {
+          state.draggingLine = null;
+          document.body.style.cursor = '';
+        }
+        if (isDraggingAnchor) {
+          isDraggingAnchor = false;
+          state.selectedAnchor = null;
+          document.body.style.cursor = '';
+        }
+        if (isDraggingEntireDrawing) {
+          isDraggingEntireDrawing = false;
+          document.body.style.cursor = '';
+        }
+        if (isDrawingBrush) {
+          isDrawingBrush = false;
+          if (currentBrushPoints.length > 1) {
+            state.drawings.push({
+              type: 'brush',
+              points: currentBrushPoints,
+              color: state.drawColor,
+              lineWidth: state.drawLineWidth || 2
+            });
+          }
+          currentBrushPoints = [];
+          redrawCanvas();
+        }
+      });
+    }
+
+    function checkAnchorClick(drawing, x, y) {
+      const radius = 16;
+      if (drawing.type === 'horizontal') {
+        if (Math.hypot(x - drawingCanvas.width / 2, y - drawing.y1) <= radius) return 'p1';
+      } else if (drawing.type === 'rectangle') {
+        const minX = Math.min(drawing.x1, drawing.x2);
+        const maxX = Math.max(drawing.x1, drawing.x2);
+        const minY = Math.min(drawing.y1, drawing.y2);
+        const maxY = Math.max(drawing.y1, drawing.y2);
+
+        if (Math.hypot(x - minX, y - minY) <= radius) return 'tl';
+        if (Math.hypot(x - maxX, y - minY) <= radius) return 'tr';
+        if (Math.hypot(x - minX, y - maxY) <= radius) return 'bl';
+        if (Math.hypot(x - maxX, y - maxY) <= radius) return 'br';
+      } else if (drawing.x1 !== undefined && drawing.y1 !== undefined) {
+        if (Math.hypot(x - drawing.x1, y - drawing.y1) <= radius) return 'p1';
+        if (drawing.x2 !== undefined && Math.hypot(x - drawing.x2, y - drawing.y2) <= radius) return 'p2';
+      }
+      return null;
+    }
+
+    function redrawCanvas() {
+      ctx.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);
+      state.drawings.forEach((d, idx) => {
+        const isSelected = idx === state.selectedDrawingIndex;
+        const width = d.lineWidth || 2;
+
+        if (d.type === 'brush' && d.points && d.points.length > 0) {
+          ctx.strokeStyle = d.color;
+          ctx.lineWidth = isSelected ? width + 2 : width;
+          ctx.lineCap = 'round';
+          ctx.lineJoin = 'round';
+          ctx.beginPath();
+          ctx.moveTo(d.points[0].x, d.points[0].y);
+          for (let i = 1; i < d.points.length; i++) {
+            ctx.lineTo(d.points[i].x, d.points[i].y);
+          }
+          ctx.stroke();
+
+          if (isSelected) {
+            drawAnchorCircle(d.points[0].x, d.points[0].y);
+            drawAnchorCircle(d.points[d.points.length - 1].x, d.points[d.points.length - 1].y);
+          }
+        } else {
+          drawPreviewShape(d.x1, d.y1, d.x2, d.y2, d.type, d.color, width, isSelected);
+        }
+      });
+
+      if (state.activePosition && candleSeries) {
+        const dec = assetConfigs[state.symbol]?.decimals || 2;
+        const tpY = candleSeries.priceToCoordinate(state.activePosition.tpPrice);
+        const slY = candleSeries.priceToCoordinate(state.activePosition.slPrice);
+
+        if (tpY !== null) {
+          ctx.fillStyle = '#089981';
+          ctx.beginPath();
+          ctx.arc(drawingCanvas.width - 70, tpY, 6, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.fillStyle = '#ffffff';
+          ctx.font = 'bold 9px sans-serif';
+          ctx.fillText('TP ↕', drawingCanvas.width - 64, tpY + 3);
+        }
+
+        if (slY !== null) {
+          ctx.fillStyle = '#f23645';
+          ctx.beginPath();
+          ctx.arc(drawingCanvas.width - 70, slY, 6, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.fillStyle = '#ffffff';
+          ctx.font = 'bold 9px sans-serif';
+          ctx.fillText('SL ↕', drawingCanvas.width - 64, slY + 3);
+        }
+      }
+    }
+
+    function drawAnchorCircle(x, y) {
+      ctx.save();
+      ctx.fillStyle = '#f0b90b';
+      ctx.strokeStyle = '#000000';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(x, y, 5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function findDrawingAtPoint(x, y) {
+      const tolerance = 12;
+      for (let i = state.drawings.length - 1; i >= 0; i--) {
+        const d = state.drawings[i];
+        if (d.type === 'brush' && d.points && d.points.length > 0) {
+          for (let p of d.points) {
+            if (Math.hypot(x - p.x, y - p.y) <= tolerance) return i;
+          }
+        } else if (d.type === 'horizontal') {
+          if (Math.abs(y - d.y1) <= tolerance) return i;
+        } else if (d.type === 'trendline') {
+          const dist = distanceToSegment({ x, y }, { x: d.x1, y: d.y1 }, { x: d.x2, y: d.y2 });
+          if (dist <= tolerance) return i;
+        } else if (d.type === 'rectangle') {
+          const minX = Math.min(d.x1, d.x2);
+          const maxX = Math.max(d.x1, d.x2);
+          const minY = Math.min(d.y1, d.y2);
+          const maxY = Math.max(d.y1, d.y2);
+          if (x >= minX - tolerance && x <= maxX + tolerance && y >= minY - tolerance && y <= maxY + tolerance) return i;
+        } else if (d.type === 'fibonacci') {
+          const minY = Math.min(d.y1, d.y2);
+          const maxY = Math.max(d.y1, d.y2);
+          if (y >= minY - tolerance && y <= maxY + tolerance) return i;
+        }
+      }
+      return -1;
+    }
+
+    function distanceToSegment(p, v, w) {
+      const l2 = (w.x - v.x) ** 2 + (w.y - v.y) ** 2;
+      if (l2 === 0) return Math.hypot(p.x - v.x, p.y - v.y);
+      let t = ((p.x - v.x) * (w.x - v.x) + (p.y - v.y) * (w.y - v.y)) / l2;
+      t = Math.max(0, Math.min(1, t));
+      return Math.hypot(p.x - (v.x + t * (w.x - v.x)), p.y - (v.y + t * (w.y - v.y)));
+    }
+
+    function showDrawingContextMenu(clientX, clientY) {
+      if (!drawingContextMenu) return;
+      const maxLeft = window.innerWidth - 220;
+      const maxTop = window.innerHeight - 200;
+      const leftPos = Math.min(Math.max(20, clientX + 15), maxLeft);
+      const topPos = Math.min(Math.max(70, clientY - 40), maxTop);
+
+      drawingContextMenu.style.left = `${leftPos}px`;
+      drawingContextMenu.style.top = `${topPos}px`;
+      drawingContextMenu.classList.remove('hidden');
+    }
+
+    function hideDrawingContextMenu() {
+      if (drawingContextMenu) drawingContextMenu.classList.add('hidden');
+    }
+
+    function drawPreviewShape(x1, y1, x2, y2, tool, color = '#ffffff', lineWidth = 2, isSelected = false) {
+      ctx.strokeStyle = color;
+      ctx.lineWidth = isSelected ? lineWidth + 1 : lineWidth;
+      ctx.fillStyle = color + '22';
+
+      ctx.beginPath();
+      if (tool === 'trendline') {
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.stroke();
+        if (isSelected) {
+          drawAnchorCircle(x1, y1);
+          drawAnchorCircle(x2, y2);
+        }
+      } else if (tool === 'horizontal') {
+        ctx.moveTo(0, y1);
+        ctx.lineTo(drawingCanvas.width, y1);
+        ctx.stroke();
+        if (isSelected) {
+          drawAnchorCircle(drawingCanvas.width / 2, y1);
+        }
+      } else if (tool === 'rectangle') {
+        const minX = Math.min(x1, x2);
+        const minY = Math.min(y1, y2);
+        const w = Math.abs(x2 - x1);
+        const h = Math.abs(y2 - y1);
+        ctx.rect(minX, minY, w, h);
+        ctx.fill();
+        ctx.stroke();
+        if (isSelected) {
+          drawAnchorCircle(minX, minY);
+          drawAnchorCircle(minX + w, minY);
+          drawAnchorCircle(minX, minY + h);
+          drawAnchorCircle(minX + w, minY + h);
+        }
+      } else if (tool === 'fibonacci') {
+        const dy = y2 - y1;
+        const levels = [0, 0.236, 0.382, 0.5, 0.618, 1];
+        levels.forEach(lvl => {
+          const ly = y1 + dy * lvl;
+          ctx.moveTo(x1, ly);
+          ctx.lineTo(x2, ly);
+        });
+        ctx.stroke();
+        if (isSelected) {
+          drawAnchorCircle(x1, y1);
+          drawAnchorCircle(x2, y2);
+        }
+      }
+    }
+
+    function executeOrderSimulation(type) {
+      const lotInput = parseFloat(document.getElementById('calcLotInput').value) || 0.1;
+      const lotSize = lotInput.toFixed(2) + " Lots";
+      const price = state.currentPrice;
+      const dec = assetConfigs[state.symbol]?.decimals || 2;
+      const isBuy = type === 'BUY';
+
+      const pipMultiplier = state.symbol.includes('JPY') ? 0.01 : (state.symbol.includes('XAU') ? 0.1 : 0.0001);
+      const defaultPipOffset = state.symbol.includes('XAU') ? 50 : 25;
+
+      const slPrice = isBuy ? price - (defaultPipOffset * pipMultiplier) : price + (defaultPipOffset * pipMultiplier);
+      const tpPrice = isBuy ? price + (defaultPipOffset * 2 * pipMultiplier) : price - (defaultPipOffset * 2 * pipMultiplier);
+
+      state.activePosition = {
+        type,
+        entryPrice: price,
+        slPrice,
+        tpPrice,
+        lotSize,
+        lotNumber: lotInput,
+        pipMultiplier
+      };
+
+      if (entryPriceLine) { candleSeries.removePriceLine(entryPriceLine); entryPriceLine = null; }
+      if (slPriceLine) { candleSeries.removePriceLine(slPriceLine); slPriceLine = null; }
+      if (tpPriceLine) { candleSeries.removePriceLine(tpPriceLine); tpPriceLine = null; }
+
+      entryPriceLine = candleSeries.createPriceLine({
+        price: price,
+        color: isBuy ? '#089981' : '#f23645',
+        lineWidth: 2,
+        lineStyle: LightweightCharts.LineStyle.Solid,
+        axisLabelVisible: true,
+        title: `${type} ENTRY (${lotSize})`,
+      });
+
+      slPriceLine = candleSeries.createPriceLine({
+        price: slPrice,
+        color: '#f23645',
+        lineWidth: 1,
+        lineStyle: LightweightCharts.LineStyle.Dashed,
+        axisLabelVisible: true,
+        title: `SL: ${slPrice.toFixed(dec)}`,
+      });
+
+      tpPriceLine = candleSeries.createPriceLine({
+        price: tpPrice,
+        color: '#089981',
+        lineWidth: 1,
+        lineStyle: LightweightCharts.LineStyle.Dashed,
+        axisLabelVisible: true,
+        title: `TP: ${tpPrice.toFixed(dec)}`,
+      });
+
+      const banner = document.getElementById('activePositionBanner');
+      const posTypeTag = document.getElementById('posTypeTag');
+      const posDetailsText = document.getElementById('posDetailsText');
+
+      posTypeTag.innerText = type;
+      posTypeTag.className = `font-bold px-1.5 py-0.5 rounded text-[10px] ${isBuy ? 'bg-bullish' : 'bg-bearish'} text-white`;
+      posDetailsText.innerText = `${lotSize} @ ${price.toFixed(dec)}`;
+      banner.classList.remove('hidden');
+
+      showOrderNotification(type, `${lotSize} @ ${price.toFixed(dec)} (SL: ${slPrice.toFixed(dec)} | TP: ${tpPrice.toFixed(dec)})`);
+      updateActivePositionPnL();
+    }
+
+    function updateActivePositionPnL() {
+      if (!state.activePosition) return;
+      const pos = state.activePosition;
+      const isBuy = pos.type === 'BUY';
+      const diffPips = isBuy ? (state.currentPrice - pos.entryPrice) / pos.pipMultiplier : (pos.entryPrice - state.currentPrice) / pos.pipMultiplier;
+      const pnlUSD = diffPips * 10 * pos.lotNumber;
+      const posPnLText = document.getElementById('posPnLText');
+
+      posPnLText.innerText = `${pnlUSD >= 0 ? '+' : ''}$${pnlUSD.toFixed(2)}`;
+      posPnLText.className = `font-mono font-bold ${pnlUSD >= 0 ? 'text-bullish' : 'text-bearish'}`;
+    }
+
+    function closeActivePosition() {
+      if (!state.activePosition) return;
+      state.activePosition = null;
+
+      if (entryPriceLine) { candleSeries.removePriceLine(entryPriceLine); entryPriceLine = null; }
+      if (slPriceLine) { candleSeries.removePriceLine(slPriceLine); slPriceLine = null; }
+      if (tpPriceLine) { candleSeries.removePriceLine(tpPriceLine); tpPriceLine = null; }
+
+      document.getElementById('activePositionBanner').classList.add('hidden');
+    }
+
+    function updateCalcRiskReward() {
+      if (!state.activePosition) return;
+      const pos = state.activePosition;
+      const dec = assetConfigs[state.symbol]?.decimals || 2;
+      const isBuy = pos.type === 'BUY';
+      const riskPips = Math.abs(pos.entryPrice - pos.slPrice) / pos.pipMultiplier;
+      const rewardPips = Math.abs(pos.tpPrice - pos.entryPrice) / pos.pipMultiplier;
+      const riskUSD = riskPips * 10 * pos.lotNumber;
+      const rewardUSD = rewardPips * 10 * pos.lotNumber;
+
+      const resRiskUSD = document.getElementById('resRiskUSD');
+      if (resRiskUSD) {
+        resRiskUSD.innerText = `$${riskUSD.toFixed(2)} / $${rewardUSD.toFixed(2)}`;
+      }
+    }
+
+    function setupCalculator() {
+      const calcBalance = document.getElementById('calcBalance');
+      const calcLotInput = document.getElementById('calcLotInput');
+      if (calcLotInput) {
+        calcLotInput.addEventListener('input', (e) => {
+          if (state.activePosition) {
+            state.activePosition.lotNumber = parseFloat(e.target.value) || 0.1;
+            state.activePosition.lotSize = state.activePosition.lotNumber.toFixed(2) + " Lots";
+            updateActivePositionPnL();
+          }
+        });
+      }
+    }
+
+    function showDrawingToolbarSelection() {
+      if (drawingToolbar) {
+        drawingToolbar.classList.remove('hidden');
+        if (btnDeleteActiveDrawing) btnDeleteActiveDrawing.classList.remove('hidden');
+      }
+    }
+
+    function hideDrawingToolbarSelection() {
+      if (drawingToolbar && state.currentTool === 'cursor') {
+        drawingToolbar.classList.add('hidden');
+        if (btnDeleteActiveDrawing) btnDeleteActiveDrawing.classList.add('hidden');
+      }
+    }
+
+    function setupEventListeners() {
+      assetSelect.addEventListener('change', (e) => loadSymbolData(e.target.value));
+
+      document.querySelectorAll('.tf-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          document.querySelectorAll('.tf-btn').forEach(b => {
+            b.classList.remove('active', 'bg-bgHover', 'text-gold', 'font-bold');
+            b.classList.add('text-gray-400');
+          });
+          e.target.classList.add('active', 'bg-bgHover', 'text-gold', 'font-bold');
+          state.timeframe = e.target.dataset.tf;
+          loadSymbolData(state.symbol);
+        });
+      });
+
+      document.getElementById('toggleLCA').addEventListener('click', (e) => {
+        state.indicators.lca = !state.indicators.lca;
+        e.currentTarget.classList.toggle('opacity-50');
+        updateIndicators();
+      });
+
+      const indicatorsModal = document.getElementById('indicatorsModal');
+      document.getElementById('btnOpenIndicatorsModal').addEventListener('click', () => {
+        document.getElementById('chkEMA').checked = state.indicators.ema;
+        document.getElementById('chkSMA').checked = state.indicators.sma;
+        document.getElementById('chkRSI').checked = state.indicators.rsi;
+        document.getElementById('chkMACD').checked = state.indicators.macd;
+        document.getElementById('chkBB').checked = state.indicators.bb;
+        document.getElementById('chkSupertrend').checked = state.indicators.supertrend;
+
+        document.getElementById('inputEmaFast').value = state.params.emaFast;
+        document.getElementById('inputEmaSlow').value = state.params.emaSlow;
+        document.getElementById('inputSmaPeriod').value = state.params.smaPeriod;
+        document.getElementById('inputRsiPeriod').value = state.params.rsiPeriod;
+        document.getElementById('inputMacdFast').value = state.params.macdFast;
+        document.getElementById('inputMacdSlow').value = state.params.macdSlow;
+        document.getElementById('inputMacdSignal').value = state.params.macdSignal;
+        document.getElementById('inputBbPeriod').value = state.params.bbPeriod;
+        document.getElementById('inputBbStd').value = state.params.bbStd;
+
+        indicatorsModal.classList.remove('hidden');
+      });
+
+      document.getElementById('btnCloseIndicatorsModal').addEventListener('click', () => {
+        indicatorsModal.classList.add('hidden');
+      });
+
+      document.getElementById('btnApplyIndicators').addEventListener('click', () => {
+        state.indicators.ema = document.getElementById('chkEMA').checked;
+        state.indicators.sma = document.getElementById('chkSMA').checked;
+        state.indicators.rsi = document.getElementById('chkRSI').checked;
+        state.indicators.macd = document.getElementById('chkMACD').checked;
+        state.indicators.bb = document.getElementById('chkBB').checked;
+        state.indicators.supertrend = document.getElementById('chkSupertrend').checked;
+
+        state.params.emaFast = parseInt(document.getElementById('inputEmaFast').value) || 20;
+        state.params.emaSlow = parseInt(document.getElementById('inputEmaSlow').value) || 50;
+        state.params.smaPeriod = parseInt(document.getElementById('inputSmaPeriod').value) || 100;
+        state.params.rsiPeriod = parseInt(document.getElementById('inputRsiPeriod').value) || 14;
+        state.params.macdFast = parseInt(document.getElementById('inputMacdFast').value) || 12;
+        state.params.macdSlow = parseInt(document.getElementById('inputMacdSlow').value) || 26;
+        state.params.macdSignal = parseInt(document.getElementById('inputMacdSignal').value) || 9;
+        state.params.bbPeriod = parseInt(document.getElementById('inputBbPeriod').value) || 20;
+        state.params.bbStd = parseFloat(document.getElementById('inputBbStd').value) || 2;
+
+        rsiContainer.classList.toggle('hidden', !state.indicators.rsi);
+        macdContainer.classList.toggle('hidden', !state.indicators.macd);
+
+        indicatorsModal.classList.add('hidden');
+        handleResize();
+        updateIndicators();
+      });
+
+      document.querySelectorAll('.tool-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const tool = e.currentTarget.dataset.tool;
+          if (!tool) return;
+
+          document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active', 'text-gold'));
+          e.currentTarget.classList.add('active', 'text-gold');
+
+          state.currentTool = tool;
+          state.selectedDrawingIndex = -1;
+          redrawCanvas();
+          hideDrawingContextMenu();
+
+          if (tool === 'cursor') {
+            drawingCanvas.classList.remove('active-draw');
+            hideDrawingToolbarSelection();
+          } else {
+            drawingCanvas.classList.add('active-draw');
+            if (drawingToolbar) drawingToolbar.classList.remove('hidden');
+            if (btnDeleteActiveDrawing) btnDeleteActiveDrawing.classList.add('hidden');
+          }
+        });
+      });
+
+      document.querySelectorAll('.draw-color-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const color = e.currentTarget.dataset.color;
+          state.drawColor = color;
+          document.querySelectorAll('.draw-color-btn').forEach(b => b.classList.remove('ring-2', 'ring-gold'));
+          e.currentTarget.classList.add('ring-2', 'ring-gold');
+
+          if (state.selectedDrawingIndex !== -1) {
+            state.drawings[state.selectedDrawingIndex].color = color;
+            redrawCanvas();
+          }
+        });
+      });
+
+      const customColorPicker = document.getElementById('customColorPicker');
+      if (customColorPicker) {
+        customColorPicker.addEventListener('input', (e) => {
+          const color = e.target.value;
+          state.drawColor = color;
+          document.querySelectorAll('.draw-color-btn').forEach(b => b.classList.remove('ring-2', 'ring-gold'));
+
+          if (state.selectedDrawingIndex !== -1) {
+            state.drawings[state.selectedDrawingIndex].color = color;
+            redrawCanvas();
+          }
+        });
+      }
+
+      const ctxCustomColorPicker = document.getElementById('ctxCustomColorPicker');
+      if (ctxCustomColorPicker) {
+        ctxCustomColorPicker.addEventListener('input', (e) => {
+          const color = e.target.value;
+          state.drawColor = color;
+          if (state.selectedDrawingIndex !== -1) {
+            state.drawings[state.selectedDrawingIndex].color = color;
+            redrawCanvas();
+          }
+        });
+      }
+
+      document.querySelectorAll('.draw-width-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const width = parseInt(e.currentTarget.dataset.width) || 2;
+          state.drawLineWidth = width;
+          document.querySelectorAll('.draw-width-btn').forEach(b => b.classList.remove('bg-gold/20', 'text-gold', 'active-width'));
+          e.currentTarget.classList.add('bg-gold/20', 'text-gold', 'active-width');
+
+          if (state.selectedDrawingIndex !== -1) {
+            state.drawings[state.selectedDrawingIndex].lineWidth = width;
+            redrawCanvas();
+          }
+        });
+      });
+
+      if (btnDeleteActiveDrawing) {
+        btnDeleteActiveDrawing.addEventListener('click', () => {
+          if (state.selectedDrawingIndex !== -1) {
+            state.drawings.splice(state.selectedDrawingIndex, 1);
+            state.selectedDrawingIndex = -1;
+            hideDrawingToolbarSelection();
+            hideDrawingContextMenu();
+            redrawCanvas();
+          }
+        });
+      }
+
+      document.getElementById('clearDrawings').addEventListener('click', () => {
+        state.drawings = [];
+        state.selectedDrawingIndex = -1;
+        hideDrawingContextMenu();
+        hideDrawingToolbarSelection();
+        redrawCanvas();
+      });
+
+      document.querySelectorAll('.ctx-color-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const selectedColor = e.currentTarget.dataset.color;
+          state.drawColor = selectedColor;
+          if (state.selectedDrawingIndex !== -1) {
+            state.drawings[state.selectedDrawingIndex].color = selectedColor;
+            redrawCanvas();
+          }
+        });
+      });
+
+      document.querySelectorAll('.ctx-width-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          if (state.selectedDrawingIndex !== -1) {
+            const width = parseInt(e.currentTarget.dataset.width) || 2;
+            state.drawings[state.selectedDrawingIndex].lineWidth = width;
+            redrawCanvas();
+          }
+        });
+      });
+
+      document.getElementById('btnDeleteDrawing').addEventListener('click', () => {
+        if (state.selectedDrawingIndex !== -1) {
+          state.drawings.splice(state.selectedDrawingIndex, 1);
+          state.selectedDrawingIndex = -1;
+          hideDrawingContextMenu();
+          hideDrawingToolbarSelection();
+          redrawCanvas();
+        }
+      });
+
+      document.getElementById('btnFullscreen').addEventListener('click', () => {
+        if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+        else document.exitFullscreen();
+      });
+
+      document.getElementById('btnBuy').addEventListener('click', () => executeOrderSimulation('BUY'));
+      document.getElementById('btnSell').addEventListener('click', () => executeOrderSimulation('SELL'));
+      document.getElementById('btnClosePosition').addEventListener('click', closeActivePosition);
+    }
+
+    function showAutoCloseNotification(type, finalPnL, closePrice, dec) {
+      const isWin = finalPnL >= 0;
+      const notification = document.getElementById('orderNotification');
+      const card = document.getElementById('orderNotificationCard');
+      const icon = document.getElementById('orderIcon');
+      const title = document.getElementById('orderTitle');
+      const details = document.getElementById('orderDetails');
+
+      if (isWin) {
+        card.className = "px-5 py-4 rounded-xl bg-bgCard border border-bullish shadow-2xl shadow-bullish/20 flex items-center gap-4";
+        icon.className = "w-10 h-10 rounded-full bg-bullish text-white flex items-center justify-center text-lg";
+        icon.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
+        title.innerText = `İŞLEM KÂR İLE KAPANDI (${type})`;
+        title.className = "font-extrabold text-sm text-bullish";
+      } else {
+        card.className = "px-5 py-4 rounded-xl bg-bgCard border border-bearish shadow-2xl shadow-bearish/20 flex items-center gap-4";
+        icon.className = "w-10 h-10 rounded-full bg-bearish text-white flex items-center justify-center text-lg";
+        icon.innerHTML = '<i class="fa-solid fa-circle-xmark"></i>';
+        title.innerText = `İŞLEM ZARAR İLE KAPANDI (${type})`;
+        title.className = "font-extrabold text-sm text-bearish";
+      }
+
+      details.innerText = `Kapanış Fiyatı: ${closePrice.toFixed(dec)} | Sonuç: ${finalPnL >= 0 ? '+' : ''}$${finalPnL.toFixed(2)}`;
+      notification.classList.remove('translate-y-20', 'opacity-0');
+      notification.classList.add('translate-y-0', 'opacity-100');
+
+      setTimeout(() => {
+        notification.classList.remove('translate-y-0', 'opacity-100');
+        notification.classList.add('translate-y-20', 'opacity-0');
+      }, 4500);
+    }
+
+    function showOrderNotification(type, detailsText) {
+      const isBuy = type === 'BUY';
+      const notification = document.getElementById('orderNotification');
+      const card = document.getElementById('orderNotificationCard');
+      const icon = document.getElementById('orderIcon');
+      const title = document.getElementById('orderTitle');
+      const details = document.getElementById('orderDetails');
+
+      if (isBuy) {
+        card.className = "px-5 py-4 rounded-xl bg-bgCard border border-bullish shadow-2xl shadow-bullish/20 flex items-center gap-4";
+        icon.className = "w-10 h-10 rounded-full bg-bullish text-white flex items-center justify-center text-lg";
+        icon.innerHTML = '<i class="fa-solid fa-arrow-trend-up"></i>';
+        title.innerText = "SİMÜLE EDİLMİŞ ALIM (BUY) EMRİ AÇILDI";
+        title.className = "font-extrabold text-sm text-bullish";
+      } else {
+        card.className = "px-5 py-4 rounded-xl bg-bgCard border border-bearish shadow-2xl shadow-bearish/20 flex items-center gap-4";
+        icon.className = "w-10 h-10 rounded-full bg-bearish text-white flex items-center justify-center text-lg";
+        icon.innerHTML = '<i class="fa-solid fa-arrow-trend-down"></i>';
+        title.innerText = "SİMÜLE EDİLMİŞ SATIM (SELL) EMRİ AÇILDI";
+        title.className = "font-extrabold text-sm text-bearish";
+      }
+
+      details.innerText = detailsText;
+      notification.classList.remove('translate-y-20', 'opacity-0');
+      notification.classList.add('translate-y-0', 'opacity-100');
+
+      setTimeout(() => {
+        notification.classList.remove('translate-y-0', 'opacity-100');
+        notification.classList.add('translate-y-20', 'opacity-0');
+      }, 3500);
+    }
+  </script>
+</body>
+</html>
 </html>
 
 
