@@ -87,7 +87,113 @@
       #priceChangeText { font-size:10px !important; }
     }
 
-</style>
+
+
+    /* Mobile adaptation: preserve the desktop/Binance-style layout, but stack the chart and the right analytics panel on narrow screens so nothing is crushed or lost. */
+    @media (max-width: 720px) {
+      html { height: auto !important; min-height: 100%; }
+      body {
+        height: auto !important;
+        min-height: 100vh;
+        min-height: 100dvh;
+        overflow-x: hidden !important;
+        overflow-y: auto !important;
+      }
+      body > header {
+        position: sticky;
+        top: 0;
+        z-index: 80 !important;
+      }
+      body > div.flex-1.flex.overflow-hidden.relative {
+        display: flex !important;
+        flex: 1 0 auto !important;
+        flex-direction: column !important;
+        width: 100% !important;
+        height: auto !important;
+        min-height: 0 !important;
+        overflow: visible !important;
+      }
+      /* Drawing and colour tools become a horizontally scrollable strip. */
+      body > div.flex-1.flex.overflow-hidden.relative > aside:first-child {
+        order: 0;
+        display: flex !important;
+        flex: 0 0 auto !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
+        width: 100% !important;
+        height: auto !important;
+        min-height: 47px;
+        gap: 7px !important;
+        padding: 7px 10px !important;
+        overflow-x: auto !important;
+        overflow-y: hidden !important;
+        border-right: 0 !important;
+        border-bottom: 1px solid #1f2937 !important;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+      }
+      body > div.flex-1.flex.overflow-hidden.relative > aside:first-child::-webkit-scrollbar { display: none; }
+      body > div.flex-1.flex.overflow-hidden.relative > aside:first-child > button {
+        flex: 0 0 auto !important;
+        min-width: 34px;
+      }
+      body > div.flex-1.flex.overflow-hidden.relative > aside:first-child > div {
+        flex: 0 0 1px !important;
+        width: 1px !important;
+        height: 24px !important;
+        margin: 0 2px !important;
+      }
+      body > div.flex-1.flex.overflow-hidden.relative > aside:first-child .chart-theme-dot { flex: 0 0 25px; }
+      /* Keep a useful, wide chart area on phone screens. */
+      body > div.flex-1.flex.overflow-hidden.relative > main {
+        order: 1;
+        display: flex !important;
+        flex: 0 0 auto !important;
+        width: 100% !important;
+        height: 54vh !important;
+        height: 54dvh !important;
+        min-height: 360px !important;
+        max-height: 620px;
+        overflow: hidden !important;
+      }
+      #chartContainer { flex: 1 1 auto !important; width: 100% !important; min-width: 0 !important; min-height: 0 !important; }
+      #chartTradeButtons { left: 9px !important; right: 9px !important; bottom: 16px !important; max-width: none !important; }
+      #chartTradeButtons button { padding: 8px 13px !important; }
+      #activePositionBanner { left: 8px !important; right: 8px !important; top: 42px !important; max-width: calc(100% - 16px); padding: 5px 7px !important; gap: 5px !important; }
+      #activePositionBanner > div { min-width: 0; white-space: normal; }
+      #activePositionBanner #btnClosePosition { padding: 5px 6px !important; white-space: nowrap; }
+      #drawingToolbar { max-width: calc(100% - 12px); overflow-x: auto; }
+      /* The desktop right-hand panel moves below the chart on narrow screens. */
+      body > div.flex-1.flex.overflow-hidden.relative > aside:last-child {
+        order: 2;
+        display: flex !important;
+        flex: 0 0 auto !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        height: auto !important;
+        max-height: none !important;
+        overflow: visible !important;
+        border-left: 0 !important;
+        border-top: 1px solid #1f2937 !important;
+      }
+      body > div.flex-1.flex.overflow-hidden.relative > aside:last-child > div { padding: 12px !important; }
+      #indicatorsModal { padding: 10px !important; }
+      #indicatorsModal > div { max-height: 88vh !important; max-height: 88dvh !important; border-radius: 14px !important; padding: 14px !important; }
+    }
+
+    @media (max-width: 390px) {
+      body > header { padding-left: 7px !important; padding-right: 7px !important; gap: 6px !important; }
+      #priceHeaderBox { padding: 4px 6px !important; gap: 4px !important; }
+      #livePriceText { font-size: 14px !important; }
+      #priceChangeText { font-size: 9px !important; }
+      #btnOpenIndicatorsModal { max-width: 132px; overflow: hidden; text-overflow: ellipsis; }
+      #timeframeGroup { width: calc(100vw - 16px) !important; grid-template-columns: repeat(6, minmax(0, 1fr)) !important; left: 0 !important; }
+      #chartTradeButtons button { padding: 7px 10px !important; font-size: 11px !important; }
+    }
+
+  </style>
 </head>
 <body class="h-full font-sans text-gray-200 bg-bgDark flex flex-col overflow-hidden select-none">
 
