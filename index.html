@@ -1,2224 +1,1535 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full bg-black">
+<html lang="ar" dir="rtl">
 <head>
+  <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="shortcut icon" href="/favicon.ico">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+  <meta name="google-site-verification" content="9ttPFsVh0-1SqRiVHu0HCuUHIRrff5-RSPN3sy1D5aY" />
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LCA View - Advanced Financial Analysis Platform</title>
-  
-  <!-- Tailwind CSS & FontAwesome Icons -->
-  <script src="https://cdn.tailwindcss.com"></script>
+  <meta name="description" content="مؤشر LCA Forex هو أداة تقنية على منصة TradingView تحدد لون الشمعة، يُستخدم في أسواق الفوركس والعملات الرقمية والأسهم لصفقات السكالبينج بنسبة نجاح عالية.">
+  <title>LCA </title>
+  <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
-  <!-- TradingView Lightweight Charts Library -->
-  <script src="https://unpkg.com/lightweight-charts@4.0.1/dist/lightweight-charts.standalone.production.js"></script>
-
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            bgDark: '#000000',
-            bgCard: '#0f1117',
-            bgHover: '#1c202d',
-            gold: '#f0b90b',
-            goldHover: '#d8a508',
-            bullish: '#089981',
-            bearish: '#f23645'
-          }
-        }
-      }
-    }
-  </script>
-
   <style>
-    /* Custom Scrollbars */
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: #000000; }
-    ::-webkit-scrollbar-thumb { background: #1c202d; border-radius: 4px; }
-    ::-webkit-scrollbar-thumb:hover { background: #2a2e39; }
+ 
+  </div>
+  <div class="lca-chart-container glass-effect">
+    <!-- Logosuz yeni grafik alanı -->
+    <div id="lca_lightweight_chart" style="width: 100%; height: 100%;"></div>
+  </div>
+</div
+    /* تحديث ألوان الوضع الفاتح */
+    body:not(.dark-mode) {
+      background-color: var(--light-color);
+    }
     
-    /* Interactive Drawing Canvas */
-    #drawingCanvas { position: absolute; top: 0; left: 0; pointer-events: none; z-index: 10; }
-    #tradeMarkerLayer { position:absolute; inset:0; pointer-events:none; z-index:25; overflow:hidden; }
-    .trade-marker-label { position:absolute; left:4px; max-width: min(55%, 390px); padding:3px 6px; border-radius:4px; font:700 10px/1.25 ui-monospace, SFMono-Regular, Menlo, monospace; white-space:nowrap; box-shadow:0 2px 7px rgba(0,0,0,.55); border:1px solid currentColor; transform:translateY(-100%); }
-    .trade-marker-label.buy { color:#089981; background:rgba(2,35,30,.94); }
-    .trade-marker-label.sell { color:#f23645; background:rgba(46,9,15,.94); }
-    #drawingCanvas.active-draw { pointer-events: auto; cursor: crosshair; }
-    
-    /* Compact round color controls in the left toolbar */
-    .chart-theme-dot { position:relative; display:flex; width:25px; height:25px; flex-shrink:0; align-items:center; justify-content:center; border-radius:9999px; border:1px solid #596273; color:#fff; font:800 12px/1 ui-sans-serif,system-ui,sans-serif; cursor:pointer; overflow:hidden; box-shadow:0 1px 4px rgba(0,0,0,.4); transition:transform .12s ease,border-color .12s ease; }
-    .chart-theme-dot:hover { transform:scale(1.08); border-color:#f0b90b; }
-    .chart-theme-dot input[type="color"] { position:absolute; inset:0; width:100%; height:100%; opacity:0; cursor:pointer; border:0; padding:0; }
-
-    /* Price Flash Animations */
-    .flash-up { animation: flashGreen 0.4s ease-out; }
-    .flash-down { animation: flashRed 0.4s ease-out; }
-    @keyframes flashGreen { 0% { background-color: rgba(8, 153, 129, 0.4); } 100% { background-color: transparent; } }
-    @keyframes flashRed { 0% { background-color: rgba(242, 54, 69, 0.4); } 100% { background-color: transparent; } }
-
-
-
-    /* Compact timeframe dropdown: preserve the existing chart UI while exposing every interval on demand. */
-    #timeframeControl { position:relative; display:flex; align-items:center; flex:0 0 auto; min-width:0; z-index:60; }
-    #timeframeDropdownToggle { display:flex; align-items:center; justify-content:center; gap:10px; min-width:82px; height:34px; padding:0 11px; border:1px solid #343a46; border-radius:6px; background:#0f1117; color:#f0b90b; font-size:12px; font-weight:700; white-space:nowrap; cursor:pointer; }
-    #timeframeDropdownToggle:hover { border-color:#f0b90b; background:#161a22; }
-    #timeframeGroup { display:none; position:absolute; top:calc(100% + 8px); left:50%; transform:translateX(-50%); z-index:100; width:min(390px, calc(100vw - 24px)); max-height:min(68vh, 480px); overflow-y:auto; overflow-x:hidden; overscroll-behavior:contain; scrollbar-width:thin; scrollbar-color:#596273 #0f1117; grid-template-columns:repeat(7,minmax(0,1fr)); gap:4px; padding:8px; border:1px solid #343a46; border-radius:9px; background:#0f1117; box-shadow:0 12px 32px rgba(0,0,0,.58); box-sizing:border-box; }
-    #timeframeGroup.open { display:grid; }
-    #timeframeGroup .tf-btn { display:flex; align-items:center; justify-content:center; min-width:0; min-height:30px; padding:5px 3px; border:1px solid transparent; border-radius:5px; font-size:11px; line-height:1; white-space:nowrap; cursor:pointer; }
-    #timeframeGroup .tf-btn:hover { background:#242a35; color:#fff; }
-    #timeframeGroup .tf-btn.active { color:#f0b90b !important; background:#242a35; border-color:#f0b90b; font-weight:800; }
-    @media (max-width:900px) {
-      body > header { height:auto !important; min-height:58px; display:grid !important; grid-template-columns:minmax(0,1fr) auto; grid-template-rows:auto auto; align-items:center; gap:7px 8px; padding:8px !important; }
-      body > header > div:first-child { grid-column:1; grid-row:1; min-width:0; }
-      body > header > #timeframeControl { grid-column:1; grid-row:2; justify-self:start; }
-      body > header > div:last-child { grid-column:2; grid-row:1 / span 2; align-self:center; justify-content:flex-end; min-width:0; gap:5px; }
-      #btnOpenIndicatorsModal { padding:6px 8px !important; font-size:10px !important; white-space:nowrap; }
-      #btnFullscreen { padding:6px !important; }
-      #timeframeGroup { left:0; transform:none; width:min(390px, calc(100vw - 24px)); grid-template-columns:repeat(7,minmax(0,1fr)); }
-    }
-    @media (max-width:480px) {
-      body > header > div:last-child > div { max-width:calc(100vw - 112px); }
-      #timeframeDropdownToggle { min-width:84px; height:32px; }
-      #timeframeGroup { grid-template-columns:repeat(6,minmax(0,1fr)); max-height:62vh; }
-      #timeframeGroup .tf-btn { min-height:31px; font-size:11px; }
-      #priceHeaderBox { padding:4px 7px !important; gap:5px !important; }
-      #livePriceText { font-size:15px !important; }
-      #priceChangeText { font-size:10px !important; }
+    body:not(.dark-mode) .header {
+      background-color: var(--light-color);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
     }
 
-
-
-    /* Mobile adaptation: preserve the desktop/Binance-style layout, but stack the chart and the right analytics panel on narrow screens so nothing is crushed or lost. */
-    @media (max-width: 720px) {
-      html { height: auto !important; min-height: 100%; }
-      body {
-        height: auto !important;
-        min-height: 100vh;
-        min-height: 100dvh;
-        overflow-x: hidden !important;
-        overflow-y: auto !important;
-      }
-      body > header {
-        position: sticky;
-        top: 0;
-        z-index: 80 !important;
-      }
-      body > div.flex-1.flex.overflow-hidden.relative {
-        display: flex !important;
-        flex: 1 0 auto !important;
-        flex-direction: column !important;
-        width: 100% !important;
-        height: auto !important;
-        min-height: 0 !important;
-        overflow: visible !important;
-      }
-      /* Drawing and colour tools become a horizontally scrollable strip. */
-      body > div.flex-1.flex.overflow-hidden.relative > aside:first-child {
-        order: 0;
-        display: flex !important;
-        flex: 0 0 auto !important;
-        flex-direction: row !important;
-        align-items: center !important;
-        justify-content: flex-start !important;
-        width: 100% !important;
-        height: auto !important;
-        min-height: 47px;
-        gap: 7px !important;
-        padding: 7px 10px !important;
-        overflow-x: auto !important;
-        overflow-y: hidden !important;
-        border-right: 0 !important;
-        border-bottom: 1px solid #1f2937 !important;
-        scrollbar-width: none;
-        -webkit-overflow-scrolling: touch;
-      }
-      body > div.flex-1.flex.overflow-hidden.relative > aside:first-child::-webkit-scrollbar { display: none; }
-      body > div.flex-1.flex.overflow-hidden.relative > aside:first-child > button {
-        flex: 0 0 auto !important;
-        min-width: 34px;
-      }
-      body > div.flex-1.flex.overflow-hidden.relative > aside:first-child > div {
-        flex: 0 0 1px !important;
-        width: 1px !important;
-        height: 24px !important;
-        margin: 0 2px !important;
-      }
-      body > div.flex-1.flex.overflow-hidden.relative > aside:first-child .chart-theme-dot { flex: 0 0 25px; }
-      /* Keep a useful, wide chart area on phone screens. */
-      body > div.flex-1.flex.overflow-hidden.relative > main {
-        order: 1;
-        display: flex !important;
-        flex: 0 0 auto !important;
-        width: 100% !important;
-        height: 54vh !important;
-        height: 54dvh !important;
-        min-height: 360px !important;
-        max-height: 620px;
-        overflow: hidden !important;
-      }
-      #chartContainer { flex: 1 1 auto !important; width: 100% !important; min-width: 0 !important; min-height: 0 !important; }
-      #chartTradeButtons { left: 9px !important; right: 9px !important; bottom: 16px !important; max-width: none !important; }
-      #chartTradeButtons button { padding: 8px 13px !important; }
-      #activePositionBanner { left: 8px !important; right: 8px !important; top: 42px !important; max-width: calc(100% - 16px); padding: 5px 7px !important; gap: 5px !important; }
-      #activePositionBanner > div { min-width: 0; white-space: normal; }
-      #activePositionBanner #btnClosePosition { padding: 5px 6px !important; white-space: nowrap; }
-      #drawingToolbar { max-width: calc(100% - 12px); overflow-x: auto; }
-      /* The desktop right-hand panel moves below the chart on narrow screens. */
-      body > div.flex-1.flex.overflow-hidden.relative > aside:last-child {
-        order: 2;
-        display: flex !important;
-        flex: 0 0 auto !important;
-        width: 100% !important;
-        max-width: 100% !important;
-        min-width: 0 !important;
-        height: auto !important;
-        max-height: none !important;
-        overflow: visible !important;
-        border-left: 0 !important;
-        border-top: 1px solid #1f2937 !important;
-      }
-      body > div.flex-1.flex.overflow-hidden.relative > aside:last-child > div { padding: 12px !important; }
-      #indicatorsModal { padding: 10px !important; }
-      #indicatorsModal > div { max-height: 88vh !important; max-height: 88dvh !important; border-radius: 14px !important; padding: 14px !important; }
+    body:not(.dark-mode) .feature-card,
+    body:not(.dark-mode) .course-card,
+    body:not(.dark-mode) .forex-feature {
+      background-color: var(--light-color);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.03);
     }
 
-    @media (max-width: 390px) {
-      body > header { padding-left: 7px !important; padding-right: 7px !important; gap: 6px !important; }
-      #priceHeaderBox { padding: 4px 6px !important; gap: 4px !important; }
-      #livePriceText { font-size: 14px !important; }
-      #priceChangeText { font-size: 9px !important; }
-      #btnOpenIndicatorsModal { max-width: 132px; overflow: hidden; text-overflow: ellipsis; }
-      #timeframeGroup { width: calc(100vw - 16px) !important; grid-template-columns: repeat(6, minmax(0, 1fr)) !important; left: 0 !important; }
-      #chartTradeButtons button { padding: 7px 10px !important; font-size: 11px !important; }
+    body:not(.dark-mode) .footer {
+      background-color: var(--light-color);
+      border-top: 1px solid rgba(0, 0, 0, 0.05);
     }
 
+    /* تحديث ألوان النصوص في الوضع الفاتح */
+    body:not(.dark-mode) {
+      color: var(--dark-color);
+    }
+
+    body:not(.dark-mode) a {
+      color: var(--dark-color);
+    }
+
+    /* تحديث ألوان الأزرار في الوضع الفاتح */
+    body:not(.dark-mode) .btn-primary {
+      background-color: var(--primary-color);
+      color: var(--dark-color);
+    }
+
+    body:not(.dark-mode) .btn-primary:hover {
+      background-color: var(--primary-dark);
+      box-shadow: 0 5px 15px rgba(254, 209, 0, 0.2);
+    }
+
+    /* إضافة تأثيرات حركية للقسم الرئيسي */
+    .hero {
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* تحديث محتوى القسم الرئيسي */
+    .hero-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* إضافة تأثيرات حركية للقسم الرئيسي */
+    .hero-content h1 {
+      animation: fadeInDown 1s ease-out;
+      position: relative;
+    }
+
+    .hero-content h2 {
+      animation: fadeInUp 1s ease-out 0.5s;
+      animation-fill-mode: both;
+      position: relative;
+    }
+
+    .hero-content .btn-primary {
+      animation: pulse 2s infinite;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-content .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .hero-content .btn-primary::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        120deg,
+        transparent,
+        rgba(255, 255, 255, 0.3),
+        transparent
+      );
+      transition: 0.5s;
+    }
+
+    .hero-content .btn-primary:hover::before {
+      left: 100%;
+    }
+
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.05);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
   </style>
 </head>
-<body class="h-full font-sans text-gray-200 bg-bgDark flex flex-col overflow-hidden select-none">
+<body class="dark-mode">
+  <canvas id="mouseParticles"></canvas>
 
-  <!-- TOP HEADER / NAVBAR -->
-  <header class="h-14 bg-bgCard border-b border-gray-800 flex items-center justify-between px-4 flex-shrink-0 z-20">
-    <div class="flex items-center gap-4">
-<!-- Live Price Display Box -->
-      <div id="priceHeaderBox" class="flex items-center gap-2 px-3 py-1 rounded-md bg-bgDark border border-gray-800 transition">
-        <span id="livePriceText" class="text-lg font-bold text-bullish">0.00</span>
-        <span id="priceChangeText" class="text-xs font-semibold text-bullish bg-bullish/10 px-1.5 py-0.5 rounded">+0.00%</span>
+<style>
+#mouseParticles{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    pointer-events:none;
+    z-index:9999;
+}
+</style>
+
+<script>
+const canvas = document.getElementById("mouseParticles");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let particles = [];
+
+window.addEventListener("resize", function(){
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+});
+
+document.addEventListener("mousemove", function(e){
+
+    for(let i = 0; i < 5; i++){
+
+        particles.push({
+            x: e.clientX,
+            y: e.clientY,
+            size: Math.random() * 4 + 1,
+            speedX: (Math.random() - 0.5) * 3,
+            speedY: (Math.random() - 0.5) * 3,
+            life: 100
+        });
+
+    }
+
+});
+
+function animate(){
+
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    particles.forEach(function(p,index){
+
+        p.x += p.speedX;
+        p.y += p.speedY;
+        p.life--;
+
+        ctx.beginPath();
+        ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
+
+        ctx.fillStyle = "rgba(255,196,0," + (p.life / 100) + ")";
+
+        ctx.shadowBlur = 15;
+        ctx.shadowColor = "#ffc400";
+
+        ctx.fill();
+
+        if(p.life <= 0){
+            particles.splice(index,1);
+        }
+
+    });
+
+    requestAnimationFrame(animate);
+
+}
+
+animate();
+</script>
+  <!-- زر العودة للأعلى -->
+  <div class="scroll-to-top">
+    <i class="fas fa-chevron-up"></i>
+  </div>
+
+  <!-- إضافة خلفية شفافة للقائمة المتنقلة -->
+  <div class="mobile-menu-overlay"></div>
+
+  <!-- هيدر باللغة العربية -->
+  <header id="header-ar" class="header">
+    <div class="container">
+      <div class="mobile-menu-btn">
+        <i class="fas fa-bars"></i>
       </div>
-    </div>
-
-    <!-- Timeframe dropdown: all intervals are available without crowding the chart header -->
-    <div id="timeframeControl">
-      <button id="timeframeDropdownToggle" type="button" aria-label="Zaman dilimini seç" aria-expanded="false" aria-controls="timeframeGroup">
-        <span id="timeframeDropdownLabel">15M</span><i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
-      </button>
-      <div id="timeframeGroup" aria-label="Zaman dilimleri" role="group">
-        <!-- 1–100 dakika ve klasik zaman dilimleri JavaScript ile eklenir -->
+      <div class="logo">
+        <img src="1.png" alt="LCA Logo" class="dark-logo" style="height: 50px;">
+        <img src="1w.png" alt="LCA Logo" class="light-logo" style="height: 50px; display: none;">
       </div>
-    </div>
-
-    <!-- Right Controls & Toggles -->
-    <div class="flex items-center gap-2">
-      <div class="flex items-center gap-1.5 bg-bgDark p-1 rounded-lg border border-gray-800">
-        <!-- Modal Indicators Button -->
-        <button id="btnOpenIndicatorsModal" class="px-3 py-1 text-xs font-semibold rounded bg-bgHover text-gray-200 hover:text-white border border-gray-700 hover:border-gold flex items-center gap-1.5 transition">
-          <i class="fa-solid fa-chart-line text-gold"></i> Göstergeler (Indicators)
-        </button>
+      <nav class="main-nav">
+        <div class="close-menu">
+          <i class="fas fa-times"></i>
+        </div>
+        <ul>
+          <li><a href="#home" class="active">الرئيسية</a></li>
+          <li><a href="#courses">الإستراتيجية</a></li>
+          <li><a href="#features">المميزات</a></li>
+          <li><a href="#faq">الأسئلة الشائعة</a></li>
+        </ul>
+        <div class="mobile-language-switcher">
+          <h4>اختر اللغة</h4>
+          <div class="language-links">
+            <a href="#" id="ar-link-mobile" class="active">عربي</a>
+            <a href="#" id="en-link-mobile">English</a>
+            <a href="#" id="tr-link-mobile">Türkçe</a>
+          </div>
+        </div>
+        <div class="mobile-mode-toggle">
+          <h4>الوضع</h4>
+          <div class="toggle-switch">
+            <i class="fas fa-moon"></i>
+            <span>الوضع الداكن</span>
+          </div>
+        </div>
+      </nav>
+      <div class="language-switcher">
+        <a href="#" id="ar-link" class="active">عربي</a> | 
+        <a href="#" id="en-link">English</a> |
+        <a href="#" id="tr-link">Türkçe</a>
       </div>
-
-      <button id="btnFullscreen" class="p-2 text-gray-400 hover:text-gold rounded-md bg-bgDark border border-gray-800 hover:bg-bgHover transition" title="Toggle Fullscreen">
-        <i class="fa-solid fa-expand"></i>
-      </button>
+      <div class="mode-toggle">
+        <i class="fas fa-moon"></i>
+      </div>
     </div>
   </header>
 
-  <!-- MAIN APP CONTAINER -->
-  <div class="flex-1 flex overflow-hidden relative">
-
-    <!-- LEFT TOOLBAR -->
-    <aside class="w-12 bg-bgCard border-r border-gray-800 flex flex-col items-center py-3 gap-3 flex-shrink-0 z-20 select-none">
-      <button class="tool-btn active p-2 text-gold rounded hover:bg-bgHover transition" data-tool="cursor" title="Cursor / Select / Edit">
-        <i class="fa-solid fa-arrow-pointer"></i>
-      </button>
-      <button class="tool-btn p-2 text-gray-400 hover:text-gold rounded hover:bg-bgHover transition" data-tool="brush" title="Fırça (Brush)">
-        <i class="fa-solid fa-paint-brush"></i>
-      </button>
-      <button class="tool-btn p-2 text-gray-400 hover:text-gold rounded hover:bg-bgHover transition" data-tool="trendline" title="Trendline">
-        <i class="fa-solid fa-slash"></i>
-      </button>
-      <button class="tool-btn p-2 text-gray-400 hover:text-gold rounded hover:bg-bgHover transition" data-tool="horizontal" title="Horizontal Line">
-        <i class="fa-solid fa-minus"></i>
-      </button>
-      <button class="tool-btn p-2 text-gray-400 hover:text-gold rounded hover:bg-bgHover transition" data-tool="rectangle" title="Support/Resistance Zone">
-        <i class="fa-regular fa-square"></i>
-      </button>
-
-      <div class="w-6 h-[1px] bg-gray-800 my-1"></div>
-
-      <button id="clearDrawings" class="p-2 text-gray-400 hover:text-bearish rounded hover:bg-bgHover transition" title="Clear All Drawings">
-        <i class="fa-solid fa-trash-can"></i>
-      </button>
-
-      <!-- Candle and chart colors: each visitor can customize and save locally -->
-      <div class="w-6 h-[1px] bg-gray-800 my-1" title="Grafik renkleri"></div>
-      <label class="chart-theme-dot" id="upCandleColorDot" title="Yükselen (yeşil) mum rengini değiştir" aria-label="Yükselen mum rengini değiştir">
-        <span aria-hidden="true">↑</span>
-        <input type="color" id="upCandleColorPicker" value="#089981" aria-label="Yükselen mum rengi">
-      </label>
-      <label class="chart-theme-dot" id="downCandleColorDot" title="Düşen (kırmızı) mum rengini değiştir" aria-label="Düşen mum rengini değiştir">
-        <span aria-hidden="true">↓</span>
-        <input type="color" id="downCandleColorPicker" value="#f23645" aria-label="Düşen mum rengi">
-      </label>
-      <label class="chart-theme-dot" id="chartBackgroundColorDot" title="Grafik arka plan rengini değiştir" aria-label="Grafik arka plan rengini değiştir">
-        <span aria-hidden="true" style="font-size:9px">BG</span>
-        <input type="color" id="chartBackgroundColorPicker" value="#000000" aria-label="Grafik arka plan rengi">
-      </label>
-    </aside>
-
-    <!-- CENTER CHART AREA -->
-    <main class="flex-1 flex flex-col relative overflow-hidden bg-bgDark">
-      <!-- Fixed Tradegram share label; OHLC number strip removed -->
-      <div class="absolute top-2 left-3 z-10 text-xs font-mono bg-bgCard/90 backdrop-blur-md px-3 py-1.5 rounded-md border border-gray-800/80 shadow-md">
-        <span class="font-bold text-gold" id="symbolLabel">Tradegram Hisse</span>
+  <!-- هيدر باللغة الإنجليزية -->
+  <header id="header-en" class="header" style="display: none;">
+    <div class="container">
+      <div class="mobile-menu-btn" style="float: right;">
+        <i class="fas fa-bars"></i>
       </div>
-
-      <!-- Floating Drawing Toolbar -->
-      <div id="drawingToolbar" class="hidden absolute top-14 left-3 z-30 bg-bgCard/95 backdrop-blur-md border border-gray-700/80 p-2.5 rounded-xl shadow-2xl flex items-center gap-3 text-xs select-none">
-        <div class="flex items-center gap-2 border-r border-gray-800 pr-3">
-          <span class="text-[10px] text-gray-400 font-semibold uppercase">Renk:</span>
-          <div class="relative flex items-center gap-1.5">
-            <button class="draw-color-btn w-5 h-5 rounded-full bg-white border border-gray-600 hover:scale-110 transition ring-2 ring-gold" data-color="#ffffff" title="Beyaz"></button>
-            <button class="draw-color-btn w-5 h-5 rounded-full bg-yellow-400 border border-gray-600 hover:scale-110 transition" data-color="#f0b90b" title="Altın / Sarı"></button>
-            <button class="draw-color-btn w-5 h-5 rounded-full bg-cyan-400 border border-gray-600 hover:scale-110 transition" data-color="#22d3ee" title="Camgöbeği"></button>
-            <button class="draw-color-btn w-5 h-5 rounded-full bg-pink-500 border border-gray-600 hover:scale-110 transition" data-color="#ec4899" title="Pembe"></button>
-            <button class="draw-color-btn w-5 h-5 rounded-full bg-emerald-400 border border-gray-600 hover:scale-110 transition" data-color="#10b981" title="Yeşil"></button>
-            <label for="customColorPicker" class="w-6 h-6 rounded-full bg-gradient-to-tr from-red-500 via-green-500 to-blue-500 border border-gray-500 flex items-center justify-center cursor-pointer hover:scale-110 transition shadow-inner relative overflow-hidden" title="Özel Renk">
-              <input type="color" id="customColorPicker" value="#f0b90b" class="absolute inset-0 opacity-0 cursor-pointer w-full h-full">
-            </label>
+      <div class="logo">
+        <img src="1.png" alt="LCA Logo" class="dark-logo" style="height: 50px;">
+        <img src="1w.png" alt="LCA Logo" class="light-logo" style="height: 50px; display: none;">
+      </div>
+      <nav class="main-nav">
+        <div class="close-menu">
+          <i class="fas fa-times"></i>
+        </div>
+        <ul>
+          <li><a href="#home" class="active">Home</a></li>
+          <li><a href="#courses">Strategy</a></li>
+          <li><a href="#features">Features</a></li>
+          <li><a href="#faq">FAQ</a></li>
+        </ul>
+        <!-- إضافة مبدل اللغة للجوال -->
+        <div class="mobile-language-switcher">
+          <h4>Select Language</h4>
+          <div class="language-links">
+            <a href="#" id="ar-link-mobile-en">عربي</a>
+            <a href="#" id="en-link-mobile-en" class="active">English</a>
+            <a href="#" id="tr-link-mobile-en">Türkçe</a>
           </div>
         </div>
-
-        <div class="flex items-center gap-1.5 border-r border-gray-800 pr-3">
-          <span class="text-[10px] text-gray-400 font-semibold uppercase">Kalınlık:</span>
-          <button class="draw-width-btn px-2 py-0.5 rounded bg-bgHover text-gray-300 hover:text-gold font-mono text-xs transition" data-width="1">1px</button>
-          <button class="draw-width-btn px-2 py-0.5 rounded bg-bgHover text-gray-300 hover:text-gold font-mono text-xs transition active-width bg-gold/20 text-gold" data-width="2">2px</button>
-          <button class="draw-width-btn px-2 py-0.5 rounded bg-bgHover text-gray-300 hover:text-gold font-mono text-xs transition" data-width="4">4px</button>
+        <!-- إضافة زر الوضع الداكن/الفاتح للجوال -->
+        <div class="mobile-mode-toggle">
+          <h4>Theme</h4>
+          <div class="toggle-switch">
+            <i class="fas fa-moon"></i>
+            <span>Dark Mode</span>
+          </div>
         </div>
-
-        <button id="btnDeleteActiveDrawing" class="hidden px-2.5 py-1 bg-bearish/20 text-bearish hover:bg-bearish hover:text-white rounded-lg font-bold transition flex items-center gap-1 text-xs">
-          <i class="fa-solid fa-trash-can"></i> Sil
-        </button>
+      </nav>
+      <div class="language-switcher">
+        <a href="#" id="ar-link-en">عربي</a> | 
+        <a href="#" id="en-link-en" class="active">English</a> |
+        <a href="#" id="tr-link-en">Türkçe</a>
       </div>
-
-      <!-- Active Simulated Trade Position Banner -->
-      <div id="activePositionBanner" class="hidden absolute top-2 right-3 z-10 flex items-center gap-3 bg-bgCard/90 border border-gold/40 px-3 py-1.5 rounded-lg shadow-xl backdrop-blur-md">
-        <div class="text-xs">
-          <span id="posTypeTag" class="font-bold px-1.5 py-0.5 rounded text-[10px] bg-bullish text-white">BUY</span>
-          <span id="posDetailsText" class="font-mono text-white text-xs ml-1">100 hisse @ 0.010000</span>
-          <span id="posPnLText" class="font-mono font-bold text-bullish ml-2">+$0.00</span>
-        </div>
-        <button id="btnClosePosition" class="px-2 py-1 bg-bearish/20 hover:bg-bearish text-bearish hover:text-white border border-bearish/40 rounded text-xs font-bold transition flex items-center gap-1">
-          <i class="fa-solid fa-xmark"></i> İşlemi Kapat
-        </button>
+      <div class="mode-toggle">
+        <i class="fas fa-moon"></i>
       </div>
+    </div>
+  </header>
 
-      <!-- Main Candlestick Chart Layer & Canvas -->
-      <div id="chartContainer" class="w-full flex-1 relative bg-black">
-        <canvas id="drawingCanvas"></canvas>
-        <div id="tradeMarkerLayer" aria-hidden="true"></div>
-
-        <!-- Chart-native trade controls: SELL left, BUY right -->
-        <div id="chartTradeButtons" class="absolute left-3 right-3 bottom-8 z-40 flex items-center justify-between pointer-events-auto" style="max-width:calc(100% - 24px)">
-          <button id="btnSell" type="button" title="Yalnızca sahip olduğun hisseleri o anki piyasa fiyatından satar; yeni satış/short pozisyonu açmaz." class="px-5 py-2.5 bg-bearish hover:bg-rose-600 text-white font-bold rounded-lg shadow-lg shadow-bearish/30 border border-rose-400/40 transition flex items-center justify-center gap-2 text-xs sm:text-sm whitespace-nowrap">
-            <i class="fa-solid fa-arrow-trend-down"></i> SELL
-          </button>
-          <button id="btnBuy" type="button" class="px-5 py-2.5 bg-bullish hover:bg-emerald-600 text-white font-bold rounded-lg shadow-lg shadow-bullish/30 border border-emerald-400/40 transition flex items-center justify-center gap-2 text-xs sm:text-sm whitespace-nowrap">
-            <i class="fa-solid fa-arrow-trend-up"></i> BUY
-          </button>
+  <!-- هيدر باللغة التركية -->
+  <header id="header-tr" class="header" style="display: none;">
+    <div class="container">
+      <div class="mobile-menu-btn" style="float: right;">
+        <i class="fas fa-bars"></i>
+      </div>
+      <div class="logo">
+        <img src="1.png" alt="LCA Logo" class="dark-logo" style="height: 50px;">
+        <img src="1w.png" alt="LCA Logo" class="light-logo" style="height: 50px; display: none;">
+      </div>
+      <nav class="main-nav">
+        <div class="close-menu">
+          <i class="fas fa-times"></i>
         </div>
+        <ul>
+          <li><a href="#home" class="active">Ana Sayfa</a></li>
+          <li><a href="#courses">Strateji</a></li>
+          <li><a href="#features">Özellikler</a></li>
+          <li><a href="#faq">SSS</a></li>
+        </ul>
+        <!-- إضافة مبدل اللغة للجوال -->
+        <div class="mobile-language-switcher">
+          <h4>Dil Seçin</h4>
+          <div class="language-links">
+            <a href="#" id="ar-link-mobile-tr">عربي</a>
+            <a href="#" id="en-link-mobile-tr">English</a>
+            <a href="#" id="tr-link-mobile-tr" class="active">Türkçe</a>
+          </div>
+        </div>
+        <!-- إضافة زر الوضع الداكن/الفاتح للجوال -->
+        <div class="mobile-mode-toggle">
+          <h4>Tema</h4>
+          <div class="toggle-switch">
+            <i class="fas fa-moon"></i>
+            <span>Karanlık Mod</span>
+          </div>
+        </div>
+      </nav>
+      <div class="language-switcher">
+        <a href="#" id="ar-link-tr">عربي</a> | 
+        <a href="#" id="en-link-tr">English</a> |
+        <a href="#" id="tr-link-tr" class="active">Türkçe</a>
+      </div>
+      <div class="mode-toggle">
+        <i class="fas fa-moon"></i>
+      </div>
+    </div>
+  </header>
 
-        <!-- Context Menu for Drawings -->
-        <div id="drawingContextMenu" class="hidden absolute z-30 bg-bgCard/95 backdrop-blur-md border border-gray-700/80 p-3 rounded-xl shadow-2xl flex flex-col gap-3 text-xs select-none">
-          <div class="flex flex-col gap-1.5 border-b border-gray-800 pb-2">
-            <span class="text-gray-400 font-semibold text-[11px]">Renk Seçenekleri:</span>
-            <div class="flex items-center gap-2">
-              <button class="ctx-color-btn w-6 h-6 rounded-full bg-white border border-gray-600 hover:scale-110 transition" data-color="#ffffff"></button>
-              <button class="ctx-color-btn w-6 h-6 rounded-full bg-yellow-400 border border-gray-600 hover:scale-110 transition" data-color="#f0b90b"></button>
-              <button class="ctx-color-btn w-6 h-6 rounded-full bg-cyan-400 border border-gray-600 hover:scale-110 transition" data-color="#22d3ee"></button>
-              <button class="ctx-color-btn w-6 h-6 rounded-full bg-pink-500 border border-gray-600 hover:scale-110 transition" data-color="#ec4899"></button>
-              <button class="ctx-color-btn w-6 h-6 rounded-full bg-emerald-400 border border-gray-600 hover:scale-110 transition" data-color="#10b981"></button>
-              <label for="ctxCustomColorPicker" class="w-6 h-6 rounded-full bg-gradient-to-tr from-red-500 via-green-500 to-blue-500 border border-gray-500 flex items-center justify-center cursor-pointer hover:scale-110 transition shadow-inner relative overflow-hidden" title="Özel Renk">
-                <input type="color" id="ctxCustomColorPicker" value="#f0b90b" class="absolute inset-0 opacity-0 cursor-pointer w-full h-full">
-              </label>
+  <!-- المحتوى باللغة العربية -->
+  <div id="content-ar">
+    <section class="hero" id="home">
+      <div class="container">
+        <div class="hero-content">
+
+          <h1>اهلا بكم في LCA</h1>
+          <h2>موشر تداول احترافي NEXT CANDEL🌍 </h2>
+          <a href="#courses" class="btn btn-primary">اشتري الموشر الآن</a>
+                   
+</div>
+        </div>
+      </div>
+    </section>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+
+        .full-screen-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* يضمن أن الصورة تملأ الشاشة دون أن يتم تشويهها */
+        }
+    </style>
+
+
+    <img src="4.png" alt="صورة" class="full-screen-image">
+    <!-- شريط TradingView للوضع الفاتح -->
+    <div class="tradingview-widget-container light-mode-widget" style="display: none;">
+      <div id="tradingview_ticker_light"></div>
+      <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
+      {
+        "symbols": [
+          { "proName": "FOREXCOM:XAUUSD", "title": "Gold (XAU/USD)" },
+          { "proName": "FOREXCOM:EURUSD", "title": "EUR/USD" },
+          { "proName": "FOREXCOM:GBPUSD", "title": "GBP/USD" },
+          { "proName": "FOREXCOM:USDJPY", "title": "USD/JPY" },
+          { "proName": "FOREXCOM:USDCHF", "title": "USD/CHF" },
+          { "proName": "FOREXCOM:AUDUSD", "title": "AUD/USD" },
+          { "proName": "FOREXCOM:USDCAD", "title": "USD/CAD" },
+          { "proName": "FOREXCOM:NZDUSD", "title": "NZD/USD" },
+          { "proName": "FOREXCOM:EURJPY", "title": "EUR/JPY" },
+          { "proName": "FOREXCOM:GBPJPY", "title": "GBP/JPY" },
+          { "proName": "FOREXCOM:EURGBP", "title": "EUR/GBP" },
+          { "proName": "FOREXCOM:CHFJPY", "title": "CHF/JPY" },
+          { "proName": "FOREXCOM:EURCHF", "title": "EUR/CHF" },
+          { "proName": "FOREXCOM:EURAUD", "title": "EUR/AUD" },
+          { "proName": "FOREXCOM:GBPAUD", "title": "GBP/AUD" },
+          { "proName": "FOREXCOM:AUDJPY", "title": "AUD/JPY" },
+          { "proName": "FOREXCOM:GBPCAD", "title": "GBP/CAD" },
+          { "proName": "FOREXCOM:EURCAD", "title": "EUR/CAD" },
+          { "proName": "FOREXCOM:NZDJPY", "title": "NZD/JPY" },
+          { "proName": "FOREXCOM:AUDNZD", "title": "AUD/NZD" },
+          { "proName": "FOREXCOM:CADJPY", "title": "CAD/JPY" },
+          { "proName": "FOREXCOM:GBPNZD", "title": "GBP/NZD" }
+        ],
+        "showSymbolLogo": true,
+        "colorTheme": "light",
+        "isTransparent": false,
+        "displayMode": "regular",
+        "locale": "ar"
+      }
+      </script>
+    </div>
+
+    <!-- شريط TradingView للوضع الداكن -->
+    <div class="tradingview-widget-container dark-mode-widget">
+      <div id="tradingview_ticker_dark"></div>
+      <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
+      {
+        "symbols": [
+          { "proName": "FOREXCOM:XAUUSD", "title": "Gold (XAU/USD)" },
+          { "proName": "FOREXCOM:EURUSD", "title": "EUR/USD" },
+          { "proName": "FOREXCOM:GBPUSD", "title": "GBP/USD" },
+          { "proName": "FOREXCOM:USDJPY", "title": "USD/JPY" },
+          { "proName": "FOREXCOM:USDCHF", "title": "USD/CHF" },
+          { "proName": "FOREXCOM:AUDUSD", "title": "AUD/USD" },
+          { "proName": "FOREXCOM:USDCAD", "title": "USD/CAD" },
+          { "proName": "FOREXCOM:NZDUSD", "title": "NZD/USD" },
+          { "proName": "FOREXCOM:EURJPY", "title": "EUR/JPY" },
+          { "proName": "FOREXCOM:GBPJPY", "title": "GBP/JPY" },
+          { "proName": "FOREXCOM:EURGBP", "title": "EUR/GBP" },
+          { "proName": "FOREXCOM:CHFJPY", "title": "CHF/JPY" },
+          { "proName": "FOREXCOM:EURCHF", "title": "EUR/CHF" },
+          { "proName": "FOREXCOM:EURAUD", "title": "EUR/AUD" },
+          { "proName": "FOREXCOM:GBPAUD", "title": "GBP/AUD" },
+          { "proName": "FOREXCOM:AUDJPY", "title": "AUD/JPY" },
+          { "proName": "FOREXCOM:GBPCAD", "title": "GBP/CAD" },
+          { "proName": "FOREXCOM:EURCAD", "title": "EUR/CAD" },
+          { "proName": "FOREXCOM:NZDJPY", "title": "NZD/JPY" },
+          { "proName": "FOREXCOM:AUDNZD", "title": "AUD/NZD" },
+          { "proName": "FOREXCOM:CADJPY", "title": "CAD/JPY" },
+          { "proName": "FOREXCOM:GBPNZD", "title": "GBP/NZD" }
+        ],
+        "showSymbolLogo": true,
+        "colorTheme": "dark",
+        "isTransparent": false,
+        "displayMode": "regular",
+        "locale": "ar"
+      }
+      </script>
+    </div>
+
+<!-- قسم الفوركس — العربية -->
+<section class="forex" id="forex">
+  <div class="container">
+    <div class="section-header">
+      <h2>تداول الفوركس مع LCA</h2>
+      <p>مؤشر LCA هو مؤشر تقني على TradingView لتحديد لون الشمعة واتجاه السوق في أسواق الفوركس والعملات الرقمية والأسهم</p>
+    </div>
+    <div class="forex-features">
+      <div class="forex-feature">
+        <div class="forex-feature-icon"><i class="fas fa-globe"></i></div>
+        <h3>تداول عالمي</h3>
+        <p>تعلم التداول على العملات الأجنبية والمعادن والمؤشرات.</p>
+      </div>
+      <div class="forex-feature">
+        <div class="forex-feature-icon"><i class="fas fa-chart-line"></i></div>
+        <h3>تحليل السوق</h3>
+        <p>تعلم كيفية تحليل السوق واتخاذ القرارات بناءً على البيانات.</p>
+      </div>
+      <div class="forex-feature">
+        <div class="forex-feature-icon"><i class="fas fa-shield-alt"></i></div>
+        <h3>إدارة المخاطر</h3>
+        <p>تعلم استراتيجيات إدارة المخاطر لحماية حسابك.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+    <section class="features" id="features">
+      <div class="container">
+        <div class="section-header">
+          <h2>مميزات الموشر</h2>
+        </div>
+        <div class="features-grid">
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-chart-line"></i>
             </div>
+            <h3>موشر تداول ذكي</h3>
+            <p> تداول باحتراف مع موشر LCA</p>
           </div>
-          <div class="flex flex-col gap-1.5 border-b border-gray-800 pb-2">
-            <span class="text-gray-400 font-semibold text-[11px]">Kalınlık Seçenekleri:</span>
-            <div class="flex items-center gap-1.5">
-              <button class="ctx-width-btn px-2.5 py-1 rounded bg-bgHover text-gray-300 hover:text-gold hover:bg-gray-800 font-mono text-xs transition" data-width="1">1px</button>
-              <button class="ctx-width-btn px-2.5 py-1 rounded bg-bgHover text-gray-300 hover:text-gold hover:bg-gray-800 font-mono text-xs transition" data-width="2">2px</button>
-              <button class="ctx-width-btn px-2.5 py-1 rounded bg-bgHover text-gray-300 hover:text-gold hover:bg-gray-800 font-mono text-xs transition" data-width="3">3px</button>
-              <button class="ctx-width-btn px-2.5 py-1 rounded bg-bgHover text-gray-300 hover:text-gold hover:bg-gray-800 font-mono text-xs transition" data-width="4">4px</button>
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-video"></i>
             </div>
+            <h3>فيديوهات شرح</h3>
+            <p>شرح عملي لاستخدام المؤشرات</p>
           </div>
-          <button id="btnDeleteDrawing" class="w-full py-1.5 bg-bearish/20 text-bearish hover:bg-bearish hover:text-white rounded-lg font-bold transition flex items-center justify-center gap-1.5 text-xs">
-            <i class="fa-solid fa-trash-can"></i> Çizimi Sil
-          </button>
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-headset"></i>
+            </div>
+            <h3>دعم فني</h3>
+            <p>دعم مباشر لمدة 3 أيام بعد الشراء</p>
+          </div>
         </div>
       </div>
+    </section>
 
-      <!-- RSI Indicator Pane -->
-      <div id="rsiContainer" class="w-full h-28 border-t border-gray-800 bg-black relative hidden">
-        <div class="absolute top-1 left-3 z-10 text-[10px] font-bold text-indigo-400">RSI (14)</div>
-      </div>
+    <section class="courses" id="courses">
+      <div class="container">
+        <div class="section-header">
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
 
-      <!-- MACD Indicator Pane -->
-      <div id="macdContainer" class="w-full h-28 border-t border-gray-800 bg-black relative hidden">
-        <div class="absolute top-1 left-3 z-10 text-[10px] font-bold text-cyan-400">MACD (12, 26, 9)</div>
-      </div>
-    </main>
+        .full-screen-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* يضمن أن الصورة تملأ الشاشة دون أن يتم تشويهها */
+        }
+    </style>
+    <img src="lcaa.jpg" alt="صورة" class="full-screen-image">
 
-    <!-- RIGHT SIDEBAR -->
-    <aside class="w-80 bg-bgCard border-l border-gray-800 flex flex-col flex-shrink-0 z-20 overflow-y-auto">
+
+    <img src="lca22.jpg" alt="صورة" class="full-screen-image">
+<section class="indicator-benefits">
+  <div class="container">
+    <!-- الصورة -->
+    <div class="benefit-image">
+      <img src="5.png" alt="NEXT CANDEL Indicator">
+    </div>
+
+    <!-- المميزات -->
+    <div class="benefit-content">
+      <h2 class="glow-title">لماذا تختار مؤشر NEXT CANDEL؟</h2>
+      <p>مؤشر احترافي يُستخدم في الفوركس والخيارات الثنائية، يقدم تنبؤات دقيقة بلون الشمعة القادمة باستخدام خوارزميات ذكية.</p>
       
-      <!-- Realtime Analytics Header -->
-      <div class="p-4 border-b border-gray-800 bg-gradient-to-r from-bgCard to-bgDark">
-        <div class="flex items-center justify-between mb-2">
-          <span class="text-xs font-bold uppercase tracking-wider text-gold flex items-center gap-1.5">
-            <i class="fa-solid fa-brain"></i> Analytics Engine
-          </span>
-          <span class="text-[10px] bg-gold/10 text-gold font-mono px-2 py-0.5 rounded-full border border-gold/30">REALTIME</span>
+      <div class="feature-strips">
+        <div class="strip-item">
+          <i class="fas fa-bolt pulse-icon"></i>
+          <span>توقع لون الشمعة القادمة بدقة عالية</span>
         </div>
-
-        <div id="signalCard" class="p-3.5 rounded-xl bg-bgDark border border-bullish/30 flex items-center justify-between shadow-lg transition-all duration-300">
-          <div>
-            <div class="text-[10px] text-gray-400 font-medium">PREDICTED DIRECTION</div>
-            <div id="signalText" class="text-xl font-black text-bullish tracking-wide flex items-center gap-2">
-              <i class="fa-solid fa-circle-arrow-up"></i> STRONG BUY
-            </div>
-          </div>
-          <div class="text-right">
-            <div class="text-[10px] text-gray-400">SIGNAL STRENGTH</div>
-            <div id="signalAccuracy" class="text-lg font-mono font-bold text-gold">88.4%</div>
-          </div>
+        <div class="strip-item">
+          <i class="fas fa-sync-alt pulse-icon"></i>
+          <span>مناسب لتداول الفوركس </span>
         </div>
-      </div>
-
-      <!-- Technical Statistics -->
-      <div class="p-4 border-b border-gray-800 space-y-3">
-        <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Technical Analytics</h4>
-        <div>
-          <div class="flex justify-between text-xs mb-1">
-            <span class="text-gray-400">Trend Momentum</span>
-            <span id="trendStrengthText" class="font-bold text-bullish">Bullish 76%</span>
-          </div>
-          <div class="w-full bg-bgDark h-2 rounded-full overflow-hidden border border-gray-800">
-            <div id="trendStrengthBar" class="bg-gradient-to-r from-yellow-500 to-bullish h-full rounded-full transition-all duration-500" style="width: 76%"></div>
-          </div>
+        <div class="strip-item">
+          <i class="fas fa-bullseye pulse-icon"></i>
+          <span>إشارات فورية بدون إعادة رسم</span>
         </div>
-
-        <div class="pt-1 space-y-1.5" aria-label="Tahmin oylarının dağılımı">
-          <div class="flex items-center justify-between text-[11px]">
-            <span class="text-gray-400">Oy dağılımı</span>
-            <span id="voteTotal" class="font-mono text-gray-300">0 oy</span>
-          </div>
-          <div class="w-full h-2.5 rounded-full overflow-hidden bg-bgDark border border-gray-800 flex" role="img" aria-label="Kırmızı ve yeşil tahmin oylarının yüzdesi">
-            <div id="voteRedSegment" class="h-full transition-all duration-300" style="width:50%;background-color:#ff0000"></div>
-            <div id="voteGreenSegment" class="h-full transition-all duration-300" style="width:50%;background-color:#00ff0a"></div>
-          </div>
-          <div class="flex items-center justify-between gap-2 text-[10px] font-mono">
-            <span id="voteRedSummary" class="text-bearish">🔴 KIRMIZI 0% · 0</span>
-            <span id="voteGreenSummary" class="text-bullish text-right">🟢 YEŞİL 0% · 0</span>
-          </div>
+        <div class="strip-item">
+          <i class="fas fa-layer-group pulse-icon"></i>
+          <span>يعمل على جميع الفريمات والأصول</span>
         </div>
-
-        <div class="pt-1 space-y-2">
-          <div class="text-[11px] text-gray-400">5 dakikalık mum kapanış tahmini</div>
-          <div class="grid grid-cols-2 gap-2">
-            <button id="btnVoteRed" type="button" class="rounded-lg border border-bearish/60 bg-black hover:bg-bearish text-bearish hover:text-white font-bold p-3 transition disabled:opacity-40 disabled:cursor-not-allowed">
-              <span class="block text-sm">🔴 KIRMIZI</span>
-              <span class="block text-[10px] font-medium mt-1">Doğruysa +$8</span>
-            </button>
-            <button id="btnVoteGreen" type="button" class="rounded-lg border border-bullish/60 bg-black hover:bg-bullish text-bullish hover:text-white font-bold p-3 transition disabled:opacity-40 disabled:cursor-not-allowed">
-              <span class="block text-sm">🟢 YEŞİL</span>
-              <span class="block text-[10px] font-medium mt-1">Doğruysa +$8</span>
-            </button>
-          </div>
-          <div class="bg-bgDark rounded-lg border border-gray-800 p-2 space-y-1">
-            <div class="flex items-center justify-between text-[11px]"><span class="text-gray-400">Oy ücreti</span><strong class="text-white font-mono">$10</strong></div>
-            <div class="flex items-center justify-between text-[11px]"><span class="text-gray-400">Kapanışa kalan</span><strong id="voteCountdown" class="text-gold font-mono">05:00</strong></div>
-            <div id="voteStatus" role="status" aria-live="polite" class="text-[11px] text-gray-300 pt-1">Bir sonraki 5 dakikalık mumun rengini tahmin et.</div>
-          </div>
+        <div class="strip-item">
+          <i class="fas fa-user-shield pulse-icon"></i>
+          <span>سهل الاستخدام ولا يحتاج خبرة مسبقة</span>
         </div>
-      </div>
-
-      <!-- MT5 Position Calculator -->
-      <div class="p-4 border-b border-gray-800 space-y-3">
-        <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center justify-between">
-          <span>Sanal Hisse İşlemi</span>
-          <i class="fa-solid fa-calculator text-gold"></i>
-        </h4>
-        <div class="space-y-2 text-xs">
-          <div>
-            <label class="text-gray-400 block mb-1">Sanal Bakiye ($)</label>
-            <input type="number" id="calcBalance" value="100" min="0" step="0.01" readonly aria-readonly="true" title="Sanal bakiye işlemlere göre otomatik değişir; elle değiştirilemez." class="w-full bg-bgDark border border-gray-700 rounded p-1.5 font-mono text-white focus:outline-none focus:border-gold">
-          </div>
-          <div>
-            <label class="text-gray-400 block mb-1">Hisse Miktarı (adet)</label>
-            <input type="number" id="calcLotInput" value="100" min="1" step="1" inputmode="numeric" class="w-full bg-bgDark border border-gray-700 rounded p-1.5 font-mono text-white focus:outline-none focus:border-gold">
-          </div>
-          <div class="p-2.5 bg-bgDark rounded-lg border border-gray-800 space-y-1.5 mt-2">
-            <div class="flex justify-between text-[11px] gap-3"><span class="text-gray-400">Hisse fiyatı</span><span id="shareCurrentPrice" class="font-mono font-bold text-white">$0.010000</span></div>
-            <div class="flex justify-between text-[11px] gap-3"><span class="text-gray-400">Fiyat etkisi (tahmini)</span><span id="shareOrderImpact" class="font-mono font-bold text-bullish">+0.2003%</span></div>
-            <div class="flex justify-between text-[11px] gap-3"><span class="text-gray-400">Sahip olduğun hisse</span><span id="shareHoldings" class="font-mono font-bold text-white">0</span></div>
-            <div class="flex justify-between text-[11px] gap-3"><span class="text-gray-400">Portföy değeri</span><span id="sharePortfolioValue" class="font-mono font-bold text-white">$0.0000</span></div>
-            <div class="flex justify-between text-[11px] gap-3"><span class="text-gray-400">Kâr / zarar (canlı)</span><span id="shareRealizedPnL" class="font-mono font-bold text-white">$0.0000</span></div>
-          </div>
+        <div class="strip-item">
+          <i class="fas fa-headset pulse-icon"></i>
+          <span>دعم فني مباشر + دليل شامل</span>
         </div>
-      </div>
-
-    </aside>
-  </div>
-
-  <!-- INDICATORS SELECTION MODAL -->
-  <div id="indicatorsModal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center hidden">
-    <div class="bg-bgCard border border-gray-700 w-full max-w-lg rounded-2xl shadow-2xl p-5 overflow-hidden flex flex-col gap-4">
-      <div class="flex items-center justify-between border-b border-gray-800 pb-3">
-        <h3 class="text-lg font-bold text-white flex items-center gap-2">
-          <i class="fa-solid fa-sliders text-gold"></i> Gösterge & Ayarlar (Indicators & Settings)
-        </h3>
-        <button id="btnCloseIndicatorsModal" class="text-gray-400 hover:text-white text-lg">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
-      </div>
-
-      <div class="space-y-3 max-h-96 overflow-y-auto pr-1">
-        <!-- EMA -->
-        <div class="p-3 bg-bgDark rounded-xl border border-gray-800 transition space-y-2">
-          <label class="flex items-center justify-between cursor-pointer">
-            <div>
-              <div class="font-bold text-sm text-white">EMA (Üstel Hareketli Ortalama)</div>
-              <div class="text-xs text-gray-400">Hızlı ve Yavaş Üstel Hareketli Ortalama</div>
-            </div>
-            <input type="checkbox" id="chkEMA" class="w-5 h-5 accent-gold cursor-pointer">
-          </label>
-          <div class="grid grid-cols-2 gap-2 pt-2 border-t border-gray-800/60 text-xs">
-            <div class="flex items-center gap-2">
-              <span class="text-gray-400">Hızlı Periyot:</span>
-              <input type="number" id="inputEmaFast" value="20" min="1" max="500" class="w-16 bg-bgHover border border-gray-700 rounded px-2 py-1 text-gold font-mono focus:outline-none focus:border-gold">
-            </div>
-            <div class="flex items-center gap-2">
-              <span class="text-gray-400">Yavaş Periyot:</span>
-              <input type="number" id="inputEmaSlow" value="50" min="1" max="500" class="w-16 bg-bgHover border border-gray-700 rounded px-2 py-1 text-gold font-mono focus:outline-none focus:border-gold">
-            </div>
-          </div>
-        </div>
-
-        <!-- SMA -->
-        <div class="p-3 bg-bgDark rounded-xl border border-gray-800 transition space-y-2">
-          <label class="flex items-center justify-between cursor-pointer">
-            <div>
-              <div class="font-bold text-sm text-white">SMA (Basit Hareketli Ortalama)</div>
-              <div class="text-xs text-gray-400">Basit Trend Ortalaması</div>
-            </div>
-            <input type="checkbox" id="chkSMA" class="w-5 h-5 accent-gold cursor-pointer">
-          </label>
-          <div class="flex items-center gap-2 pt-2 border-t border-gray-800/60 text-xs">
-            <span class="text-gray-400">Periyot:</span>
-            <input type="number" id="inputSmaPeriod" value="100" min="1" max="500" class="w-20 bg-bgHover border border-gray-700 rounded px-2 py-1 text-gold font-mono focus:outline-none focus:border-gold">
-          </div>
-        </div>
-
-        <!-- RSI -->
-        <div class="p-3 bg-bgDark rounded-xl border border-gray-800 transition space-y-2">
-          <label class="flex items-center justify-between cursor-pointer">
-            <div>
-              <div class="font-bold text-sm text-white">RSI (Göreceli Güç Endeksi)</div>
-              <div class="text-xs text-gray-400">Aşırı Alım / Satım Osilatörü</div>
-            </div>
-            <input type="checkbox" id="chkRSI" class="w-5 h-5 accent-gold cursor-pointer">
-          </label>
-          <div class="flex items-center gap-2 pt-2 border-t border-gray-800/60 text-xs">
-            <span class="text-gray-400">Periyot:</span>
-            <input type="number" id="inputRsiPeriod" value="14" min="1" max="100" class="w-20 bg-bgHover border border-gray-700 rounded px-2 py-1 text-gold font-mono focus:outline-none focus:border-gold">
-          </div>
-        </div>
-
-        <!-- MACD -->
-        <div class="p-3 bg-bgDark rounded-xl border border-gray-800 transition space-y-2">
-          <label class="flex items-center justify-between cursor-pointer">
-            <div>
-              <div class="font-bold text-sm text-white">MACD</div>
-              <div class="text-xs text-gray-400">Momentum ve Trend Göstergesi</div>
-            </div>
-            <input type="checkbox" id="chkMACD" class="w-5 h-5 accent-gold cursor-pointer">
-          </label>
-          <div class="grid grid-cols-3 gap-2 pt-2 border-t border-gray-800/60 text-xs">
-            <div class="flex flex-col gap-1">
-              <span class="text-gray-400 text-[10px]">Hızlı:</span>
-              <input type="number" id="inputMacdFast" value="12" min="1" max="100" class="w-full bg-bgHover border border-gray-700 rounded px-1.5 py-1 text-gold font-mono focus:outline-none focus:border-gold">
-            </div>
-            <div class="flex flex-col gap-1">
-              <span class="text-gray-400 text-[10px]">Yavaş:</span>
-              <input type="number" id="inputMacdSlow" value="26" min="1" max="200" class="w-full bg-bgHover border border-gray-700 rounded px-1.5 py-1 text-gold font-mono focus:outline-none focus:border-gold">
-            </div>
-            <div class="flex flex-col gap-1">
-              <span class="text-gray-400 text-[10px]">Sinyal:</span>
-              <input type="number" id="inputMacdSignal" value="9" min="1" max="100" class="w-full bg-bgHover border border-gray-700 rounded px-1.5 py-1 text-gold font-mono focus:outline-none focus:border-gold">
-            </div>
-          </div>
-        </div>
-
-        <!-- Bollinger Bands -->
-        <div class="p-3 bg-bgDark rounded-xl border border-gray-800 transition space-y-2">
-          <label class="flex items-center justify-between cursor-pointer">
-            <div>
-              <div class="font-bold text-sm text-white">Bollinger Bands</div>
-              <div class="text-xs text-gray-400">Volatilite Kanalları</div>
-            </div>
-            <input type="checkbox" id="chkBB" class="w-5 h-5 accent-gold cursor-pointer">
-          </label>
-          <div class="grid grid-cols-2 gap-2 pt-2 border-t border-gray-800/60 text-xs">
-            <div class="flex items-center gap-2">
-              <span class="text-gray-400">Periyot:</span>
-              <input type="number" id="inputBbPeriod" value="20" min="1" max="200" class="w-16 bg-bgHover border border-gray-700 rounded px-2 py-1 text-gold font-mono focus:outline-none focus:border-gold">
-            </div>
-            <div class="flex items-center gap-2">
-              <span class="text-gray-400">Sapma (StdDev):</span>
-              <input type="number" id="inputBbStd" value="2" step="0.1" min="0.1" max="10" class="w-16 bg-bgHover border border-gray-700 rounded px-2 py-1 text-gold font-mono focus:outline-none focus:border-gold">
-            </div>
-          </div>
-        </div>
-
-        <!-- Supertrend -->
-        <div class="p-3 bg-bgDark rounded-xl border border-gray-800 transition space-y-2">
-          <label class="flex items-center justify-between cursor-pointer">
-            <div>
-              <div class="font-bold text-sm text-white">Supertrend Engine</div>
-              <div class="text-xs text-gray-400">ATR Tabanlı Trend Takip Çizgisi</div>
-            </div>
-            <input type="checkbox" id="chkSupertrend" class="w-5 h-5 accent-gold cursor-pointer">
-          </label>
-        </div>
-      </div>
-
-      <div class="flex justify-end pt-2 border-t border-gray-800">
-        <button id="btnApplyIndicators" class="px-5 py-2 bg-gold hover:bg-goldHover text-bgDark font-bold rounded-xl transition cursor-pointer">
-          Uygula (Apply)
-        </button>
       </div>
     </div>
   </div>
+</section>
+<h2>موشر LCA الحصري</h2>
+<p>احصل على الموشر كامل بخصم 34%</p>
+</div>
 
-  <!-- ORDER MODAL NOTIFICATION TOAST -->
-  <div id="orderNotification" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
-    <div id="orderNotificationCard" class="px-5 py-4 rounded-xl bg-bgCard border border-gold shadow-2xl flex items-center gap-4">
-      <div id="orderIcon" class="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-lg">
-        <i class="fa-solid fa-check"></i>
-      </div>
-      <div>
-        <div id="orderTitle" class="font-extrabold text-sm text-white">EMİR SİMÜLASYONU</div>
-        <div id="orderDetails" class="text-xs font-mono text-gray-300">BUY 100 hisse</div>
-      </div>
+<div class="courses-grid">
+  <!-- البطاقة الأولى: العرض الحصري -->
+  <div class="course-card featured">
+    <div class="course-badge">العرض الحصري</div>
+    <div class="course-header">
+      <h3>موشر LCA</h3>
+    </div>
+    <div class="course-price">
+      <h4>السعر: <span id="displayPrice">$66</span> بدلًا من <del>100$</del></h4>
+    </div>
+    <div class="course-details">
+      <ul>
+        <li><i class="fas fa-check"></i> التداول مع مؤشرات LCA</li>
+        <li><i class="fas fa-check"></i> دليل استخدام مفصل</li>
+        <li><i class="fas fa-check"></i> فيديو تعليمي</li>
+        <li><i class="fas fa-check"></i> دعم فني</li>
+      </ul>
+    </div>
+    <div class="course-actions">
+      <a href="https://t.me/LCAV99" class="btn btn-primary" target="_blank">شراء الحزمة</a>
     </div>
   </div>
 
-  <!-- JAVASCRIPT LOGIC ENGINE -->
+  <!-- البطاقة الثانية: مدى الحياة -->
+  <div class="course-card featured">
+    <div class="course-badge" style="background: linear-gradient(45deg, #4CAF50, #388E3C); color: white;">مدى الحياة</div>
+    <div class="course-header">
+      <h3>اشتراك LCA مدى الحياة</h3>
+    </div>
+    <div class="course-price">
+      <h4>السعر: <span>$1000</span></h4>
+    </div>
+    <div class="course-details">
+      <ul>
+        <li><i class="fas fa-check"></i> الوصول الكامل لجميع مؤشرات LCA</li>
+        <li><i class="fas fa-check"></i> تحديثات مدى الحياة</li>
+        <li><i class="fas fa-check"></i> دعم فني مستمر</li>
+        <li><i class="fas fa-check"></i> تفعيل فوري بعد الدفع</li>
+      </ul>
+    </div>
+    <div class="course-actions">
+      <a href="https://t.me/LCAV99" class="btn btn-primary" target="_blank">اشترك الآن</a>
+    </div>
+  </div>
+</div>
+</div>
+</section>
+
+    <!-- قسم الأسئلة الشائعة بالعربية -->
+    <section class="faq-section" id="faq">
+      <div class="container">
+        <div class="section-header">
+          <h2>الأسئلة الشائعة</h2>
+        </div>
+        <div class="faq-items">
+          <details>
+            <summary>كيف أشتري موشر التداول؟</summary>
+            <p>لشراء النظام، اضغط على زر "شراء الحزمة" في قسم الاستراتيجية وسيتم تحويلك إلى رابط تيليجرام.</p>
+          </details>
+          <details>
+            <summary>هل هناك دعم فني بعد الشراء؟</summary>
+            <p>نعم، نقدم دعمًا مباشرًا لمدة 3 أيام بعد الشراء.</p>
+          </details>
+          <details>
+            <summary>هل يتطلب موشر خبرة سابقة؟</summary>
+            <p>لا، موشر  مصمم للمبتدئين والمحترفين معًا، ويأتي مع دليل وفيديو شرح.</p>
+          </details>
+          <details>
+            <summary>ما هي طرق الدفع المتاحة؟</summary>
+            <p>نقبل الدفع باستخدام USDT , BTCUSD </p>
+          </details>
+          <details>
+            <summary>هل يعمل  الموشر على جميع الفريمات والاصول  ؟</summary>
+            <p>نعم موشر   مصمم للعمل على كلى الفريمات والاصول </p>
+          </details>
+          <details>
+            <summary>كيف أستلم موشر  بعد الشراء؟</summary>
+            <p>سيتم تفعيل الموشر على حساب تردنك فيو  </p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-logo">
+            <h3>LCA</h3>
+            <p>تداول بذكاء مع موشر NEXT CANDEL</p>
+          </div>
+          <div class="footer-links">
+            <h4>روابط سريعة</h4>
+            <ul>
+              <li><a href="#home">الرئيسية</a></li>
+              <li><a href="#courses">الشراء</a></li>
+              <li><a href="#features">المميزات</a></li>
+              <li><a href="#faq">الأسئلة الشائعة</a></li>
+            </ul>
+          </div>
+          <div class="footer-follow-us">
+            <h4>تواصل معنا</h4>
+            <div class="social-links">
+              <a href="https://t.me/LCAV99" class="social-link"><i class="fab fa-telegram-plane"></i> تليجرام</a>
+              <a href="https://wa.me/905393011147" class="social-link"><i class="fab fa-whatsapp"></i> واتساب</a>
+              <a href=https://www.instagram.com/alii_sameerr?igsh=MXZmMjdkb2J4bHVicA%3D%3D&utm_source=qr" class="social-link">
+                <i class="fab fa-instagram"></i> إنستقرام
+              </a>
+              
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy;  الاستاذ علي سمير </p>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- المحتوى باللغة الإنجليزية -->
+  <div id="content-en" style="display: none;">
+    <section class="hero" id="home">
+      <div class="container">
+        <div class="hero-content">
+          <h1>Welcome to LCA</h1>
+          <h2>Professional Trading Indicator NEXT CANDEL</h2>
+          <a href="#courses" class="btn btn-primary">Buy Indicator Now</a>
+
+
+        </div>
+      </div>
+    </section>
+    <style>
+    body, html {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+    }
+
+    .background-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover; /* يضمن أن الصورة تملأ الشاشة دون أن يتم تشويهها */
+    }
+</style>
+
+<img src="4.png" alt="صورة" class="background-image">
+
+    <!-- شريط TradingView للوضع الفاتح -->
+    <div class="tradingview-widget-container light-mode-widget" style="display: none;">
+      <div id="tradingview_ticker_light"></div>
+      <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
+      {
+        "symbols": [
+          { "proName": "FOREXCOM:XAUUSD", "title": "Gold (XAU/USD)" },
+          { "proName": "FOREXCOM:EURUSD", "title": "EUR/USD" },
+          { "proName": "FOREXCOM:GBPUSD", "title": "GBP/USD" },
+          { "proName": "FOREXCOM:USDJPY", "title": "USD/JPY" },
+          { "proName": "FOREXCOM:USDCHF", "title": "USD/CHF" },
+          { "proName": "FOREXCOM:AUDUSD", "title": "AUD/USD" },
+          { "proName": "FOREXCOM:USDCAD", "title": "USD/CAD" },
+          { "proName": "FOREXCOM:NZDUSD", "title": "NZD/USD" },
+          { "proName": "FOREXCOM:EURJPY", "title": "EUR/JPY" },
+          { "proName": "FOREXCOM:GBPJPY", "title": "GBP/JPY" },
+          { "proName": "FOREXCOM:EURGBP", "title": "EUR/GBP" },
+          { "proName": "FOREXCOM:CHFJPY", "title": "CHF/JPY" },
+          { "proName": "FOREXCOM:EURCHF", "title": "EUR/CHF" },
+          { "proName": "FOREXCOM:EURAUD", "title": "EUR/AUD" },
+          { "proName": "FOREXCOM:GBPAUD", "title": "GBP/AUD" },
+          { "proName": "FOREXCOM:AUDJPY", "title": "AUD/JPY" },
+          { "proName": "FOREXCOM:GBPCAD", "title": "GBP/CAD" },
+          { "proName": "FOREXCOM:EURCAD", "title": "EUR/CAD" },
+          { "proName": "FOREXCOM:NZDJPY", "title": "NZD/JPY" },
+          { "proName": "FOREXCOM:AUDNZD", "title": "AUD/NZD" },
+          { "proName": "FOREXCOM:CADJPY", "title": "CAD/JPY" },
+          { "proName": "FOREXCOM:GBPNZD", "title": "GBP/NZD" }
+        ],
+        "showSymbolLogo": true,
+        "colorTheme": "light",
+        "isTransparent": false,
+        "displayMode": "regular",
+        "locale": "en"
+      }
+      </script>
+    </div>
+
+    <!-- شريط TradingView للوضع الداكن -->
+    <div class="tradingview-widget-container dark-mode-widget">
+      <div id="tradingview_ticker_dark"></div>
+      <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
+      {
+        "symbols": [
+          { "proName": "FOREXCOM:XAUUSD", "title": "Gold (XAU/USD)" },
+          { "proName": "FOREXCOM:EURUSD", "title": "EUR/USD" },
+          { "proName": "FOREXCOM:GBPUSD", "title": "GBP/USD" },
+          { "proName": "FOREXCOM:USDJPY", "title": "USD/JPY" },
+          { "proName": "FOREXCOM:USDCHF", "title": "USD/CHF" },
+          { "proName": "FOREXCOM:AUDUSD", "title": "AUD/USD" },
+          { "proName": "FOREXCOM:USDCAD", "title": "USD/CAD" },
+          { "proName": "FOREXCOM:NZDUSD", "title": "NZD/USD" },
+          { "proName": "FOREXCOM:EURJPY", "title": "EUR/JPY" },
+          { "proName": "FOREXCOM:GBPJPY", "title": "GBP/JPY" },
+          { "proName": "FOREXCOM:EURGBP", "title": "EUR/GBP" },
+          { "proName": "FOREXCOM:CHFJPY", "title": "CHF/JPY" },
+          { "proName": "FOREXCOM:EURCHF", "title": "EUR/CHF" },
+          { "proName": "FOREXCOM:EURAUD", "title": "EUR/AUD" },
+          { "proName": "FOREXCOM:GBPAUD", "title": "GBP/AUD" },
+          { "proName": "FOREXCOM:AUDJPY", "title": "AUD/JPY" },
+          { "proName": "FOREXCOM:GBPCAD", "title": "GBP/CAD" },
+          { "proName": "FOREXCOM:EURCAD", "title": "EUR/CAD" },
+          { "proName": "FOREXCOM:NZDJPY", "title": "NZD/JPY" },
+          { "proName": "FOREXCOM:AUDNZD", "title": "AUD/NZD" },
+          { "proName": "FOREXCOM:CADJPY", "title": "CAD/JPY" },
+          { "proName": "FOREXCOM:GBPNZD", "title": "GBP/NZD" }
+        ],
+        "showSymbolLogo": true,
+        "colorTheme": "dark",
+        "isTransparent": false,
+        "displayMode": "regular",
+        "locale": "en"
+      }
+      </script>
+    </div>
+
+<!-- Forex section — English -->
+<section class="forex" id="forex">
+  <div class="container">
+    <div class="section-header">
+      <h2>Forex Trading with LCA</h2>
+      <p>Forex is the foreign exchange market, the largest financial market in the world. With the LCA strategy, you'll learn how to trade forex professionally, understand market movements, and make the right decisions to generate profits.</p>
+    </div>
+    <div class="forex-features">
+      <div class="forex-feature">
+        <div class="forex-feature-icon"><i class="fas fa-globe"></i></div>
+        <h3>Global Trading</h3>
+        <p>Learn to trade currencies, metals, and indices.</p>
+      </div>
+      <div class="forex-feature">
+        <div class="forex-feature-icon"><i class="fas fa-chart-line"></i></div>
+        <h3>Market Analysis</h3>
+        <p>Learn how to analyze the market and make data-driven decisions.</p>
+      </div>
+      <div class="forex-feature">
+        <div class="forex-feature-icon"><i class="fas fa-shield-alt"></i></div>
+        <h3>Risk Management</h3>
+        <p>Learn risk-management strategies to protect your account.</p>
+      </div>
+    </div>
+  </div>
+</section>
+    <section class="features" id="features">
+      <div class="container">
+        <div class="section-header">
+          <h2>Indicator Features</h2>
+        </div>
+        <div class="features-grid">
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-chart-line"></i>
+            </div>
+            <h3>Smart Trading Indicator</h3>
+            <p>Trade professionally with LCA indicator</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-video"></i>
+            </div>
+            <h3>Tutorial Videos</h3>
+            <p>Practical explanation for using indicators</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-headset"></i>
+            </div>
+            <h3>Technical Support</h3>
+            <p>Direct support for 3 days after purchase</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="courses" id="courses">
+           <div class="container">
+        <div class="section-header">
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+
+        .full-screen-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* يضمن أن الصورة تملأ الشاشة دون أن يتم تشويهها */
+        }
+    </style>
+    <img src="lcaa.jpg" alt="صورة" class="full-screen-image">
+
+
+    <img src="lca22.jpg" alt="صورة" class="full-screen-image">
+<section class="indicator-benefits">
+  <div class="container">
+    <div class="benefit-image">
+      <img src="5.png" alt="NEXT CANDEL Indicator">
+    </div>
+
+    <div class="benefit-content">
+      <h2 class="glow-title">Why choose NEXT CANDEL Indicator?</h2>
+      <p>Professional tool for Forex, providing accurate predictions for the next candle color based on advanced algorithms.</p>
+
+      <div class="feature-strips">
+        <div class="strip-item">
+          <i class="fas fa-bolt pulse-icon"></i>
+          <span>Predict the next candle color with high accuracy</span>
+        </div>
+        <div class="strip-item">
+          <i class="fas fa-sync-alt pulse-icon"></i>
+          <span>Suitable for Forex trading </span>
+        </div>
+        <div class="strip-item">
+          <i class="fas fa-bullseye pulse-icon"></i>
+          <span>Instant signals with no repaint</span>
+        </div>
+        <div class="strip-item">
+          <i class="fas fa-layer-group pulse-icon"></i>
+          <span>Works on all timeframes and assets</span>
+        </div>
+        <div class="strip-item">
+          <i class="fas fa-user-shield pulse-icon"></i>
+          <span>No experience required</span>
+        </div>
+        <div class="strip-item">
+          <i class="fas fa-headset pulse-icon"></i>
+          <span>Direct support & full usage guide</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<h2>Exclusive LCA Indicator</h2>
+<p>Get the full indicator now with 34% off</p>
+</div>
+
+<div class="courses-grid">
+  <!-- Card 1: Exclusive Offer -->
+  <div class="course-card featured">
+    <div class="course-badge">Exclusive Offer</div>
+    <div class="course-header">
+      <h3>LCA Indicator</h3>
+    </div>
+    <div class="course-price">
+      <h4>Price: <span id="displayPrice">$66</span> instead of <del>$100</del></h4>
+    </div>
+    <div class="course-details">
+      <ul>
+        <li><i class="fas fa-check"></i> Trade with LCA indicators</li>
+        <li><i class="fas fa-check"></i> Detailed user guide</li>
+        <li><i class="fas fa-check"></i> Educational video</li>
+        <li><i class="fas fa-check"></i> Technical support</li>
+      </ul>
+    </div>
+    <div class="course-actions">
+      <a href="https://t.me/LCAV99" class="btn btn-primary" target="_blank">Buy Package</a>
+    </div>
+  </div>
+
+  <!-- Card 2: Lifetime Access -->
+  <div class="course-card featured">
+    <div class="course-badge" style="background: linear-gradient(45deg, #4CAF50, #388E3C); color: white;">Lifetime Access</div>
+    <div class="course-header">
+      <h3>LCA Lifetime Subscription</h3>
+    </div>
+    <div class="course-price">
+      <h4>Price: <span>$1000</span></h4>
+    </div>
+    <div class="course-details">
+      <ul>
+        <li><i class="fas fa-check"></i> Full access to all LCA indicators</li>
+        <li><i class="fas fa-check"></i> Lifetime updates</li>
+        <li><i class="fas fa-check"></i> Continuous technical support</li>
+        <li><i class="fas fa-check"></i> Instant activation after payment</li>
+      </ul>
+    </div>
+    <div class="course-actions">
+      <a href="https://t.me/LCAV99" class="btn btn-primary" target="_blank">Subscribe Now</a>
+    </div>
+  </div>
+</div>
+</div>
+</section>
+    <!-- قسم الأسئلة الشائعة بالإنجليزية -->
+    <section class="faq-section" id="faq">
+      <div class="container">
+        <div class="section-header">
+          <h2>Frequently Asked Questions</h2>
+        </div>
+        <div class="faq-items">
+          <details>
+            <summary>How do I purchase the trading indicator?</summary>
+            <p>To purchase the indicator, click the "Buy Package" button in the Strategy section and you'll be redirected to the Telegram link.</p>
+          </details>
+          <details>
+            <summary>Is technical support available after purchase?</summary>
+            <p>Yes, we offer 3 days of direct technical support after purchase.</p>
+          </details>
+          <details>
+            <summary>Does the indicator require prior experience?</summary>
+            <p>No, it's designed for both beginners and pros, and includes a guide and tutorial video.</p>
+          </details>
+          <details>
+            <summary>What payment methods are available?</summary>
+            <p>We support payment via USDT , BTCUSD</p>
+          </details>
+          <details>
+            <summary>Does the indicator work on all frames and assets?</summary>
+            <p>Yes, the indicator is designed to work on all different assets and frames.</p>
+          </details>
+          <details>
+            <summary>How do I receive the indicator after purchase?</summary>
+            <p>The indicator will be activated on your Tradenk View account.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-logo">
+            <h3>LCA</h3>
+            <p>Trade smartly with LCA indicators</p>
+          </div>
+          <div class="footer-links">
+            <h4>Quick Links</h4>
+            <ul>
+              <li><a href="#home">Home</a></li>
+              <li><a href="#courses">Purchase</a></li>
+              <li><a href="#features">Features</a></li>
+              <li><a href="#faq">FAQ</a></li>
+            </ul>
+          </div>
+          <div class="footer-follow-us">
+            <h4>Contact Us</h4>
+            <div class="social-links">
+              <a href="https://t.me/LCAV99" class="social-link"><i class="fab fa-telegram-plane"></i> Telegram</a>
+              <a href="https://wa.me/905393011147" class="social-link"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+              <a href=https://www.instagram.com/alii_sameerr?igsh=MXZmMjdkb2J4bHVicA%3D%3D&utm_source=qr" class="social-link">
+                <i class="fab fa-instagram"></i> Instagram
+              </a>
+             
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>&copy; Ali Sameer </p>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- المحتوى باللغة التركية -->
+  <div id="content-tr" style="display: none;">
+    <section class="hero" id="home">
+      <div class="container">
+        <div class="hero-content">
+          <h1>LCA'ya Hoş Geldiniz</h1>
+          <h2>Profesyonel Trading Göstergesi NEXT CANDEL</h2>
+          <a href="#courses" class="btn btn-primary">Göstergeyi Şimdi Satın Al</a>
+        </div>
+      </div>
+    </section>
+
+    <img src="4.png" alt="Trading" class="full-screen-image">
+
+    <!-- شريط TradingView للوضع الفاتح -->
+    <div class="tradingview-widget-container light-mode-widget" style="display: none;">
+      <div id="tradingview_ticker_light_tr"></div>
+      <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
+      {
+        "symbols": [
+          { "proName": "FOREXCOM:XAUUSD", "title": "Gold (XAU/USD)" },
+          { "proName": "FOREXCOM:EURUSD", "title": "EUR/USD" },
+          { "proName": "FOREXCOM:GBPUSD", "title": "GBP/USD" },
+          { "proName": "FOREXCOM:USDJPY", "title": "USD/JPY" },
+          { "proName": "FOREXCOM:USDCHF", "title": "USD/CHF" },
+          { "proName": "FOREXCOM:AUDUSD", "title": "AUD/USD" },
+          { "proName": "FOREXCOM:USDCAD", "title": "USD/CAD" },
+          { "proName": "FOREXCOM:NZDUSD", "title": "NZD/USD" },
+          { "proName": "FOREXCOM:EURJPY", "title": "EUR/JPY" },
+          { "proName": "FOREXCOM:GBPJPY", "title": "GBP/JPY" },
+          { "proName": "FOREXCOM:EURGBP", "title": "EUR/GBP" },
+          { "proName": "FOREXCOM:CHFJPY", "title": "CHF/JPY" },
+          { "proName": "FOREXCOM:EURCHF", "title": "EUR/CHF" },
+          { "proName": "FOREXCOM:EURAUD", "title": "EUR/AUD" },
+          { "proName": "FOREXCOM:GBPAUD", "title": "GBP/AUD" },
+          { "proName": "FOREXCOM:AUDJPY", "title": "AUD/JPY" },
+          { "proName": "FOREXCOM:GBPCAD", "title": "GBP/CAD" },
+          { "proName": "FOREXCOM:EURCAD", "title": "EUR/CAD" },
+          { "proName": "FOREXCOM:NZDJPY", "title": "NZD/JPY" },
+          { "proName": "FOREXCOM:AUDNZD", "title": "AUD/NZD" },
+          { "proName": "FOREXCOM:CADJPY", "title": "CAD/JPY" },
+          { "proName": "FOREXCOM:GBPNZD", "title": "GBP/NZD" }
+        ],
+        "showSymbolLogo": true,
+        "colorTheme": "light",
+        "isTransparent": false,
+        "displayMode": "regular",
+        "locale": "tr"
+      }
+      </script>
+    </div>
+
+    <!-- شريط TradingView للوضع الداكن -->
+    <div class="tradingview-widget-container dark-mode-widget">
+      <div id="tradingview_ticker_dark_tr"></div>
+      <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
+      {
+        "symbols": [
+          { "proName": "FOREXCOM:XAUUSD", "title": "Gold (XAU/USD)" },
+          { "proName": "FOREXCOM:EURUSD", "title": "EUR/USD" },
+          { "proName": "FOREXCOM:GBPUSD", "title": "GBP/USD" },
+          { "proName": "FOREXCOM:USDJPY", "title": "USD/JPY" },
+          { "proName": "FOREXCOM:USDCHF", "title": "USD/CHF" },
+          { "proName": "FOREXCOM:AUDUSD", "title": "AUD/USD" },
+          { "proName": "FOREXCOM:USDCAD", "title": "USD/CAD" },
+          { "proName": "FOREXCOM:NZDUSD", "title": "NZD/USD" },
+          { "proName": "FOREXCOM:EURJPY", "title": "EUR/JPY" },
+          { "proName": "FOREXCOM:GBPJPY", "title": "GBP/JPY" },
+          { "proName": "FOREXCOM:EURGBP", "title": "EUR/GBP" },
+          { "proName": "FOREXCOM:CHFJPY", "title": "CHF/JPY" },
+          { "proName": "FOREXCOM:EURCHF", "title": "EUR/CHF" },
+          { "proName": "FOREXCOM:EURAUD", "title": "EUR/AUD" },
+          { "proName": "FOREXCOM:GBPAUD", "title": "GBP/AUD" },
+          { "proName": "FOREXCOM:AUDJPY", "title": "AUD/JPY" },
+          { "proName": "FOREXCOM:GBPCAD", "title": "GBP/CAD" },
+          { "proName": "FOREXCOM:EURCAD", "title": "EUR/CAD" },
+          { "proName": "FOREXCOM:NZDJPY", "title": "NZD/JPY" },
+          { "proName": "FOREXCOM:AUDNZD", "title": "AUD/NZD" },
+          { "proName": "FOREXCOM:CADJPY", "title": "CAD/JPY" },
+          { "proName": "FOREXCOM:GBPNZD", "title": "GBP/NZD" }
+        ],
+        "showSymbolLogo": true,
+        "colorTheme": "dark",
+        "isTransparent": false,
+        "displayMode": "regular",
+        "locale": "tr"
+      }
+      </script>
+    </div>
+
+    <!-- قسم الفوركس — التركية -->
+    <section class="forex" id="forex">
+      <div class="container">
+        <div class="section-header">
+          <h2>LCA ile Forex Trading</h2>
+          <p>Forex, dünyanın en büyük finansal piyasası olan döviz ticaret piyasasıdır. LCA stratejisi ile forex piyasasında profesyonel olarak nasıl işlem yapılacağını, piyasa hareketlerini anlamayı ve kâr elde etmek için doğru kararları vermeyi öğreneceksiniz.</p>
+        </div>
+        <div class="forex-features">
+          <div class="forex-feature">
+            <div class="forex-feature-icon"><i class="fas fa-globe"></i></div>
+            <h3>Global Trading</h3>
+            <p>Döviz, emtia ve endekslerde işlem yapmayı öğrenin.</p>
+          </div>
+          <div class="forex-feature">
+            <div class="forex-feature-icon"><i class="fas fa-chart-line"></i></div>
+            <h3>Piyasa Analizi</h3>
+            <p>Piyasayı analiz etmeyi ve veriye dayalı kararlar almayı öğrenin.</p>
+          </div>
+          <div class="forex-feature">
+            <div class="forex-feature-icon"><i class="fas fa-shield-alt"></i></div>
+            <h3>Risk Yönetimi</h3>
+            <p>Hesabınızı korumak için risk yönetimi stratejilerini öğrenin.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="features" id="features">
+      <div class="container">
+        <div class="section-header">
+          <h2>Gösterge Özellikleri</h2>
+        </div>
+        <div class="features-grid">
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-chart-line"></i>
+            </div>
+            <h3>Akıllı Trading Göstergesi</h3>
+            <p>LCA göstergesi ile profesyonel işlem yapın</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-video"></i>
+            </div>
+            <h3>Eğitim Videoları</h3>
+            <p>Göstergelerin kullanımı için pratik açıklamalar</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-headset"></i>
+            </div>
+            <h3>Teknik Destek</h3>
+            <p>Satın alma sonrası 3 gün boyunca doğrudan destek</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="courses" id="courses">
+      <div class="container">
+        <div class="section-header">
+          <img src="lcaa.jpg" alt="Trading" class="full-screen-image">
+          <img src="lca22.jpg" alt="Trading" class="full-screen-image">
+          <h2>Özel LCA Göstergesi</h2>
+<section class="indicator-benefits">
+  <div class="container">
+    <div class="benefit-image">
+      <img src="5.png" alt="NEXT CANDEL Gösterge">
+    </div>
+
+    <div class="benefit-content">
+      <h2 class="glow-title">Neden NEXT CANDEL Göstergesini Seçmelisiniz?</h2>
+      <p>Forex  için profesyonel bir araç. Gelişmiş algoritmalar ile bir sonraki mumun rengini yüksek doğrulukla tahmin eder.</p>
+
+      <div class="feature-strips">
+        <div class="strip-item">
+          <i class="fas fa-bolt pulse-icon"></i>
+          <span>Bir sonraki mum rengini yüksek doğrulukla tahmin eder</span>
+        </div>
+        <div class="strip-item">
+          <i class="fas fa-sync-alt pulse-icon"></i>
+          <span>Forex için uygundur</span>
+        </div>
+        <div class="strip-item">
+          <i class="fas fa-bullseye pulse-icon"></i>
+          <span>Anlık sinyaller, yeniden çizim yok</span>
+        </div>
+        <div class="strip-item">
+          <i class="fas fa-layer-group pulse-icon"></i>
+          <span>Tüm zaman dilimlerinde ve varlıklarda çalışır</span>
+        </div>
+        <div class="strip-item">
+          <i class="fas fa-user-shield pulse-icon"></i>
+          <span>Deneyim gerektirmez</span>
+        </div>
+        <div class="strip-item">
+          <i class="fas fa-headset pulse-icon"></i>
+          <span>Canlı destek ve kapsamlı kullanım kılavuzu</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<h2>Özel LCA Göstergesi</h2>
+<p>LCA göstergesini %34 indirimle şimdi edinin</p>
+</div>
+
+<div class="courses-grid">
+  <!-- Kart 1: Özel Teklif -->
+  <div class="course-card featured">
+    <div class="course-badge">Özel Teklif</div>
+    <div class="course-header">
+      <h3>LCA Göstergesi</h3>
+    </div>
+    <div class="course-price">
+      <h4>Fiyat: <span id="displayPrice">$66</span> yerine <del>$100</del></h4>
+    </div>
+    <div class="course-details">
+      <ul>
+        <li><i class="fas fa-check"></i> LCA göstergeleriyle işlem yapma</li>
+        <li><i class="fas fa-check"></i> Detaylı kullanım kılavuzu</li>
+        <li><i class="fas fa-check"></i> Eğitim videosu</li>
+        <li><i class="fas fa-check"></i> Teknik destek</li>
+      </ul>
+    </div>
+    <div class="course-actions">
+      <a href="https://t.me/LCAV99" class="btn btn-primary" target="_blank">Paket Satın Al</a>
+    </div>
+  </div>
+
+  <!-- Kart 2: Ömür Boyu Üyelik -->
+  <div class="course-card featured">
+    <div class="course-badge" style="background: linear-gradient(45deg, #4CAF50, #388E3C); color: white;">Ömür Boyu</div>
+    <div class="course-header">
+      <h3>LCA Ömür Boyu Abonelik</h3>
+    </div>
+    <div class="course-price">
+      <h4>Fiyat: <span>$1000</span></h4>
+    </div>
+    <div class="course-details">
+      <ul>
+        <li><i class="fas fa-check"></i> Tüm LCA göstergelerine tam erişim</li>
+        <li><i class="fas fa-check"></i> Ömür boyu güncellemeler</li>
+        <li><i class="fas fa-check"></i> Sürekli teknik destek</li>
+        <li><i class="fas fa-check"></i> Ödeme sonrası anında etkinleştirme</li>
+      </ul>
+    </div>
+    <div class="course-actions">
+      <a href="https://t.me/LCAV99" class="btn btn-primary" target="_blank">Şimdi Abone Ol</a>
+    </div>
+  </div>
+</div>
+</div>
+</section>
+
   <script>
-    // State Container
-    const state = {
-      symbol: 'TRADEGRAM',
-      timeframe: '15m',
-      currentPrice: 0.01,
-      prevPrice: 0.01,
-      simDirection: 0, // Sanal hisse modelinde fiyatı havuz işlemleri belirler
-      marketAnchorPrice: 0.01,
-      orderSide: 'BUY',
-      orderFlow: [], // Bu tarayıcı oturumunda başarıyla gerçekleşen sanal alım-satım emirleri.
-      tradeMarkers: [], // Grafikteki alış/satış seviyeleri ve canlı işlem kâr/zarar etiketleri.
-      lastSignal: 'BUY',
-      pollTimer: null,
-      candles: [],
-      baseCandles: [], // Değişmeyen 1 dakikalık temel fiyat geçmişi; diğer dilimler buradan hesaplanır.
-      indicators: {
-        lca: true,
-        ema: false,
-        sma: false,
-        rsi: false,
-        macd: false,
-        bb: false,
-        supertrend: false
-      },
-      params: {
-        lcaLength: 5,
-        lcaUpColor: '#089981',
-        lcaDownColor: '#f23645',
-        emaFast: 20,
-        emaSlow: 50,
-        smaPeriod: 100,
-        rsiPeriod: 14,
-        macdFast: 12,
-        macdSlow: 26,
-        macdSignal: 9,
-        bbPeriod: 20,
-        bbStd: 2
-      },
-      currentTool: 'cursor',
-      chartColors: { up: '#089981', down: '#f23645', background: '#000000' },
-      drawColor: '#f0b90b',
-      drawLineWidth: 2,
-      drawings: [],
-      selectedDrawingIndex: -1,
-      selectedAnchor: null,
-      activePosition: null,
-      draggingLine: null
-    };
-
-    // Theme customization is local to each visitor/browser. It does not change other users' preferences.
-    const chartThemeStorageKey = 'tradegram-chart-theme-v1';
-    function isValidHexColor(value) { return typeof value === 'string' && /^#[0-9a-f]{6}$/i.test(value); }
-    function syncThemePickerDots() {
-      const mappings = [
-        ['upCandleColorPicker', 'upCandleColorDot', state.chartColors.up],
-        ['downCandleColorPicker', 'downCandleColorDot', state.chartColors.down],
-        ['chartBackgroundColorPicker', 'chartBackgroundColorDot', state.chartColors.background]
-      ];
-      mappings.forEach(([inputId, dotId, color]) => {
-        const input = document.getElementById(inputId);
-        const dot = document.getElementById(dotId);
-        if (input) input.value = color;
-        if (dot) dot.style.backgroundColor = color;
-      });
-    }
-    function loadSavedChartTheme() {
-      try {
-        const saved = JSON.parse(localStorage.getItem(chartThemeStorageKey) || '{}');
-        if (isValidHexColor(saved.up)) state.chartColors.up = saved.up;
-        if (isValidHexColor(saved.down)) state.chartColors.down = saved.down;
-        if (isValidHexColor(saved.background)) state.chartColors.background = saved.background;
-      } catch (_) { /* Use default colors if local storage is unavailable. */ }
-      syncThemePickerDots();
-    }
-    function persistChartTheme() {
-      try { localStorage.setItem(chartThemeStorageKey, JSON.stringify(state.chartColors)); } catch (_) { /* Private browsing may block storage. */ }
-    }
-    function applyChartThemeColor(kind, color) {
-      if (!isValidHexColor(color) || !Object.prototype.hasOwnProperty.call(state.chartColors, kind)) return;
-      state.chartColors[kind] = color;
-      syncThemePickerDots();
-      persistChartTheme();
-      if (kind === 'up' && candleSeries) {
-        candleSeries.applyOptions({ upColor: color, borderUpColor: color, wickUpColor: color });
-      } else if (kind === 'down' && candleSeries) {
-        candleSeries.applyOptions({ downColor: color, borderDownColor: color, wickDownColor: color });
-      } else if (kind === 'background') {
-        if (mainChart) mainChart.applyOptions({ layout: { background: { color } } });
-        if (rsiChart) rsiChart.applyOptions({ layout: { background: { color } } });
-        if (macdChart) macdChart.applyOptions({ layout: { background: { color } } });
-        [chartContainer, rsiContainer, macdContainer].forEach(el => { if (el) el.style.backgroundColor = color; });
-      }
-      if (kind === 'up' || kind === 'down') syncPriceLineColor();
-    }
-
-    // Chart Handles
-    let mainChart = null, candleSeries = null, ema20Series = null, ema50Series = null, smaSeries = null;
-    let bbUpperSeries = null, bbLowerSeries = null, supertrendSeries = null;
-    let rsiChart = null, rsiSeries = null;
-    let macdChart = null, macdLineSeries = null, macdSignalSeries = null;
-
-    let entryPriceLine = null, slPriceLine = null, tpPriceLine = null;
-
-    // DOM Elements
-    const livePriceText = document.getElementById('livePriceText');
-    const priceChangeText = document.getElementById('priceChangeText');
-    const symbolLabel = document.getElementById('symbolLabel');
-    const chartContainer = document.getElementById('chartContainer');
-    const tradeMarkerLayer = document.getElementById('tradeMarkerLayer');
-    const rsiContainer = document.getElementById('rsiContainer');
-    const macdContainer = document.getElementById('macdContainer');
-    
-    const drawingCanvas = document.getElementById('drawingCanvas');
-    const ctx = drawingCanvas.getContext('2d');
-    const drawingContextMenu = document.getElementById('drawingContextMenu');
-    const drawingToolbar = document.getElementById('drawingToolbar');
-    const btnDeleteActiveDrawing = document.getElementById('btnDeleteActiveDrawing');
-
-    // Tüm semboller sentetik simülasyondur; gerçek piyasa verisi kullanılmaz.
-    const assetConfigs = {
-      'TRADEGRAM': { basePrice: 0.01, decimals: 6, isLive: false }
-    };
-
-    // Dakika bazlı 1–100 arası zaman dilimleri ve klasik büyük dilimler.
-    const timeframeSecondsMap = Object.fromEntries(
-      Array.from({ length: 100 }, (_, i) => [`${i + 1}m`, (i + 1) * 60])
-    );
-    Object.assign(timeframeSecondsMap, { '1h': 3600, '4h': 14400, '1d': 86400 });
-
-    function buildTimeframeButtons() {
-      const group = document.getElementById('timeframeGroup');
-      if (!group) return;
-      const frames = [...Array.from({ length: 100 }, (_, i) => ({ key: `${i + 1}m`, label: `${i + 1}M` })),
-        { key: '1h', label: '1H' }, { key: '4h', label: '4H' }, { key: '1d', label: '1D' }];
-      group.innerHTML = frames.map(f => `<button type="button" class="tf-btn ${f.key === state.timeframe ? 'active bg-bgHover text-gold font-bold' : 'text-gray-400 hover:text-white'} transition" data-tf="${f.key}" title="${f.key.endsWith('m') ? f.key.slice(0,-1) + ' dakika' : f.label}" aria-label="${f.key.endsWith('m') ? f.key.slice(0,-1) + ' dakika' : f.label}" aria-pressed="${f.key === state.timeframe ? 'true' : 'false'}">${f.label}</button>`).join('');
-      const selected = frames.find(f => f.key === state.timeframe) || frames.find(f => f.key === '15m');
-      const label = document.getElementById('timeframeDropdownLabel');
-      if (label && selected) label.textContent = selected.label;
-    }
-
-    window.addEventListener('load', () => {
-      loadSavedChartTheme();
-      buildTimeframeButtons();
-      initCharts();
-      setupDrawingCanvas();
-      loadSymbolData(state.symbol);
-      setupEventListeners();
-      setupCalculator();
-    });
-
-    // Initialize Lightweight Charts
-    function initCharts() {
-      const width = chartContainer.clientWidth || 800;
-      const height = chartContainer.clientHeight || 500;
-
-      // Main Candlestick Chart
-      mainChart = LightweightCharts.createChart(chartContainer, {
-        width: width, height: height,
-        layout: { background: { color: state.chartColors.background }, textColor: '#9B9B9B' },
-        grid: { vertLines: { visible: false }, horzLines: { visible: false } },
-        crosshair: { mode: LightweightCharts.CrosshairMode.Normal },
-        rightPriceScale: { borderColor: '#2a2e39', autoScale: true },
-        timeScale: { borderColor: '#2a2e39', timeVisible: true, secondsVisible: false },
-      });
-
-      candleSeries = mainChart.addCandlestickSeries({
-        upColor: state.chartColors.up, downColor: state.chartColors.down, borderUpColor: state.chartColors.up, borderDownColor: state.chartColors.down, wickUpColor: state.chartColors.up, wickDownColor: state.chartColors.down,
-        // Fiyatı 2 haneye yuvarlama: 0.010020 gibi değişimleri de eksende göster.
-        // Tam sent değerleri 0.01 / 0.02 / 0.03 biçiminde, aradaki fiyatlar 6 hane gösterilir.
-        priceFormat: {
-          type: 'custom',
-          minMove: 0.000001,
-          formatter: price => {
-            if (!Number.isFinite(price)) return '—';
-            const cents = Math.round(price * 100) / 100;
-            return Math.abs(price - cents) < 0.0000005 ? cents.toFixed(2) : price.toFixed(6);
-          }
-        },
-        lastValueVisible: true,
-        priceLineVisible: true,
-        priceLineColor: '#f0b90b',
-        priceLineWidth: 1
-      });
-
-      ema20Series = mainChart.addLineSeries({ color: '#f0b90b', lineWidth: 1.5, title: 'EMA 20' });
-      ema50Series = mainChart.addLineSeries({ color: '#3b82f6', lineWidth: 1.5, title: 'EMA 50' });
-      smaSeries = mainChart.addLineSeries({ color: '#ec4899', lineWidth: 1.5, title: 'SMA 100' });
-      bbUpperSeries = mainChart.addLineSeries({ color: '#6366f1', lineWidth: 1, title: 'BB Upper' });
-      bbLowerSeries = mainChart.addLineSeries({ color: '#6366f1', lineWidth: 1, title: 'BB Lower' });
-      supertrendSeries = mainChart.addLineSeries({ color: '#10b981', lineWidth: 2, title: 'Supertrend' });
-
-      // Crosshair Move Event
-      mainChart.subscribeCrosshairMove(param => {
-        if (!param || !param.time || !param.seriesData) {
-          if (state.candles.length > 0) updateOHLCDisplay(state.candles[state.candles.length - 1]);
-          return;
-        }
-        let candleData = param.seriesData.get?.(candleSeries);
-        if (!candleData && param.seriesPrices?.get) candleData = param.seriesPrices.get(candleSeries);
-        if (candleData) {
-          updateOHLCDisplay({ open: candleData.open??candleData.value??0, high: candleData.high??candleData.value??0, low: candleData.low??candleData.value??0, close: candleData.close??candleData.value??0 });
-        } else if (state.candles.length > 0) {
-          updateOHLCDisplay(state.candles[state.candles.length - 1]);
-        }
-      });
-
-      // RSI Pane
-      if (rsiContainer) {
-        rsiChart = LightweightCharts.createChart(rsiContainer, {
-          width: rsiContainer.clientWidth || width, height: 112,
-          layout: { background: { color: state.chartColors.background }, textColor: '#9B9B9B' },
-          grid: { vertLines: { visible: false }, horzLines: { visible: false } },
-          rightPriceScale: { borderColor: '#2a2e39' }, timeScale: { visible: false }
-        });
-        rsiSeries = rsiChart.addLineSeries({ color: '#818cf8', lineWidth: 1.5 });
-      }
-
-      // MACD Pane
-      if (macdContainer) {
-        macdChart = LightweightCharts.createChart(macdContainer, {
-          width: macdContainer.clientWidth || width, height: 112,
-          layout: { background: { color: state.chartColors.background }, textColor: '#9B9B9B' },
-          grid: { vertLines: { visible: false }, horzLines: { visible: false } },
-          rightPriceScale: { borderColor: '#2a2e39' }, timeScale: { visible: false }
-        });
-        macdLineSeries = macdChart.addLineSeries({ color: '#38bdf8', lineWidth: 1.5 });
-        macdSignalSeries = macdChart.addLineSeries({ color: '#f43f5e', lineWidth: 1.5 });
-      }
-
-      window.addEventListener('resize', handleResize);
-    }
-
-    function resizeCanvas() {
-      if (!chartContainer || !drawingCanvas) return;
-      drawingCanvas.width = chartContainer.clientWidth;
-      drawingCanvas.height = chartContainer.clientHeight;
-      redrawCanvas();
-    }
-
-    function handleResize() {
-      if (mainChart) mainChart.applyOptions({ width: chartContainer.clientWidth, height: chartContainer.clientHeight });
-      if (rsiChart) rsiChart.applyOptions({ width: rsiContainer.clientWidth, height: rsiContainer.clientHeight });
-      if (macdChart) macdChart.applyOptions({ width: macdContainer.clientWidth, height: macdContainer.clientHeight });
-      resizeCanvas();
-      updateTradeMarkerPositions();
-    }
-
-    // Her zaman dilimi aynı temel 1 dakikalık seriden türetilir.
-    // Fiyatlar sentetiktir: gerçek piyasa verisi kullanılmaz.
-    const MAX_BASE_MINUTES = 15000; // Yaklaşık 10,4 günlük 1 dakikalık geçmiş
-    const DISPLAY_CANDLE_COUNT = 180;
-    const SIM_START_PRICE = 0.01;
-    const SIM_RANGE_PERCENT = 0.0002; // Her rastgele fiyat adımı en fazla ±%0,02; önceki ayara göre %50 daha düşük.
-    const INITIAL_VIRTUAL_SHARES = 100000;
-    const INITIAL_VIRTUAL_CASH = 1000;
-    const INITIAL_USER_CASH = 100; // Her yeni sayfa oturumunun başlangıç sanal bakiyesi: 100 USD.
-    function formatCashBalance(value) {
-      const n = Number(value) || 0;
-      return Number.isInteger(n) ? String(n) : n.toFixed(2);
-    }
-    const marketBooks = Object.create(null);
-
-    // 5 dakikalık mum tahmin oyunu: her beş dakikalık periyotta en fazla bir oy.
-    // Oy maliyeti 10 USD; doğru tahmin 18 USD ödeme yapar (10 USD iade + 8 USD net kazanç).
-    const PREDICTION_STAKE = 10;
-    const PREDICTION_PAYOUT = 18;
-    let activeCandlePrediction = null;
-    let lastPredictionBucketVoted = null;
-    let predictionStatusText = 'Bir sonraki 5 dakikalık mumun rengini tahmin et.';
-    let predictionStatusKind = 'neutral';
-
-    function currentPredictionBucketMs(now = Date.now()) {
-      return Math.floor(now / 300000) * 300000;
-    }
-
-    function predictionColorLabel(color) {
-      return color === 'RED' ? 'KIRMIZI' : 'YEŞİL';
-    }
-
-    // GitHub Pages sürümünde oy sayacı bu tarayıcıdaki aynı dönem oylarını tutar.
-    // Tüm ziyaretçilerin ortak sayımı için sunucu/veritabanı gerekir.
-    const voteTallyStoragePrefix = 'tradegram_prediction_tally_';
-    const voteTallyMemory = Object.create(null);
-    function getVoteTally(bucketMs = currentPredictionBucketMs()) {
-      const key = String(bucketMs);
-      let tally = voteTallyMemory[key];
-      try {
-        const saved = localStorage.getItem(voteTallyStoragePrefix + key);
-        if (saved) tally = JSON.parse(saved);
-      } catch (_) {}
-      tally = tally && typeof tally === 'object' ? tally : {};
-      return {
-        RED: Math.max(0, Number(tally.RED) || 0),
-        GREEN: Math.max(0, Number(tally.GREEN) || 0)
-      };
-    }
-    function saveVoteTally(bucketMs, tally) {
-      const key = String(bucketMs);
-      const normalized = { RED: Math.max(0, Number(tally.RED) || 0), GREEN: Math.max(0, Number(tally.GREEN) || 0) };
-      voteTallyMemory[key] = normalized;
-      try { localStorage.setItem(voteTallyStoragePrefix + key, JSON.stringify(normalized)); } catch (_) {}
-    }
-    function updateVoteTallyUI() {
-      const tally = getVoteTally(currentPredictionBucketMs());
-      const total = tally.RED + tally.GREEN;
-      const redPct = total ? Math.round(tally.RED / total * 100) : 0;
-      const greenPct = total ? 100 - redPct : 0;
-      const redSeg = document.getElementById('voteRedSegment');
-      const greenSeg = document.getElementById('voteGreenSegment');
-      const totalEl = document.getElementById('voteTotal');
-      const redSummary = document.getElementById('voteRedSummary');
-      const greenSummary = document.getElementById('voteGreenSummary');
-      if (redSeg) redSeg.style.width = `${total ? redPct : 0}%`;
-      if (greenSeg) greenSeg.style.width = `${total ? greenPct : 0}%`;
-      if (totalEl) totalEl.textContent = `${total} ${total === 1 ? 'oy' : 'oy'}`;
-      if (redSummary) redSummary.textContent = `🔴 KIRMIZI ${redPct}% · ${tally.RED}`;
-      if (greenSummary) greenSummary.textContent = `🟢 YEŞİL ${greenPct}% · ${tally.GREEN}`;
-      if (redSeg) redSeg.title = `Kırmızı: ${tally.RED} oy (%${redPct})`;
-      if (greenSeg) greenSeg.title = `Yeşil: ${tally.GREEN} oy (%${greenPct})`;
-    }
-
-    function setPredictionStatus(message, kind = 'neutral') {
-      predictionStatusText = message;
-      predictionStatusKind = kind;
-      const el = document.getElementById('voteStatus');
-      if (el) {
-        el.textContent = message;
-        el.className = `text-[11px] pt-1 ${kind === 'win' ? 'text-bullish' : kind === 'loss' || kind === 'error' ? 'text-bearish' : 'text-gray-300'}`;
-      }
-    }
-
-    function updatePredictionUI() {
-      updateVoteTallyUI();
-      const now = Date.now();
-      const bucketMs = currentPredictionBucketMs(now);
-      const remainingSeconds = Math.max(0, Math.ceil((bucketMs + 300000 - now) / 1000));
-      const timer = document.getElementById('voteCountdown');
-      if (timer) timer.textContent = `${String(Math.floor(remainingSeconds / 60)).padStart(2, '0')}:${String(remainingSeconds % 60).padStart(2, '0')}`;
-      const book = getMarketBook(state.symbol);
-      const alreadyVoted = lastPredictionBucketVoted === bucketMs;
-      const locked = !!activeCandlePrediction || alreadyVoted || book.cashBalance < PREDICTION_STAKE;
-      const redBtn = document.getElementById('btnVoteRed');
-      const greenBtn = document.getElementById('btnVoteGreen');
-      if (redBtn) redBtn.disabled = locked;
-      if (greenBtn) greenBtn.disabled = locked;
-      const status = document.getElementById('voteStatus');
-      if (status && activeCandlePrediction) {
-        status.textContent = `Oy verildi: ${predictionColorLabel(activeCandlePrediction.color)}. Sonuç 5 dakikalık mum kapanınca hesaplanacak.`;
-        status.className = 'text-[11px] pt-1 text-gold';
-      } else if (status && alreadyVoted && !activeCandlePrediction) {
-        // Keep settlement outcome; if no result was set for this bucket, explain that the vote has been used.
-        if (!predictionStatusText) setPredictionStatus('Bu 5 dakikalık mum için oyun kullanıldı.');
-      } else if (status && book.cashBalance < PREDICTION_STAKE && !activeCandlePrediction) {
-        status.textContent = 'Oy kullanmak için bakiyende en az $10 olmalı.';
-        status.className = 'text-[11px] pt-1 text-bearish';
-      } else if (status && !activeCandlePrediction && !alreadyVoted && predictionStatusText) {
-        status.textContent = predictionStatusText;
-        status.className = `text-[11px] pt-1 ${predictionStatusKind === 'win' ? 'text-bullish' : predictionStatusKind === 'loss' || predictionStatusKind === 'error' ? 'text-bearish' : 'text-gray-300'}`;
-      }
-    }
-
-    function castCandlePrediction(color) {
-      // Önce önceki periyotta bekleyen tahmini sonuçlandırmayı dene.
-      processClosedCandlePrediction();
-      const bucketMs = currentPredictionBucketMs();
-      const book = getMarketBook(state.symbol);
-      if (lastPredictionBucketVoted === bucketMs || activeCandlePrediction) {
-        setPredictionStatus('Bu 5 dakikalık mum için zaten oy verdin. Sonraki mumda tekrar oy kullanabilirsin.', 'error');
-        updatePredictionUI();
-        return;
-      }
-      if (book.cashBalance < PREDICTION_STAKE) {
-        setPredictionStatus('Yetersiz bakiye: oy kullanmak için $10 gerekiyor.', 'error');
-        updatePredictionUI();
-        return;
-      }
-      book.cashBalance = Math.max(0, book.cashBalance - PREDICTION_STAKE);
-      const voteTally = getVoteTally(bucketMs);
-      voteTally[color] = (Number(voteTally[color]) || 0) + 1;
-      saveVoteTally(bucketMs, voteTally);
-      lastPredictionBucketVoted = bucketMs;
-      activeCandlePrediction = { bucketMs, color, stake: PREDICTION_STAKE };
-      const balanceInput = document.getElementById('calcBalance');
-      if (balanceInput) balanceInput.value = formatCashBalance(book.cashBalance);
-      setPredictionStatus(`Oy verildi: ${predictionColorLabel(color)}. Kapanışta doğruysa +$8 net, yanlışsa -$10.`, 'neutral');
-      updateShareMarketPanel();
-      updateCalcRiskReward();
-      updatePredictionUI();
-    }
-
-    function processClosedCandlePrediction() {
-      const vote = activeCandlePrediction;
-      if (!vote || currentPredictionBucketMs() <= vote.bucketMs) return;
-      const targetBucket = Math.floor(vote.bucketMs / 1000);
-      const candle = aggregateMinuteCandles(state.baseCandles || [], 5).find(c => c.time === targetBucket);
-      if (!candle) return; // Mum henüz hazır değilse sonraki fiyat tikinde tekrar dene.
-      const book = getMarketBook(state.symbol);
-      const isDoji = Math.abs(Number(candle.close) - Number(candle.open)) < 1e-12;
-      if (isDoji) {
-        // Doji: renksiz/eşit mumda oy ücreti iade edilir; kazanç/kayıp yazılmaz.
-        book.cashBalance += vote.stake;
-        setPredictionStatus('5 dakikalık mum değişmeden kapandı. Oy ücreti $10 iade edildi.', 'neutral');
-      } else {
-        const actualColor = Number(candle.close) > Number(candle.open) ? 'GREEN' : 'RED';
-        if (vote.color === actualColor) {
-          book.cashBalance += PREDICTION_PAYOUT;
-          setPredictionStatus(`DOĞRU! Mum ${predictionColorLabel(actualColor)} kapandı. $18 ödeme, +$8 net kazanç.`, 'win');
-        } else {
-          setPredictionStatus(`YANLIŞ! Mum ${predictionColorLabel(actualColor)} kapandı. Oy ücreti $10 kaybedildi.`, 'loss');
-        }
-      }
-      activeCandlePrediction = null;
-      const balanceInput = document.getElementById('calcBalance');
-      if (balanceInput) balanceInput.value = formatCashBalance(book.cashBalance);
-      updateShareMarketPanel();
-      updateCalcRiskReward();
-      updatePredictionUI();
-    }
-
-    function getMarketBook(symbol = state.symbol) {
-      if (!marketBooks[symbol]) {
-        marketBooks[symbol] = {
-          tokenReserve: INITIAL_VIRTUAL_SHARES,
-          cashReserve: INITIAL_VIRTUAL_CASH,
-          cashBalance: INITIAL_USER_CASH,
-          sharesHeld: 0,
-          costBasis: 0, // Kullanıcının kurala göre yatırdığı tutar: 1 hisse = 1 USD yatırım karşılığı.
-          entryPriceBasis: 0, // Açık pozisyonların ağırlıklı giriş fiyatı; rastgele fiyat hareketleri P/K'ya buradan yansır.
-          realizedPnL: 0,
-          anchorPrice: SIM_START_PRICE,
-          externalMoveIndex: 1 // Yalnız rastgele/dış piyasa hareketleri; kullanıcının kendi emirleri bu endeksi değiştirmez.
-        };
-      }
-      return marketBooks[symbol];
-    }
-
-    function poolPrice(book) {
-      return book.cashReserve / book.tokenReserve;
-    }
-
-    // Constant-product virtual share pool (x*y=k): buy orders consume shares and add cash;
-    // sell orders return shares to the pool and remove cash. This sets price impact from order size.
-    function quotePoolTrade(book, type, quantity) {
-      if (!Number.isFinite(quantity) || quantity <= 0) return null;
-      const priceBefore = poolPrice(book);
-      if (type === 'BUY') {
-        if (quantity >= book.tokenReserve) return null;
-        const cashValue = book.cashReserve * quantity / (book.tokenReserve - quantity);
-        const tokenReserveAfter = book.tokenReserve - quantity;
-        const cashReserveAfter = book.cashReserve + cashValue;
-        const priceAfter = cashReserveAfter / tokenReserveAfter;
-        return { type, quantity, value: cashValue, priceBefore, priceAfter, impactPct: (priceAfter / priceBefore - 1) * 100, tokenReserveAfter, cashReserveAfter };
-      }
-      const proceeds = book.cashReserve * quantity / (book.tokenReserve + quantity);
-      const tokenReserveAfter = book.tokenReserve + quantity;
-      const cashReserveAfter = book.cashReserve - proceeds;
-      const priceAfter = cashReserveAfter / tokenReserveAfter;
-      return { type, quantity, value: proceeds, priceBefore, priceAfter, impactPct: (priceAfter / priceBefore - 1) * 100, tokenReserveAfter, cashReserveAfter };
-    }
-
-    function simulateAmbientMarketMove(book) {
-      // Synthetic drift is limited to ±0.05% of the current price on each update.
-      const current = Math.max(0.000001, poolPrice(book));
-      const randomPercent = (Math.random() * 2 - 1) * SIM_RANGE_PERCENT;
-      const nextPrice = Math.max(0.000001, current * (1 + randomPercent));
-      book.externalMoveIndex = Math.max(0.000001, (Number(book.externalMoveIndex) || 1) * (1 + randomPercent));
-      book.cashReserve = nextPrice * book.tokenReserve;
-      return nextPrice;
-    }
-
-    function timeframeMinutes(tf = state.timeframe) {
-      if (tf === '1h') return 60;
-      if (tf === '4h') return 240;
-      if (tf === '1d') return 1440;
-      const match = String(tf).match(/^(\d+)m$/);
-      return match ? Math.max(1, Number(match[1])) : 1;
-    }
-
-    function generateBaseMinuteData(basePrice, count = MAX_BASE_MINUTES) {
-      const data = [];
-      const nowMinute = Math.floor(Date.now() / 60000) * 60;
-      let time = nowMinute - (count - 1) * 60;
-      let close = basePrice;
-
-      for (let i = 0; i < count; i++) {
-        const open = close;
-        const step = (Math.random() * 2 - 1) * SIM_RANGE_PERCENT;
-        close = Math.max(0.000001, open * (1 + step));
-        const wick = open * 0.00004;
-        const high = Math.min(open * (1 + SIM_RANGE_PERCENT), Math.max(open, close) + Math.random() * wick);
-        const low = Math.max(open * (1 - SIM_RANGE_PERCENT), Math.min(open, close) - Math.random() * wick);
-        data.push({ time, open, high, low, close });
-        time += 60;
-      }
-      if (data.length) {
-        // Keep the newest candle anchored to the opening pool price without changing candle-to-candle percentages.
-        const factor = basePrice / data[data.length - 1].close;
-        for (const candle of data) {
-          candle.open *= factor;
-          candle.high *= factor;
-          candle.low *= factor;
-          candle.close *= factor;
-        }
-        data[data.length - 1].close = basePrice;
-      }
-      return data;
-    }
-
-    // OHLC doğru şekilde birleştirilir: ilk Open, en yüksek High, en düşük Low, son Close.
-    function aggregateMinuteCandles(minuteCandles, periodMinutes) {
-      const periodSeconds = periodMinutes * 60;
-      const aggregated = [];
-      for (const candle of minuteCandles) {
-        const bucketTime = Math.floor(candle.time / periodSeconds) * periodSeconds;
-        const last = aggregated[aggregated.length - 1];
-        if (!last || last.time !== bucketTime) {
-          aggregated.push({
-            time: bucketTime,
-            open: candle.open,
-            high: candle.high,
-            low: candle.low,
-            close: candle.close
-          });
-        } else {
-          last.high = Math.max(last.high, candle.high);
-          last.low = Math.min(last.low, candle.low);
-          last.close = candle.close;
-        }
-      }
-      return aggregated.slice(-DISPLAY_CANDLE_COUNT);
-    }
-
-    // Son mumun rengine göre güncel fiyat çizgisini renklendir: yeşil mum = yeşil çizgi, kırmızı mum = kırmızı çizgi.
-    function syncPriceLineColor(candle = state.candles[state.candles.length - 1]) {
-      if (!candleSeries || !candle) return;
-      const isBullish = Number(candle.close) >= Number(candle.open);
-      candleSeries.applyOptions({ priceLineColor: isBullish ? state.chartColors.up : state.chartColors.down });
-    }
-
-    function renderCandlesFromBase({ resetView = false } = {}) {
-      if (!state.baseCandles.length || !candleSeries) return;
-      const previousLast = state.candles[state.candles.length - 1];
-      const visible = aggregateMinuteCandles(state.baseCandles, timeframeMinutes());
-      state.candles = visible;
-      candleSeries.setData(visible);
-      syncPriceLineColor(visible[visible.length - 1]);
-      updateIndicators();
-      const last = visible[visible.length - 1];
-      if (last) {
-        const config = assetConfigs[state.symbol] || { basePrice: 10, decimals: 2 };
-        updateOHLCDisplay(last);
-        updatePriceHeader(state.currentPrice, config.basePrice, config.decimals);
-        updateAISignals();
-      }
-      if (resetView && mainChart) mainChart.timeScale().fitContent();
-    }
-
-    // Load Symbol Data: sembol değişince temel geçmiş oluşturulur; zaman dilimi değişince tekrar üretilmez.
-    function loadSymbolData(symbol) {
-      // Tradegram Hisse tek ve sabit varlıktır; kullanıcı sembol değiştiremez.
-      symbol = 'TRADEGRAM';
-      state.symbol = 'TRADEGRAM';
-      symbolLabel.innerText = 'Tradegram Hisse';
-      if (state.pollTimer) { clearInterval(state.pollTimer); state.pollTimer = null; }
-      if (simInterval) { clearInterval(simInterval); simInterval = null; }
-
-      const config = assetConfigs[symbol] || { basePrice: SIM_START_PRICE, decimals: 6, isLive: false };
-      const book = getMarketBook(symbol);
-      const openingPrice = poolPrice(book);
-      book.anchorPrice = openingPrice;
-      state.marketAnchorPrice = openingPrice;
-      state.baseCandles = generateBaseMinuteData(openingPrice);
-      state.currentPrice = openingPrice;
-      state.prevPrice = openingPrice;
-      const balanceInput = document.getElementById('calcBalance');
-      if (balanceInput) balanceInput.value = formatCashBalance(book.cashBalance);
-      renderCandlesFromBase({ resetView: true });
-      startSimulatedTicks(config);
-      updateShareMarketPanel();
-      updateCalcRiskReward();
-      updatePredictionUI();
-    }
-
-    // Canlı veri yoktur. Küçük rastgele sanal emirler, aynı likidite havuzunda fiyatı oynatır.
-    let simInterval = null;
-    function startSimulatedTicks(config) {
-      simInterval = setInterval(() => {
-        const book = getMarketBook(state.symbol);
-        const nextPrice = simulateAmbientMarketMove(book);
-        handleNewPriceTick(nextPrice, config.decimals);
-      }, 1000);
-    }
-
-    // Her saniye aynı 1 dakikalık mum güncellenir; dakika kapanınca yeni temel mum başlar.
-    function handleNewPriceTick(price, decimals) {
-      state.prevPrice = state.currentPrice;
-      state.currentPrice = Math.max(0.000001, price);
-      if (!state.baseCandles.length) return;
-
-      const nowMinute = Math.floor(Date.now() / 60000) * 60;
-      let baseLast = state.baseCandles[state.baseCandles.length - 1];
-      if (nowMinute > baseLast.time) {
-        baseLast = {
-          time: nowMinute,
-          open: state.prevPrice,
-          high: Math.max(state.prevPrice, state.currentPrice),
-          low: Math.min(state.prevPrice, state.currentPrice),
-          close: state.currentPrice
-        };
-        state.baseCandles.push(baseLast);
-        if (state.baseCandles.length > MAX_BASE_MINUTES) state.baseCandles.shift();
-      } else {
-        baseLast.high = Math.max(baseLast.high, state.currentPrice);
-        baseLast.low = Math.min(baseLast.low, state.currentPrice);
-        baseLast.close = state.currentPrice;
-      }
-
-      const oldVisible = state.candles;
-      const visible = aggregateMinuteCandles(state.baseCandles, timeframeMinutes());
-      const oldLast = oldVisible[oldVisible.length - 1];
-      const newLast = visible[visible.length - 1];
-      state.candles = visible;
-
-      // Aynı üst zaman dilimi mumundaysak yalnız son mumu güncelle; yeni mum açıldığında tam seriyi yenile.
-      if (oldLast && newLast && oldLast.time === newLast.time) {
-        candleSeries.update(newLast);
-      } else {
-        candleSeries.setData(visible);
-      }
-      syncPriceLineColor(newLast);
-      updatePriceHeader(state.currentPrice, configBasePrice(), decimals);
-      if (newLast) updateOHLCDisplay(newLast);
-      updateIndicators();
-      updateCalcRiskReward();
-
-      if (state.activePosition) {
-        checkAutoCloseTPandSL(state.currentPrice);
-        if (state.activePosition) updateActivePositionPnL();
-      }
-      updateShareMarketPanel();
-      updateAISignals();
-      updateTradeMarkerPositions();
-      processClosedCandlePrediction();
-      updatePredictionUI();
-    }
-
-    function configBasePrice() {
-      return SIM_START_PRICE;
-    }
-
-    // Auto-Close Position on SL/TP Hit
-    function checkAutoCloseTPandSL(currentPrice) {
-      const pos = state.activePosition;
-      if (!pos) return;
-      const isBuy = pos.type === 'BUY';
-      let closedBy = null;
-
-      if (isBuy) {
-        if (currentPrice >= pos.tpPrice) closedBy = 'TP';
-        else if (currentPrice <= pos.slPrice) closedBy = 'SL';
-      } else {
-        if (currentPrice <= pos.tpPrice) closedBy = 'TP';
-        else if (currentPrice >= pos.slPrice) closedBy = 'SL';
-      }
-
-      if (closedBy) {
-        // TP/SL ile işlem kapandığında toast/bildirim gösterme.
-        closeActivePosition();
-      }
-    }
-
-    function updatePriceHeader(price, startPrice, decimals) {
-      const change = price - startPrice;
-      const changePercent = (change / startPrice) * 100;
-      const isUp = change >= 0;
-      livePriceText.innerText = price.toFixed(decimals);
-      livePriceText.className = `text-lg font-bold ${isUp ? 'text-bullish' : 'text-bearish'}`;
-      priceChangeText.innerText = `${isUp ? '+' : ''}${changePercent.toFixed(2)}%`;
-      priceChangeText.className = `text-xs font-semibold px-1.5 py-0.5 rounded ${isUp ? 'text-bullish bg-bullish/10' : 'text-bearish bg-bearish/10'}`;
-      const box = document.getElementById('priceHeaderBox');
-      box.classList.remove('flash-up', 'flash-down');
-      void box.offsetWidth;
-      box.classList.add(price >= state.prevPrice ? 'flash-up' : 'flash-down');
-    }
-
-    function updateOHLCDisplay(c) {
-      // OHLC number strip intentionally removed; fixed label remains Tradegram Hisse.
-      if (symbolLabel) symbolLabel.innerText = 'Tradegram Hisse';
-    }
-
-    // Pine Script LCA Calculation Logic
-    function calcLCAIndicator(data, length = 5) {
-      const results = [];
-      let var0Arr = [];
-      let mbaArr = [];
-      let lrangeArr = [];
-
-      for (let i = 0; i < data.length; i++) {
-        let prevClose = i > 0 ? data[i-1].close : data[i].close;
-        let cdelta = Math.abs(data[i].close - prevClose);
-        let hl = data[i].high - data[i].low;
-        let var0 = (cdelta > hl || data[i].high === data[i].low) ? cdelta : hl;
-        var0Arr.push(var0);
-
-        let lrange = var0 * 0.2;
-        if (i >= 4) {
-          let sum = 0;
-          for(let j=0; j<5; j++) sum += var0Arr[i-j];
-          lrange = (sum / 5) * 0.2;
-        }
-        lrangeArr.push(lrange);
-
-        let mba = (data[i].high + data[i].low) / 2;
-        if (i >= length - 1) {
-          let sum = 0;
-          for(let j=0; j<length; j++) sum += (data[i-j].high + data[i-j].low) / 2;
-          mba = sum / length;
-        }
-        mbaArr.push(mba);
-
-        if (lrange === 0) lrange = 0.000001;
-
-        results.push({
-          time: data[i].time,
-          open: (data[i].open - mba) / lrange,
-          high: (data[i].high - mba) / lrange,
-          low: (data[i].low - mba) / lrange,
-          close: (data[i].close - mba) / lrange
-        });
-      }
-      return results;
-    }
-
-    // Re-calculate & Render Indicators
-    function updateIndicators() {
-      const closes = state.candles.map(c => c.close);
-
-      // EMA
-      if (state.indicators.ema) {
-        const emaFast = calcEMA(closes, state.params.emaFast);
-        const emaSlow = calcEMA(closes, state.params.emaSlow);
-        ema20Series.setData(state.candles.map((c, i) => ({ time: c.time, value: emaFast[i] })));
-        ema50Series.setData(state.candles.map((c, i) => ({ time: c.time, value: emaSlow[i] })));
-      } else { ema20Series.setData([]); ema50Series.setData([]); }
-
-      // SMA
-      if (state.indicators.sma) {
-        const smaVal = calcSMA(closes, state.params.smaPeriod);
-        smaSeries.setData(state.candles.map((c, i) => ({ time: c.time, value: smaVal[i] })));
-      } else smaSeries.setData([]);
-
-      // Bollinger Bands
-      if (state.indicators.bb) {
-        const { upper, lower } = calcBollingerBands(closes, state.params.bbPeriod, state.params.bbStd);
-        bbUpperSeries.setData(state.candles.map((c, i) => ({ time: c.time, value: upper[i] })));
-        bbLowerSeries.setData(state.candles.map((c, i) => ({ time: c.time, value: lower[i] })));
-      } else { bbUpperSeries.setData([]); bbLowerSeries.setData([]); }
-
-      // Supertrend
-      if (state.indicators.supertrend) {
-        const st = calcSupertrend(state.candles);
-        supertrendSeries.setData(state.candles.map((c, i) => ({ time: c.time, value: st[i] })));
-      } else supertrendSeries.setData([]);
-
-      // RSI
-      if (state.indicators.rsi) {
-        const rsiVal = calcRSI(closes, state.params.rsiPeriod);
-        rsiSeries.setData(state.candles.map((c, i) => ({ time: c.time, value: rsiVal[i] })));
-      }
-
-      // MACD
-      if (state.indicators.macd) {
-        const { macd, signal } = calcMACD(closes, state.params.macdFast, state.params.macdSlow, state.params.macdSignal);
-        macdLineSeries.setData(state.candles.map((c, i) => ({ time: c.time, value: macd[i] })));
-        macdSignalSeries.setData(state.candles.map((c, i) => ({ time: c.time, value: signal[i] })));
-      }
-
-    }
-
-    // Technical Math Calculations
-    function calcEMA(data, period) {
-      if (data.length === 0) return [];
-      const k = 2 / (period + 1);
-      let ema = [data[0]];
-      for (let i = 1; i < data.length; i++) ema.push(data[i] * k + ema[i - 1] * (1 - k));
-      return ema;
-    }
-    function calcSMA(data, period) {
-      let sma = [];
-      for (let i = 0; i < data.length; i++) {
-        if (i < period - 1) sma.push(data[i]);
-        else {
-          const sum = data.slice(i - period + 1, i + 1).reduce((a, b) => a + b, 0);
-          sma.push(sum / period);
-        }
-      }
-      return sma;
-    }
-    function calcRSI(data, period = 14) {
-      let rsi = new Array(data.length).fill(50);
-      if (data.length <= period) return rsi;
-      let gains = 0, losses = 0;
-      for (let i = 1; i <= period; i++) {
-        const diff = data[i] - data[i - 1];
-        if (diff >= 0) gains += diff; else losses -= diff;
-      }
-      let avgGain = gains / period; let avgLoss = losses / period;
-      for (let i = period + 1; i < data.length; i++) {
-        const diff = data[i] - data[i - 1];
-        if (diff >= 0) { avgGain = (avgGain * (period - 1) + diff) / period; avgLoss = (avgLoss * (period - 1)) / period; }
-        else { avgGain = (avgGain * (period - 1)) / period; avgLoss = (avgLoss * (period - 1) - diff) / period; }
-        const rs = avgGain / (avgLoss || 1);
-        rsi[i] = 100 - (100 / (1 + rs));
-      }
-      return rsi;
-    }
-    function calcMACD(data, fast = 12, slow = 26, signalPeriod = 9) {
-      const emaFast = calcEMA(data, fast);
-      const emaSlow = calcEMA(data, slow);
-      const macd = emaFast.map((v, i) => v - emaSlow[i]);
-      const signal = calcEMA(macd, signalPeriod);
-      return { macd, signal };
-    }
-    function calcBollingerBands(data, period = 20, multiplier = 2) {
-      const sma = calcSMA(data, period);
-      let upper = [], lower = [];
-      for (let i = 0; i < data.length; i++) {
-        if (i < period - 1) { upper.push(data[i]); lower.push(data[i]); continue; }
-        const slice = data.slice(i - period + 1, i + 1);
-        const mean = sma[i];
-        const variance = slice.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / period;
-        const stdDev = Math.sqrt(variance);
-        upper.push(mean + stdDev * multiplier);
-        lower.push(mean - stdDev * multiplier);
-      }
-      return { upper, lower };
-    }
-    function calcSupertrend(candles) { return candles.map(c => c.close * 0.995); }
-
-    // Sinyaller rastgele üretilmez: mum momentumu ve bu oturumda gerçekleşen sanal alım-satımlar kullanılır.
-    function updateAISignals() {
-      if (!state.baseCandles || state.baseCandles.length < 10) return;
-      const p = Math.max(0.000001, Number(state.currentPrice) || SIM_START_PRICE);
-      const recentCandles = state.baseCandles.slice(-20);
-      const momentumCandles = state.baseCandles.slice(-11);
-      const referenceClose = momentumCandles.length ? Number(momentumCandles[0].close) : p;
-      const momentumPct = referenceClose > 0 ? (p / referenceClose) - 1 : 0;
-      // Yaklaşık %0,3'lük son fiyat değişimi, momentum skorunu tam ölçeğe taşır.
-      const momentumScore = Math.max(-1, Math.min(1, momentumPct / 0.003));
-
-      // Emir butonuna basıldıktan sonra sinyal kısa süre STRONG olur.
-      // Son işlemden 3 saniye geçince yalnızca rastgele fiyat/mum momentumu
-      // BUY veya SELL yönünü belirler; eski emirler STRONG durumunu kalıcı yapmaz.
-      const allTrades = (state.orderFlow || []).slice(-20);
-      const now = Date.now();
-      const trades = allTrades.filter(trade => now - Number(trade.timestamp || 0) <= 3000);
-      let signedFlow = 0;
-      let totalFlow = 0;
-      trades.forEach((trade, index) => {
-        const recencyWeight = Math.pow(0.82, trades.length - 1 - index);
-        const weightedQuantity = Number(trade.quantity) * recencyWeight;
-        signedFlow += (trade.type === 'BUY' ? weightedQuantity : -weightedQuantity);
-        totalFlow += weightedQuantity;
-      });
-      const hasRecentTrades = totalFlow > 0;
-      const flowScore = hasRecentTrades ? signedFlow / totalFlow : 0;
-      let score = hasRecentTrades ? (flowScore * 0.75 + momentumScore * 0.25) : momentumScore;
-
-      score = Math.max(-1, Math.min(1, score));
-      const lastTrade = trades.length ? trades[trades.length - 1] : null;
-      // Emir sonrası kısa süre STRONG yönü; normal durumda sinyal son fiyat adımına göre belirlenir.
-      // Rastgele simülasyon fiyatı yükseldiyse BUY, düştüyse SELL gösterilir.
-      const previousTickPrice = Number(state.prevPrice);
-      const tickDelta = Number.isFinite(previousTickPrice) ? p - previousTickPrice : 0;
-      const isBullish = lastTrade
-        ? lastTrade.type === 'BUY'
-        : (Math.abs(tickDelta) > 1e-12 ? tickDelta > 0 : score >= 0);
-      const isStrong = Boolean(lastTrade);
-      state.lastSignal = isBullish ? 'BUY' : 'SELL';
-      const flowStrength = hasRecentTrades ? Math.abs(flowScore) : Math.abs(momentumScore);
-      const strength = Math.max(50, Math.min(95, Math.round(50 + Math.max(flowStrength, Math.abs(momentumScore) * 0.35) * 45)));
-
-      const signalCard = document.getElementById('signalCard');
-      const signalText = document.getElementById('signalText');
-      if (signalText) {
-        const signalLabel = isStrong ? (isBullish ? 'STRONG BUY' : 'STRONG SELL') : (isBullish ? 'BUY' : 'SELL');
-        signalText.innerHTML = isBullish
-          ? `<i class="fa-solid fa-circle-arrow-up"></i> ${signalLabel}`
-          : `<i class="fa-solid fa-circle-arrow-down"></i> ${signalLabel}`;
-        signalText.className = `text-xl font-black ${isBullish ? 'text-bullish' : 'text-bearish'} tracking-wide flex items-center gap-2`;
-      }
-      if (signalCard) {
-        signalCard.className = `p-3.5 rounded-xl bg-bgDark border ${isBullish ? 'border-bullish/40 shadow-bullish/10' : 'border-bearish/40 shadow-bearish/10'} shadow-lg transition-all duration-300`;
-      }
-      const strengthEl = document.getElementById('signalAccuracy');
-      if (strengthEl) strengthEl.innerText = `${strength}%`;
-      const momentumEl = document.getElementById('trendStrengthText');
-      if (momentumEl) {
-        const trendPct = Math.max(50, Math.min(99, Math.round(50 + Math.abs(score) * 49)));
-        momentumEl.innerText = `${isBullish ? 'Bullish' : 'Bearish'} ${trendPct}%`;
-        momentumEl.className = `font-bold ${isBullish ? 'text-bullish' : 'text-bearish'}`;
-      }
-      const bar = document.getElementById('trendStrengthBar');
-      if (bar) {
-        bar.style.width = `${strength}%`;
-        bar.className = `h-full rounded-full transition-all duration-500 ${isBullish ? 'bg-gradient-to-r from-yellow-500 to-bullish' : 'bg-gradient-to-r from-orange-500 to-bearish'}`;
-      }
-
-      // Destek ve direnç, son 20 adet 1 dakikalık sentetik mumun gerçek high/low değerlerinden hesaplanır.
-      const highs = recentCandles.map(c => Number(c.high)).filter(Number.isFinite);
-      const lows = recentCandles.map(c => Number(c.low)).filter(Number.isFinite);
-      const resistance = highs.length ? Math.max(...highs) : p * 1.001;
-      const support = lows.length ? Math.min(...lows) : p * 0.999;
-      const resistanceEl = document.getElementById('resistanceVal');
-      const supportEl = document.getElementById('supportVal');
-      if (resistanceEl) resistanceEl.innerText = `$${resistance.toFixed(6)}`;
-      if (supportEl) supportEl.innerText = `$${support.toFixed(6)}`;
-    }
-
-    // Canvas Drawing Engine Setup
-    function setupDrawingCanvas() {
-      resizeCanvas();
-      let clickStep = 0, startX = 0, startY = 0, isDraggingAnchor = false, isDraggingEntireDrawing = false;
-      let dragOffsetX = 0, dragOffsetY = 0, isDrawingBrush = false, currentBrushPoints = [];
-
-      const handleChartInteractionDown = (clientX, clientY, e) => {
-        // Clicks/touches on chart overlay buttons must execute the button only, not drawing tools.
-        if (e?.target?.closest?.('#chartTradeButtons')) return;
-        const rect = chartContainer.getBoundingClientRect();
-        const curX = clientX - rect.left;
-        const curY = clientY - rect.top;
+    document.addEventListener('DOMContentLoaded', function() {
+      // تفعيل القائمة في الأجهزة المحمولة
+      const mobileMenuBtns = document.querySelectorAll('.mobile-menu-btn');
+      const mainNavs = document.querySelectorAll('.main-nav');
+      const closeMenuBtns = document.querySelectorAll('.close-menu');
+      const overlay = document.querySelector('.mobile-menu-overlay');
+      const body = document.body;
+
+      function toggleMenu(event) {
+        const clickedBtn = event.currentTarget;
+        const currentHeader = clickedBtn.closest('header');
+        const currentNav = currentHeader.querySelector('.main-nav');
         
-        // Handle TP/SL Dragging
-        if (state.activePosition && candleSeries) {
-          const tpY = candleSeries.priceToCoordinate(state.activePosition.tpPrice);
-          const slY = candleSeries.priceToCoordinate(state.activePosition.slPrice);
-          if (tpY !== null && Math.abs(curY - tpY) <= 25) {
-            state.draggingLine = 'tp'; document.body.style.cursor = 'ns-resize'; e.stopPropagation(); if(e.cancelable)e.preventDefault(); return;
-          } else if (slY !== null && Math.abs(curY - slY) <= 25) {
-            state.draggingLine = 'sl'; document.body.style.cursor = 'ns-resize'; e.stopPropagation(); if(e.cancelable)e.preventDefault(); return;
-          }
-        }
-
-        // Handle Drawings Interaction
-        if (state.currentTool === 'cursor') {
-          if (state.selectedDrawingIndex !== -1) {
-            const anchorClicked = checkAnchorClick(state.drawings[state.selectedDrawingIndex], curX, curY);
-            if (anchorClicked) { isDraggingAnchor = true; state.selectedAnchor = anchorClicked; document.body.style.cursor = 'crosshair'; e.stopPropagation(); if(e.cancelable)e.preventDefault(); return; }
-          }
-          const clickedIndex = findDrawingAtPoint(curX, curY);
-          if (clickedIndex !== -1) {
-            state.selectedDrawingIndex = clickedIndex; isDraggingEntireDrawing = true; dragOffsetX = curX; dragOffsetY = curY;
-            document.body.style.cursor = 'move'; showDrawingToolbarSelection(); showDrawingContextMenu(clientX, clientY); redrawCanvas();
-            e.stopPropagation(); if(e.cancelable)e.preventDefault(); return;
-          }
-          if (state.selectedDrawingIndex !== -1) { state.selectedDrawingIndex = -1; state.selectedAnchor = null; hideDrawingContextMenu(); hideDrawingToolbarSelection(); redrawCanvas(); }
-        }
-      };
-
-      chartContainer.addEventListener('mousedown', (e) => handleChartInteractionDown(e.clientX, e.clientY, e), true);
-      chartContainer.addEventListener('touchstart', (e) => { if(e.touches.length===1)handleChartInteractionDown(e.touches[0].clientX, e.touches[0].clientY, e); }, { passive: false, capture: true });
-
-      const handlePointerMove = (clientX, clientY, e) => {
-        const rect = drawingCanvas.getBoundingClientRect();
-        const curX = clientX - rect.left; const curY = clientY - rect.top;
-
-        if (state.draggingLine && state.activePosition && candleSeries) {
-          const newPrice = candleSeries.coordinateToPrice(curY);
-          if (newPrice !== null && newPrice > 0) {
-            const dec = assetConfigs[state.symbol]?.decimals || 2;
-            if (state.draggingLine === 'tp') {
-              state.activePosition.tpPrice = newPrice; if (tpPriceLine) candleSeries.removePriceLine(tpPriceLine);
-              tpPriceLine = candleSeries.createPriceLine({ price: newPrice, color: '#089981', lineWidth: 2, lineStyle: 2, axisLabelVisible: true, title: `TP: ${newPrice.toFixed(dec)}` });
-            } else if (state.draggingLine === 'sl') {
-              state.activePosition.slPrice = newPrice; if (slPriceLine) candleSeries.removePriceLine(slPriceLine);
-              slPriceLine = candleSeries.createPriceLine({ price: newPrice, color: '#f23645', lineWidth: 2, lineStyle: 2, axisLabelVisible: true, title: `SL: ${newPrice.toFixed(dec)}` });
-            }
-            updateCalcRiskReward(); redrawCanvas();
-          }
-          if(e&&e.cancelable)e.preventDefault(); return;
-        }
-
-        if (isDraggingAnchor && state.selectedDrawingIndex !== -1 && state.selectedAnchor) {
-          const d = state.drawings[state.selectedDrawingIndex];
-          if (d.type === 'horizontal') d.y1 = curY;
-          else if (d.type === 'rectangle') {
-            if(state.selectedAnchor==='tl'){d.x1=curX;d.y1=curY;}else if(state.selectedAnchor==='tr'){d.x2=curX;d.y1=curY;}else if(state.selectedAnchor==='bl'){d.x1=curX;d.y2=curY;}else if(state.selectedAnchor==='br'){d.x2=curX;d.y2=curY;}
-          } else if (state.selectedAnchor === 'p1') { d.x1=curX; d.y1=curY; } else if (state.selectedAnchor === 'p2') { d.x2=curX; d.y2=curY; }
-          redrawCanvas(); showDrawingContextMenu(clientX, clientY); if(e&&e.cancelable)e.preventDefault(); return;
-        }
-
-        if (isDraggingEntireDrawing && state.selectedDrawingIndex !== -1) {
-          const d = state.drawings[state.selectedDrawingIndex];
-          const dx = curX - dragOffsetX; const dy = curY - dragOffsetY;
-          if (d.type === 'brush') d.points.forEach(p=>{p.x+=dx;p.y+=dy;});
-          else if (d.type === 'rectangle') { d.x1+=dx; d.y1+=dy; d.x2+=dx; d.y2+=dy; }
-          else { d.x1+=dx; d.y1+=dy; if(d.x2!==undefined){d.x2+=dx; d.y2+=dy;} }
-          dragOffsetX = curX; dragOffsetY = curY; redrawCanvas(); showDrawingContextMenu(clientX, clientY); if(e&&e.cancelable)e.preventDefault(); return;
-        }
-
-        if (isDrawingBrush) {
-          currentBrushPoints.push({ x: curX, y: curY }); redrawCanvas();
-          ctx.strokeStyle = state.drawColor; ctx.lineWidth = state.drawLineWidth || 2; ctx.lineCap='round'; ctx.lineJoin='round';
-          ctx.beginPath(); ctx.moveTo(currentBrushPoints[0].x, currentBrushPoints[0].y);
-          for(let i=1;i<currentBrushPoints.length;i++) ctx.lineTo(currentBrushPoints[i].x, currentBrushPoints[i].y);
-          ctx.stroke(); if(e&&e.cancelable)e.preventDefault(); return;
-        }
-
-        if (clickStep === 1 && state.currentTool !== 'cursor' && state.currentTool !== 'brush') {
-          redrawCanvas(); drawPreviewShape(startX, startY, curX, curY, state.currentTool, state.drawColor, state.drawLineWidth || 2, false);
-        }
-      };
-
-      const handlePointerDown = (clientX, clientY, event) => {
-        if (state.currentTool === 'cursor') return;
-        const rect = drawingCanvas.getBoundingClientRect();
-        const curX = clientX - rect.left; const curY = clientY - rect.top;
-        if (state.currentTool === 'brush') { isDrawingBrush=true; currentBrushPoints=[{x:curX,y:curY}]; if(event.cancelable)event.preventDefault(); return; }
-        if (clickStep === 0) { clickStep = 1; startX = curX; startY = curY; }
-        else if (clickStep === 1) {
-          state.drawings.push({ type: state.currentTool, x1: startX, y1: startY, x2: curX, y2: curY, color: state.drawColor, lineWidth: state.drawLineWidth || 2 });
-          clickStep = 0; state.selectedDrawingIndex = state.drawings.length - 1; showDrawingToolbarSelection();
-          state.currentTool = 'cursor'; document.querySelectorAll('.tool-btn').forEach(b=>{if(b.dataset.tool==='cursor')b.classList.add('active','text-gold');else b.classList.remove('active','text-gold');});
-          drawingCanvas.classList.remove('active-draw'); drawingCanvas.style.cursor='default'; redrawCanvas();
-        }
-      };
-
-      drawingCanvas.addEventListener('mousedown', (e) => handlePointerDown(e.clientX, e.clientY, e));
-      window.addEventListener('mousemove', (e) => handlePointerMove(e.clientX, e.clientY, e));
-      window.addEventListener('mouseup', () => {
-        if (state.draggingLine) { state.draggingLine = null; document.body.style.cursor = ''; }
-        if (isDraggingAnchor) { isDraggingAnchor = false; state.selectedAnchor = null; document.body.style.cursor = ''; }
-        if (isDraggingEntireDrawing) { isDraggingEntireDrawing = false; document.body.style.cursor = ''; }
-        if (isDrawingBrush) {
-          isDrawingBrush = false;
-          if (currentBrushPoints.length > 1) {
-            state.drawings.push({ type: 'brush', points: currentBrushPoints, color: state.drawColor, lineWidth: state.drawLineWidth || 2 });
-            state.selectedDrawingIndex = state.drawings.length - 1; showDrawingToolbarSelection();
-          }
-          currentBrushPoints = []; redrawCanvas();
-        }
-      });
-      window.addEventListener('keydown', (e) => { if(e.key==='Escape' && clickStep===1){clickStep=0;state.currentTool='cursor';drawingCanvas.classList.remove('active-draw');redrawCanvas();} });
-      drawingCanvas.addEventListener('touchstart', (e) => { if(e.touches.length===1)handlePointerDown(e.touches[0].clientX, e.touches[0].clientY, e); }, { passive: false });
-      window.addEventListener('touchmove', (e) => { if(e.touches.length===1)handlePointerMove(e.touches[0].clientX, e.touches[0].clientY, e); }, { passive: false });
-      window.addEventListener('touchend', () => {
-        if(state.draggingLine){state.draggingLine=null;document.body.style.cursor='';}
-        if(isDraggingAnchor){isDraggingAnchor=false;state.selectedAnchor=null;document.body.style.cursor='';}
-        if(isDraggingEntireDrawing){isDraggingEntireDrawing=false;document.body.style.cursor='';}
-        if(isDrawingBrush){isDrawingBrush=false;if(currentBrushPoints.length>1)state.drawings.push({type:'brush',points:currentBrushPoints,color:state.drawColor,lineWidth:state.drawLineWidth||2});currentBrushPoints=[];redrawCanvas();}
-      });
-    }
-
-    function checkAnchorClick(drawing, x, y) {
-      const r = 16;
-      if (drawing.type === 'horizontal') { if(Math.hypot(x - drawingCanvas.width/2, y - drawing.y1)<=r)return'p1'; }
-      else if (drawing.type === 'rectangle') {
-        const minX=Math.min(drawing.x1,drawing.x2), maxX=Math.max(drawing.x1,drawing.x2), minY=Math.min(drawing.y1,drawing.y2), maxY=Math.max(drawing.y1,drawing.y2);
-        if(Math.hypot(x-minX,y-minY)<=r)return'tl';if(Math.hypot(x-maxX,y-minY)<=r)return'tr';if(Math.hypot(x-minX,y-maxY)<=r)return'bl';if(Math.hypot(x-maxX,y-maxY)<=r)return'br';
-      } else if (drawing.x1!==undefined) {
-        if(Math.hypot(x-drawing.x1,y-drawing.y1)<=r)return'p1'; if(drawing.x2!==undefined&&Math.hypot(x-drawing.x2,y-drawing.y2)<=r)return'p2';
+        currentNav.classList.toggle('active');
+        overlay.classList.toggle('active');
+        clickedBtn.classList.toggle('active');
+        body.style.overflow = currentNav.classList.contains('active') ? 'hidden' : '';
       }
-      return null;
-    }
 
-    function redrawCanvas() {
-      ctx.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);
-      state.drawings.forEach((d, idx) => {
-        const isSel = idx === state.selectedDrawingIndex; const w = d.lineWidth || 2;
-        if (d.type === 'brush' && d.points && d.points.length > 0) {
-          ctx.strokeStyle=d.color; ctx.lineWidth=isSel?w+2:w; ctx.lineCap='round'; ctx.lineJoin='round';
-          ctx.beginPath(); ctx.moveTo(d.points[0].x, d.points[0].y);
-          for(let i=1;i<d.points.length;i++) ctx.lineTo(d.points[i].x, d.points[i].y); ctx.stroke();
-          if (isSel) { drawAnchorCircle(d.points[0].x, d.points[0].y); drawAnchorCircle(d.points[d.points.length-1].x, d.points[d.points.length-1].y); }
-        } else drawPreviewShape(d.x1, d.y1, d.x2, d.y2, d.type, d.color, w, isSel);
+      // إضافة مستمعي الأحداث لجميع أزرار القائمة
+      mobileMenuBtns.forEach(btn => {
+        btn.addEventListener('click', toggleMenu);
       });
 
-      if (state.activePosition && candleSeries) {
-        const tpY = candleSeries.priceToCoordinate(state.activePosition.tpPrice);
-        const slY = candleSeries.priceToCoordinate(state.activePosition.slPrice);
-        if (tpY !== null) { ctx.fillStyle='#089981'; ctx.beginPath(); ctx.arc(drawingCanvas.width-70,tpY,6,0,Math.PI*2); ctx.fill(); ctx.fillStyle='#fff'; ctx.font='bold 9px sans-serif'; ctx.fillText('TP ↕',drawingCanvas.width-64,tpY+3); }
-        if (slY !== null) { ctx.fillStyle='#f23645'; ctx.beginPath(); ctx.arc(drawingCanvas.width-70,slY,6,0,Math.PI*2); ctx.fill(); ctx.fillStyle='#fff'; ctx.font='bold 9px sans-serif'; ctx.fillText('SL ↕',drawingCanvas.width-64,slY+3); }
-      }
-    }
-    function drawAnchorCircle(x,y){ctx.save();ctx.fillStyle='#f0b90b';ctx.strokeStyle='#000';ctx.lineWidth=2;ctx.beginPath();ctx.arc(x,y,5,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.restore();}
-    function findDrawingAtPoint(x,y){
-      for(let i=state.drawings.length-1;i>=0;i--){
-        const d=state.drawings[i];
-        if(d.type==='brush'){for(let p of d.points)if(Math.hypot(x-p.x,y-p.y)<=12)return i;}
-        else if(d.type==='horizontal'){if(Math.abs(y-d.y1)<=12)return i;}
-        else if(d.type==='trendline'){if(distanceToSegment({x,y},{x:d.x1,y:d.y1},{x:d.x2,y:d.y2})<=12)return i;}
-        else if(d.type==='rectangle'){const minX=Math.min(d.x1,d.x2),maxX=Math.max(d.x1,d.x2),minY=Math.min(d.y1,d.y2),maxY=Math.max(d.y1,d.y2);if(x>=minX-12&&x<=maxX+12&&y>=minY-12&&y<=maxY+12)return i;}
-        else if(d.type==='fibonacci'){const minY=Math.min(d.y1,d.y2),maxY=Math.max(d.y1,d.y2);if(y>=minY-12&&y<=maxY+12)return i;}
-      } return -1;
-    }
-    function distanceToSegment(p,v,w){
-      const l2=(w.x-v.x)**2+(w.y-v.y)**2; if(l2===0)return Math.hypot(p.x-v.x,p.y-v.y);
-      let t=((p.x-v.x)*(w.x-v.x)+(p.y-v.y)*(w.y-v.y))/l2; t=Math.max(0,Math.min(1,t));
-      return Math.hypot(p.x-(v.x+t*(w.x-v.x)),p.y-(v.y+t*(w.y-v.y)));
-    }
-    function showDrawingContextMenu(cX,cY){const L=Math.min(Math.max(20,cX+15),window.innerWidth-220),T=Math.min(Math.max(70,cY-40),window.innerHeight-200);drawingContextMenu.style.left=L+'px';drawingContextMenu.style.top=T+'px';drawingContextMenu.classList.remove('hidden');}
-    function hideDrawingContextMenu(){drawingContextMenu.classList.add('hidden');}
-    function drawPreviewShape(x1,y1,x2,y2,tool,color='#fff',width=2,sel=false){
-      ctx.strokeStyle=color; ctx.lineWidth=sel?width+1:width; ctx.fillStyle=color+'22'; ctx.beginPath();
-      if(tool==='trendline'){ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();if(sel){drawAnchorCircle(x1,y1);drawAnchorCircle(x2,y2);}}
-      else if(tool==='horizontal'){ctx.moveTo(0,y1);ctx.lineTo(drawingCanvas.width,y1);ctx.stroke();if(sel)drawAnchorCircle(drawingCanvas.width/2,y1);}
-      else if(tool==='rectangle'){const minX=Math.min(x1,x2),minY=Math.min(y1,y2),w=Math.abs(x2-x1),h=Math.abs(y2-y1);ctx.rect(minX,minY,w,h);ctx.fill();ctx.stroke();if(sel){drawAnchorCircle(minX,minY);drawAnchorCircle(minX+w,minY);drawAnchorCircle(minX,minY+h);drawAnchorCircle(minX+w,minY+h);}}
-      else if(tool==='fibonacci'){const dy=y2-y1;[0,0.236,0.382,0.5,0.618,1].forEach(lvl=>{const ly=y1+dy*lvl;ctx.moveTo(x1,ly);ctx.lineTo(x2,ly);});ctx.stroke();if(sel){drawAnchorCircle(x1,y1);drawAnchorCircle(x2,y2);}}
-    }
-
-    // Grafikte yalnızca açık alış partileri çizilir. Satış, var olan alış miktarını azaltır;
-    // yeni SELL/short pozisyonu veya satış fiyat çizgisi açılmaz.
-    function recordTradeMarker(type, quantity, fillPrice, realizedPnL = 0, pnlReferencePrice = fillPrice) {
-      if (type !== 'BUY') return;
-      if (!candleSeries || !tradeMarkerLayer || !Number.isFinite(fillPrice) || fillPrice <= 0) return;
-      const color = '#089981';
-      const line = candleSeries.createPriceLine({
-        price: fillPrice,
-        color,
-        lineWidth: 2,
-        lineStyle: LightweightCharts.LineStyle.Dotted,
-        axisLabelVisible: true,
-        title: ''
-      });
-      const labelEl = document.createElement('div');
-      labelEl.className = 'trade-marker-label buy';
-      tradeMarkerLayer.appendChild(labelEl);
-      const tradeMarker = {
-        type, quantity, remainingQuantity: quantity,
-        entryPrice: fillPrice, // Grafikte alışın gerçekleştiği gerçek görünür fiyat
-        pnlReferencePrice: Number(pnlReferencePrice) > 0 ? Number(pnlReferencePrice) : fillPrice,
-        externalEntryIndex: Number(getMarketBook(state.symbol).externalMoveIndex) || 1,
-        investmentRemaining: quantity, // Bakiye kuralı gereği hisse adedi kadar sanal yatırım
-        realizedPnL: Number(realizedPnL) || 0,
-        line, labelEl, timestamp: Date.now()
-      };
-      state.tradeMarkers.push(tradeMarker);
-      while (state.tradeMarkers.length > 100) {
-        const old = state.tradeMarkers.shift();
-        try { candleSeries.removePriceLine(old.line); } catch (_) {}
-        old.labelEl?.remove();
-      }
-      updateTradeMarkerPositions();
-    }
-
-    // Emirlerin havuz fiyatına etkisi P/K hesabına hiçbir zaman dahil edilmez.
-    function neutralizeOwnOrderImpact(priceBefore, priceAfter) { return; }
-
-    // Bu endeks yalnız rastgele/dış fiyat adımlarında değişir; AL/SAT emirleri değiştirmez.
-    function externalMoveRatio(marker) {
-      const book = getMarketBook(state.symbol);
-      const entry = Number(marker?.externalEntryIndex) || Number(book.externalMoveIndex) || 1;
-      const current = Number(book.externalMoveIndex) || 1;
-      return entry > 0 ? current / entry : 1;
-    }
-
-    // Satış sonucu yalnızca alıştan sonraki rastgele/dış hareketlere göre hesaplanır.
-    function calculateTradeMarkerSalePnL(quantity, exitPrice) {
-      let remainingToSell = Math.max(0, Number(quantity) || 0);
-      let totalPnL = 0;
-      for (const marker of (state.tradeMarkers || [])) {
-        if (remainingToSell <= 0) break;
-        if (marker.type !== 'BUY' || marker.remainingQuantity <= 0) continue;
-        const available = marker.remainingQuantity;
-        const consumed = Math.min(available, remainingToSell);
-        const investedConsumed = available > 0
-          ? (Number(marker.investmentRemaining) || 0) * consumed / available : 0;
-        totalPnL += investedConsumed * (externalMoveRatio(marker) - 1);
-        remainingToSell -= consumed;
-      }
-      return totalPnL;
-    }
-
-    // SAT işleminde en eski alış lotlarından düşür; tamamen kapanan lotun çizgisini ve kaydını sil.
-    function consumeTradeMarkerLots(quantity, exitPrice) {
-      let remainingToSell = Math.max(0, Number(quantity) || 0);
-      let i = 0;
-      while (i < (state.tradeMarkers || []).length && remainingToSell > 0) {
-        const marker = state.tradeMarkers[i];
-        if (marker.type !== 'BUY' || marker.remainingQuantity <= 0) { i++; continue; }
-        const beforeQty = marker.remainingQuantity;
-        const consumed = Math.min(beforeQty, remainingToSell);
-        const investmentConsumed = beforeQty > 0
-          ? marker.investmentRemaining * consumed / beforeQty : 0;
-        const lotPnL = investmentConsumed * (externalMoveRatio(marker) - 1);
-        marker.realizedPnL += lotPnL;
-        marker.remainingQuantity = Math.max(0, beforeQty - consumed);
-        marker.quantity = marker.remainingQuantity;
-        marker.investmentRemaining = Math.max(0, marker.investmentRemaining - investmentConsumed);
-        remainingToSell -= consumed;
-        if (marker.remainingQuantity <= 1e-9) {
-          try { candleSeries?.removePriceLine(marker.line); } catch (_) {}
-          marker.labelEl?.remove();
-          state.tradeMarkers.splice(i, 1); // Kapanmış alışın grafikte/işlem işaretleri dizisinde geçmişi kalmaz.
-        } else {
-          i++;
-        }
-      }
-      updateTradeMarkerPositions();
-    }
-
-    function formatTradePnL(value) {
-      const amount = Number(value) || 0;
-      return `${amount >= 0 ? '+' : '-'}$${Math.abs(amount).toFixed(4)}`;
-    }
-
-    function updateTradeMarkerPositions() {
-      if (!candleSeries || !tradeMarkerLayer || !state.tradeMarkers) return;
-      const height = chartContainer?.clientHeight || 0;
-      for (const marker of state.tradeMarkers) {
-        const y = candleSeries.priceToCoordinate(marker.entryPrice);
-        if (y == null || !Number.isFinite(y) || y < 0 || y > height) {
-          marker.labelEl.style.display = 'none';
-          continue;
-        }
-        marker.labelEl.style.display = 'block';
-        marker.labelEl.style.top = `${Math.max(24, Math.min(height - 4, y - 2))}px`;
-        const pnl = marker.type === 'BUY'
-          ? marker.realizedPnL + marker.investmentRemaining * (externalMoveRatio(marker) - 1)
-          : marker.realizedPnL;
-        const kind = marker.type === 'BUY' ? 'ALIM' : 'SATIŞ';
-        const qtyText = Number(marker.quantity).toLocaleString('tr-TR');
-        marker.labelEl.textContent = `${kind} ${qtyText} · ${marker.entryPrice.toFixed(6)} · ${formatTradePnL(pnl)}`;
-        marker.labelEl.title = `${kind} | İşlem fiyatı: $${marker.entryPrice.toFixed(6)} | Kâr/Zarar: ${formatTradePnL(pnl)}`;
-      }
-    }
-
-    // Sanal hisse işlemleri: miktar adet olarak girilir; fiyat etkisi havuz likiditesinden hesaplanır.
-    function executeOrderSimulation(type) {
-      state.orderSide = type;
-      updateShareMarketPanel();
-      const input = document.getElementById('calcLotInput');
-      const quantity = Math.floor(Number(input.value));
-      const book = getMarketBook(state.symbol);
-      const dec = assetConfigs[state.symbol]?.decimals || 6;
-      if (!Number.isFinite(quantity) || quantity < 1) {
-        showMarketError('Hisse miktarı en az 1 adet olmalı.');
-        return;
-      }
-
-      const quote = quotePoolTrade(book, type, quantity);
-      if (!quote) {
-        showMarketError('Bu miktar için fiyat hesaplanamadı; daha düşük bir miktar gir.');
-        return;
-      }
-
-      // İstenen Tradegram kuralı: girilen hisse adedi kadar dolar bakiyeden düşer.
-      // Örn. 100 hisse = $100; 50 hisse = $50. Grafik fiyat etkisi havuz hesabından ayrı tutulur.
-      const cashAmount = quantity;
-      let realizedFromThisOrder = 0;
-      if (type === 'BUY') {
-        if (cashAmount > book.cashBalance + 1e-9) {
-          showMarketError(`Yetersiz bakiye. ${quantity} hisse almak için $${cashAmount.toFixed(2)} gerekiyor.`);
-          return;
-        }
-        book.tokenReserve = quote.tokenReserveAfter;
-        book.cashReserve = quote.cashReserveAfter;
-        book.cashBalance = Math.max(0, book.cashBalance - cashAmount);
-        // Kural: 1 hisse alımı bakiyeden 1 USD düşürür.
-        // Alış grafikte tıklama anındaki fiyatı gösterir; P/K referansı ise emrin
-        // kendi oluşturduğu fiyat sıçramasını dışarıda bırakır.
-        const oldCostBasis = Number(book.costBasis) || 0;
-        const oldReference = Number(book.entryPriceBasis) || quote.priceBefore;
-        const newCostBasis = oldCostBasis + cashAmount;
-        const impactRatio = quote.priceBefore > 0 ? quote.priceAfter / quote.priceBefore : 1;
-        const adjustedOldReference = oldReference * impactRatio;
-        const newBuyReference = quote.priceAfter;
-        const oldExposure = oldCostBasis > 0 && adjustedOldReference > 0 ? oldCostBasis / adjustedOldReference : 0;
-        const newExposure = cashAmount / Math.max(0.000001, newBuyReference);
-        book.entryPriceBasis = newCostBasis > 0 ? newCostBasis / (oldExposure + newExposure) : newBuyReference;
-        book.costBasis = newCostBasis;
-        book.sharesHeld += quantity;
-      } else {
-        if (quantity > book.sharesHeld) {
-          showMarketError(`Yetersiz hisse. Cüzdanında ${book.sharesHeld.toLocaleString('en-US')} adet var.`);
-          return;
-        }
-        // Satılan miktarın maliyet kısmını ayır; gerçekleşen K/Z'yi alış lotlarının
-        // kendi emir etkisi nötrlenmiş referans fiyatlarından hesapla.
-        const costRemoved = book.sharesHeld > 0 ? (book.costBasis * quantity / book.sharesHeld) : 0;
-        // SATIŞ, emre basıldığı andaki piyasa fiyatından gerçekleşir; bu satışın
-        // oluşturduğu sonraki fiyat düşüşü bu işlemin kâr/zararına dahil edilmez.
-        const exitPrice = quote.priceBefore;
-        realizedFromThisOrder = calculateTradeMarkerSalePnL(quantity, exitPrice);
-        book.realizedPnL = (Number(book.realizedPnL) || 0) + realizedFromThisOrder;
-        book.tokenReserve = quote.tokenReserveAfter;
-        book.cashReserve = quote.cashReserveAfter;
-        // Satışta ana tutara, fiyat hareketinden doğan gerçekleşmiş kâr/zarar da eklenir.
-        book.cashBalance = Math.max(0, book.cashBalance + cashAmount + realizedFromThisOrder);
-        book.sharesHeld -= quantity;
-        book.costBasis = Math.max(0, book.costBasis - costRemoved);
-        if (book.sharesHeld === 0) {
-          book.costBasis = 0;
-          book.entryPriceBasis = 0;
-        } else {
-          // Satış emrinin kendi fiyat düşüşü kalan hisselere zarar/kâr yazmasın.
-          book.entryPriceBasis *= (quote.priceAfter / Math.max(0.000001, quote.priceBefore));
-        }
-      }
-
-      // Başarılı sanal emir, birkaç saniyelik STRONG BUY/SELL sinyalini tetikler.
-      state.orderFlow = state.orderFlow || [];
-      state.orderFlow.push({ type, quantity, value: cashAmount, priceBefore: quote.priceBefore, priceAfter: quote.priceAfter, timestamp: Date.now() });
-      if (state.orderFlow.length > 100) state.orderFlow.splice(0, state.orderFlow.length - 100);
-      // Sinyali yeni gerçekleşen emir yönüne hemen geçir ve rengini güncelle.
-      updateAISignals();
-
-      const previousPrice = quote.priceBefore;
-      const newPrice = poolPrice(book);
-      book.anchorPrice = newPrice;
-      state.marketAnchorPrice = newPrice;
-      handleNewPriceTick(newPrice, dec);
-      // Kendi emrinin fiyat etkisi P/K'ya yazılmaz; grafikte fiyat hareket edebilir,
-      // ancak mevcut lotların P/K referansları aynı oranda kaydırılarak bu etki nötrlenir.
-      if (type === 'SELL') {
-        consumeTradeMarkerLots(quantity, quote.priceBefore);
-        neutralizeOwnOrderImpact(quote.priceBefore, quote.priceAfter);
-      } else if (type === 'BUY') {
-        neutralizeOwnOrderImpact(quote.priceBefore, quote.priceAfter);
-        // Çizgi tıklama anındaki dolum fiyatında; yeni lotun P/K referansı ise
-        // kendi alış etkisi sonrası fiyat olduğundan anında yapay kâr yazılmaz.
-        recordTradeMarker('BUY', quantity, quote.priceBefore, 0, quote.priceAfter);
-      }
-      updateTradeMarkerPositions();
-      const balanceInput = document.getElementById('calcBalance');
-      if (balanceInput) balanceInput.value = formatCashBalance(book.cashBalance);
-
-      // Başarılı AL/SAT işleminde "emir açıldı" alt bildirimi gösterilmez.
-      // Emir, bakiye, hisse sahipliği, fiyat etkisi ve analizler normal şekilde güncellenir.
-      const existingToast = document.getElementById('orderNotification');
-      if (existingToast) {
-        existingToast.classList.remove('translate-y-0', 'opacity-100');
-        existingToast.classList.add('translate-y-20', 'opacity-0');
-      }
-      updateShareMarketPanel();
-      updateCalcRiskReward();
-      updatePredictionUI();
-    }
-
-    function showMarketError(message) {
-      const notif = document.getElementById('orderNotification');
-      const card = document.getElementById('orderNotificationCard');
-      const icon = document.getElementById('orderIcon');
-      const title = document.getElementById('orderTitle');
-      card.className = 'px-5 py-4 rounded-xl bg-bgCard border border-bearish shadow-2xl flex items-center gap-4';
-      icon.className = 'w-10 h-10 rounded-full bg-bearish text-white flex items-center justify-center text-lg';
-      icon.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i>';
-      title.innerText = 'EMİR GERÇEKLEŞMEDİ';
-      title.className = 'font-extrabold text-sm text-bearish';
-      document.getElementById('orderDetails').innerText = message;
-      notif.classList.remove('translate-y-20', 'opacity-0');
-      notif.classList.add('translate-y-0', 'opacity-100');
-      setTimeout(() => { notif.classList.remove('translate-y-0', 'opacity-100'); notif.classList.add('translate-y-20', 'opacity-0'); }, 4000);
-    }
-
-    function updateShareMarketPanel() {
-      const book = getMarketBook(state.symbol);
-      // Panel P/K her saniye güncellenir; getiri yalnız rastgele/dış hareket endeksinden gelir.
-      const price = Math.max(0.000001, Number(state.currentPrice) || poolPrice(book));
-      const qty = Math.floor(Number(document.getElementById('calcLotInput')?.value) || 100);
-      const side = state.orderSide || 'BUY';
-      const quote = side === 'SELL' && qty > book.sharesHeld ? null : quotePoolTrade(book, side, qty);
-      const priceEl = document.getElementById('shareCurrentPrice');
-      const valueEl = document.getElementById('shareOrderValue');
-      const impactEl = document.getElementById('shareOrderImpact');
-      const holdingsEl = document.getElementById('shareHoldings');
-      const portfolioEl = document.getElementById('sharePortfolioValue');
-      if (priceEl) priceEl.innerText = `$${price.toFixed(6)}`;
-      if (valueEl) valueEl.innerText = quote ? `$${qty.toFixed(2)}` : (side === 'SELL' ? 'Yeterli hisse yok' : '—');
-      if (impactEl) {
-        impactEl.innerText = quote ? `${quote.impactPct >= 0 ? '+' : ''}${quote.impactPct.toFixed(4)}%` : '—';
-        impactEl.className = `font-mono font-bold ${quote && quote.impactPct >= 0 ? 'text-bullish' : 'text-bearish'}`;
-      }
-      if (holdingsEl) holdingsEl.innerText = book.sharesHeld.toLocaleString('en-US');
-      // Açık P/K yalnız externalMoveIndex ile hesaplanır; kendi emirlerinin fiyat etkisi sayılmaz.
-      const investedAmount = Math.max(0, Number(book.costBasis) || 0);
-      const openPnL = (state.tradeMarkers || []).reduce((sum, marker) => {
-        if (marker.type !== 'BUY' || marker.remainingQuantity <= 0) return sum;
-        return sum + (Number(marker.investmentRemaining) || 0) * (externalMoveRatio(marker) - 1);
-      }, 0);
-      const portfolioValue = Math.max(0, investedAmount + openPnL);
-      if (portfolioEl) portfolioEl.innerText = `$${portfolioValue.toFixed(4)}`;
-      const openPnLEl = document.getElementById('shareOpenPnL');
-      if (openPnLEl) {
-        openPnLEl.innerText = `${openPnL >= 0 ? '+' : '-'}$${Math.abs(openPnL).toFixed(4)}`;
-        openPnLEl.className = `font-mono font-bold ${openPnL >= 0 ? 'text-bullish' : 'text-bearish'}`;
-      }
-      const realizedPnLEl = document.getElementById('shareRealizedPnL');
-      // Gerçekleşen satış sonucu + açık pozisyonların yalnız dış hareket bazlı canlı K/Z toplamı.
-      const realizedPnL = (Number(book.realizedPnL) || 0) + openPnL;
-      if (realizedPnLEl) {
-        realizedPnLEl.innerText = `${realizedPnL >= 0 ? '+' : '-'}$${Math.abs(realizedPnL).toFixed(4)}`;
-        realizedPnLEl.className = `font-mono font-bold ${realizedPnL >= 0 ? 'text-bullish' : 'text-bearish'}`;
-      }
-    }
-
-    function updateActivePositionPnL() {
-      if(!state.activePosition)return; const pos=state.activePosition; const pnlUSD = (pos.type==='BUY' ? (state.currentPrice - pos.entryPrice) : (pos.entryPrice - state.currentPrice)) / pos.pipMultiplier * 10 * pos.lotNumber;
-      const el = document.getElementById('posPnLText'); el.innerText=`${pnlUSD>=0?'+':''}$${pnlUSD.toFixed(2)}`; el.className=`font-mono font-bold ${pnlUSD>=0?'text-bullish':'text-bearish'}`;
-    }
-    function closeActivePosition(){
-      if(!state.activePosition)return; state.activePosition=null; state.simDirection = 0;
-      if(entryPriceLine)candleSeries.removePriceLine(entryPriceLine); if(slPriceLine)candleSeries.removePriceLine(slPriceLine); if(tpPriceLine)candleSeries.removePriceLine(tpPriceLine);
-      entryPriceLine=null; slPriceLine=null; tpPriceLine=null; document.getElementById('activePositionBanner').classList.add('hidden');
-      updateCalcRiskReward();
-    }
-    function updateCalcRiskReward(){
-      const quantity = Math.max(1, Math.floor(Number(document.getElementById('calcLotInput')?.value) || 100));
-      const balance = Math.max(0, Number(document.getElementById('calcBalance')?.value) || 0);
-      const entry = state.currentPrice;
-      const isSell = state.orderSide === 'SELL';
-      const sl = isSell ? entry * 1.01 : entry * 0.99;
-      const tp = isSell ? entry * 0.98 : entry * 1.02;
-      const risk = Math.abs(entry - sl) * quantity;
-      const reward = Math.abs(tp - entry) * quantity;
-      const ratio = risk > 0 ? reward / risk : 0;
-      const riskPct = balance > 0 ? (risk / balance) * 100 : 0;
-      if(document.getElementById('resRiskUSD')) document.getElementById('resRiskUSD').innerText = `$${risk.toFixed(4)} / $${reward.toFixed(4)}`;
-      if(document.getElementById('resRRRatio')) document.getElementById('resRRRatio').innerText = `1 : ${ratio.toFixed(2)}`;
-      if(document.getElementById('resRiskPercent')) document.getElementById('resRiskPercent').innerText = `${riskPct.toFixed(4)}% of balance`;
-      updateShareMarketPanel();
-    }
-    function setupCalculator(){
-      const quantityEl = document.getElementById('calcLotInput');
-      const balanceEl = document.getElementById('calcBalance');
-      quantityEl.addEventListener('input', () => { updateShareMarketPanel(); updateCalcRiskReward(); });
-      balanceEl.addEventListener('input', (e) => {
-        const book = getMarketBook(state.symbol);
-        book.cashBalance = Math.max(0, Number(e.target.value) || 0);
-        updateShareMarketPanel();
-        updateCalcRiskReward();
-      });
-      updateShareMarketPanel();
-      updateCalcRiskReward();
-    }
-    function showDrawingToolbarSelection(){drawingToolbar.classList.remove('hidden');btnDeleteActiveDrawing.classList.remove('hidden');}
-    function hideDrawingToolbarSelection(){if(state.currentTool==='cursor'){drawingToolbar.classList.add('hidden');btnDeleteActiveDrawing.classList.add('hidden');}}
-    function showAutoCloseNotification(type, finalPnL, closePrice, dec) {
-      const isWin=finalPnL>=0, notif=document.getElementById('orderNotification'), card=document.getElementById('orderNotificationCard'), icon=document.getElementById('orderIcon'), title=document.getElementById('orderTitle');
-      card.className = `px-5 py-4 rounded-xl bg-bgCard border ${isWin?'border-bullish shadow-bullish/20':'border-bearish shadow-bearish/20'} shadow-2xl flex items-center gap-4`;
-      icon.className = `w-10 h-10 rounded-full ${isWin?'bg-bullish':'bg-bearish'} text-white flex items-center justify-center text-lg`; icon.innerHTML = isWin?'<i class="fa-solid fa-circle-check"></i>':'<i class="fa-solid fa-circle-xmark"></i>';
-      title.innerText = `İŞLEM ${isWin?'KÂR':'ZARAR'} İLE KAPANDI (${type})`; title.className = `font-extrabold text-sm ${isWin?'text-bullish':'text-bearish'}`;
-      document.getElementById('orderDetails').innerText = `Kapanış Fiyatı: ${closePrice.toFixed(dec)} | Sonuç: ${isWin?'+':''}$${finalPnL.toFixed(2)}`;
-      notif.classList.remove('translate-y-20','opacity-0'); notif.classList.add('translate-y-0','opacity-100');
-      setTimeout(()=>{notif.classList.remove('translate-y-0','opacity-100');notif.classList.add('translate-y-20','opacity-0');},4500);
-    }
-    // Global Event Listeners Setup
-    function setupEventListeners() {
-      // Asset selector is intentionally removed: Tradegram Hisse is fixed.
-
-      // Left-side round color pickers: up candles, down candles and chart background.
-      const themePickerMap = {
-        upCandleColorPicker: 'up',
-        downCandleColorPicker: 'down',
-        chartBackgroundColorPicker: 'background'
-      };
-      Object.entries(themePickerMap).forEach(([id, kind]) => {
-        const picker = document.getElementById(id);
-        if (picker) picker.addEventListener('input', event => applyChartThemeColor(kind, event.target.value));
+      // إضافة مستمعي الأحداث لجميع أزرار الإغلاق
+      closeMenuBtns.forEach(btn => {
+        btn.addEventListener('click', toggleMenu);
       });
 
-      // Timeframe dropdown and interval selection.
-      const timeframeControl = document.getElementById('timeframeControl');
-      const timeframeGroup = document.getElementById('timeframeGroup');
-      const timeframeToggle = document.getElementById('timeframeDropdownToggle');
-      const timeframeLabel = document.getElementById('timeframeDropdownLabel');
-      if (timeframeToggle && timeframeGroup) {
-        timeframeToggle.addEventListener('click', (event) => {
-          event.stopPropagation();
-          const isOpen = timeframeGroup.classList.toggle('open');
-          timeframeToggle.setAttribute('aria-expanded', String(isOpen));
-        });
-        timeframeGroup.querySelectorAll('.tf-btn').forEach(btn => {
-          btn.addEventListener('click', (event) => {
-            event.stopPropagation();
-            timeframeGroup.querySelectorAll('.tf-btn').forEach(b => {
-              b.classList.remove('active', 'bg-bgHover', 'text-gold', 'font-bold');
-              b.classList.add('text-gray-400');
-              b.setAttribute('aria-pressed', 'false');
-            });
-            const chosen = event.currentTarget;
-            chosen.classList.add('active', 'bg-bgHover', 'text-gold', 'font-bold');
-            chosen.classList.remove('text-gray-400');
-            chosen.setAttribute('aria-pressed', 'true');
-            state.timeframe = chosen.dataset.tf || '15m';
-            if (timeframeLabel) timeframeLabel.textContent = chosen.textContent.trim();
-            timeframeGroup.classList.remove('open');
-            timeframeToggle.setAttribute('aria-expanded', 'false');
-            renderCandlesFromBase({ resetView: false });
-          });
-        });
-        document.addEventListener('click', (event) => {
-          if (timeframeControl && !timeframeControl.contains(event.target)) {
-            timeframeGroup.classList.remove('open');
-            timeframeToggle.setAttribute('aria-expanded', 'false');
+      overlay.addEventListener('click', () => {
+        mainNavs.forEach(nav => nav.classList.remove('active'));
+        mobileMenuBtns.forEach(btn => btn.classList.remove('active'));
+        overlay.classList.remove('active');
+        body.style.overflow = '';
+      });
+
+      // إغلاق القائمة عند النقر على أي رابط
+      document.querySelectorAll('.main-nav a').forEach(link => {
+        link.addEventListener('click', () => {
+          const currentNav = link.closest('.main-nav');
+          const currentBtn = currentNav.parentElement.querySelector('.mobile-menu-btn');
+          
+          if (currentNav.classList.contains('active')) {
+            currentNav.classList.remove('active');
+            currentBtn.classList.remove('active');
+            overlay.classList.remove('active');
+            body.style.overflow = '';
           }
         });
-        document.addEventListener('keydown', (event) => {
-          if (event.key === 'Escape') {
-            timeframeGroup.classList.remove('open');
-            timeframeToggle.setAttribute('aria-expanded', 'false');
-          }
+      });
+
+      // وظائف تبديل اللغة
+      function switchToArabic() {
+        document.documentElement.lang = 'ar';
+        document.documentElement.dir = 'rtl';
+        document.getElementById('header-ar').style.display = 'block';
+        document.getElementById('header-en').style.display = 'none';
+        document.getElementById('header-tr').style.display = 'none';
+        document.getElementById('content-ar').style.display = 'block';
+        document.getElementById('content-en').style.display = 'none';
+        document.getElementById('content-tr').style.display = 'none';
+        
+        // تحديث الروابط النشطة
+        document.querySelectorAll('[id^="ar-link"]').forEach(link => link.classList.add('active'));
+        document.querySelectorAll('[id^="en-link"]').forEach(link => link.classList.remove('active'));
+        document.querySelectorAll('[id^="tr-link"]').forEach(link => link.classList.remove('active'));
+      }
+
+      function switchToEnglish() {
+        document.documentElement.lang = 'en';
+        document.documentElement.dir = 'ltr';
+        document.getElementById('header-ar').style.display = 'none';
+        document.getElementById('header-en').style.display = 'block';
+        document.getElementById('header-tr').style.display = 'none';
+        document.getElementById('content-ar').style.display = 'none';
+        document.getElementById('content-en').style.display = 'block';
+        document.getElementById('content-tr').style.display = 'none';
+        
+        // تحديث الروابط النشطة
+        document.querySelectorAll('[id^="ar-link"]').forEach(link => link.classList.remove('active'));
+        document.querySelectorAll('[id^="en-link"]').forEach(link => link.classList.add('active'));
+        document.querySelectorAll('[id^="tr-link"]').forEach(link => link.classList.remove('active'));
+      }
+
+      function switchToTurkish() {
+        document.documentElement.lang = 'tr';
+        document.documentElement.dir = 'ltr';
+        document.getElementById('header-ar').style.display = 'none';
+        document.getElementById('header-en').style.display = 'none';
+        document.getElementById('header-tr').style.display = 'block';
+        document.getElementById('content-ar').style.display = 'none';
+        document.getElementById('content-en').style.display = 'none';
+        document.getElementById('content-tr').style.display = 'block';
+        
+        // تحديث الروابط النشطة
+        document.querySelectorAll('[id^="ar-link"]').forEach(link => link.classList.remove('active'));
+        document.querySelectorAll('[id^="en-link"]').forEach(link => link.classList.remove('active'));
+        document.querySelectorAll('[id^="tr-link"]').forEach(link => link.classList.add('active'));
+      }
+
+      // إضافة مستمعي الأحداث لروابط اللغة
+      document.querySelectorAll('[id^="ar-link"]').forEach(link => {
+        link.addEventListener('click', function(e) {
+          e.preventDefault();
+          switchToArabic();
+        });
+      });
+
+      document.querySelectorAll('[id^="en-link"]').forEach(link => {
+        link.addEventListener('click', function(e) {
+          e.preventDefault();
+          switchToEnglish();
+        });
+      });
+
+      document.querySelectorAll('[id^="tr-link"]').forEach(link => {
+        link.addEventListener('click', function(e) {
+          e.preventDefault();
+          switchToTurkish();
+        });
+      });
+
+      // تحديث تبديل الوضع للجوال وسطح المكتب
+      function toggleDarkMode() {
+        document.body.classList.toggle('dark-mode');
+        const isDarkMode = document.body.classList.contains('dark-mode');
+        
+        // تحديث الأيقونات والنصوص
+        document.querySelectorAll('.mode-toggle i').forEach(icon => {
+          icon.className = isDarkMode ? 'fas fa-sun' : 'fas fa-moon';
+        });
+        
+        document.querySelectorAll('.mobile-mode-toggle .toggle-switch span').forEach(text => {
+          text.textContent = isDarkMode ? 
+            (document.documentElement.lang === 'ar' ? 'الوضع الفاتح' : 
+             document.documentElement.lang === 'tr' ? 'Aydınlık Mod' : 'Light Mode') :
+            (document.documentElement.lang === 'ar' ? 'الوضع الداكن' : 
+             document.documentElement.lang === 'tr' ? 'Karanlık Mod' : 'Dark Mode');
+        });
+        
+        // تحديث شعار الموقع
+        document.querySelectorAll('.dark-logo').forEach(logo => {
+          logo.style.display = isDarkMode ? 'block' : 'none';
+        });
+        document.querySelectorAll('.light-logo').forEach(logo => {
+          logo.style.display = isDarkMode ? 'none' : 'block';
+        });
+        
+        // تحديث شريط TradingView
+        document.querySelectorAll('.light-mode-widget').forEach(widget => {
+          widget.style.display = isDarkMode ? 'none' : 'block';
+        });
+        document.querySelectorAll('.dark-mode-widget').forEach(widget => {
+          widget.style.display = isDarkMode ? 'block' : 'none';
         });
       }
 
-      // LCA Oscillator üst düğmesi arayüzden kaldırıldı.
-      const toggleLcaEl = document.getElementById('toggleLCA');
-      if (toggleLcaEl) {
-        toggleLcaEl.setAttribute('aria-pressed', String(state.indicators.lca));
-        toggleLcaEl.title = 'LCA durumunu aç/kapat';
-        toggleLcaEl.addEventListener('click', (e) => {
-          state.indicators.lca = !state.indicators.lca;
-          e.currentTarget.setAttribute('aria-pressed', String(state.indicators.lca));
-          if (state.indicators.lca) {
-            e.currentTarget.className = 'px-2.5 py-1 text-xs font-bold rounded bg-gold text-bgDark shadow-lg shadow-gold/20 border border-gold flex items-center gap-1.5 transition cursor-pointer';
-          } else {
-            e.currentTarget.className = 'px-2.5 py-1 text-xs font-semibold rounded bg-bgDark text-gray-400 border border-gray-700 hover:text-white flex items-center gap-1.5 transition cursor-pointer';
-          }
-        });
-      }
-
-      // Indicators Modal Handlers
-      document.getElementById('btnOpenIndicatorsModal').addEventListener('click', () => {
-        ['EMA','SMA','RSI','MACD','BB','Supertrend'].forEach(k => document.getElementById('chk'+k).checked = state.indicators[k.toLowerCase()]);
-        ['EmaFast','EmaSlow','SmaPeriod','RsiPeriod','MacdFast','MacdSlow','MacdSignal','BbPeriod','BbStd'].forEach(k => document.getElementById('input'+k).value = state.params[k.charAt(0).toLowerCase()+k.slice(1)]);
-        document.getElementById('indicatorsModal').classList.remove('hidden');
-      });
-      document.getElementById('btnCloseIndicatorsModal').addEventListener('click', () => document.getElementById('indicatorsModal').classList.add('hidden'));
-      document.getElementById('btnApplyIndicators').addEventListener('click', () => {
-        ['EMA','SMA','RSI','MACD','BB','Supertrend'].forEach(k => state.indicators[k.toLowerCase()] = document.getElementById('chk'+k).checked);
-        ['EmaFast','EmaSlow','SmaPeriod','RsiPeriod','MacdFast','MacdSlow','MacdSignal','BbPeriod'].forEach(k => state.params[k.charAt(0).toLowerCase()+k.slice(1)] = parseInt(document.getElementById('input'+k).value));
-        state.params.bbStd = parseFloat(document.getElementById('inputBbStd').value);
-        rsiContainer.classList.toggle('hidden', !state.indicators.rsi); macdContainer.classList.toggle('hidden', !state.indicators.macd);
-        document.getElementById('indicatorsModal').classList.add('hidden'); handleResize(); updateIndicators();
+      // إضافة مستمعي الأحداث لزر تبديل الوضع
+      document.querySelectorAll('.mode-toggle, .mobile-mode-toggle .toggle-switch').forEach(toggle => {
+        toggle.addEventListener('click', toggleDarkMode);
       });
 
-      // Drawing Tools Selection Buttons
-      document.querySelectorAll('.tool-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          const tool = e.currentTarget.dataset.tool; if (!tool) return;
-          document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active', 'text-gold')); e.currentTarget.classList.add('active', 'text-gold');
-          state.currentTool = tool; state.selectedDrawingIndex = -1; redrawCanvas(); hideDrawingContextMenu();
-          if (tool === 'cursor') { drawingCanvas.classList.remove('active-draw'); hideDrawingToolbarSelection(); }
-          else { drawingCanvas.classList.add('active-draw'); drawingToolbar.classList.remove('hidden'); btnDeleteActiveDrawing.classList.add('hidden'); }
-        });
-      });
-
-      // Color Palette & Context Palette Buttons
-      document.querySelectorAll('.draw-color-btn, .ctx-color-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          state.drawColor = e.currentTarget.dataset.color;
-          if(e.currentTarget.classList.contains('draw-color-btn')) { document.querySelectorAll('.draw-color-btn').forEach(b => b.classList.remove('ring-2', 'ring-gold')); e.currentTarget.classList.add('ring-2', 'ring-gold'); }
-          if (state.selectedDrawingIndex !== -1) { state.drawings[state.selectedDrawingIndex].color = state.drawColor; redrawCanvas(); }
-        });
-      });
-      ['customColorPicker','ctxCustomColorPicker'].forEach(id => {
-        const el = document.getElementById(id);
-        if(el) el.addEventListener('input', (e) => {
-          state.drawColor = e.target.value; document.querySelectorAll('.draw-color-btn').forEach(b => b.classList.remove('ring-2', 'ring-gold'));
-          if (state.selectedDrawingIndex !== -1) { state.drawings[state.selectedDrawingIndex].color = state.drawColor; redrawCanvas(); }
-        });
-      });
-
-      // Line Width Selection Buttons
-      document.querySelectorAll('.draw-width-btn, .ctx-width-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          state.drawLineWidth = parseInt(e.currentTarget.dataset.width) || 2;
-          if(e.currentTarget.classList.contains('draw-width-btn')) { document.querySelectorAll('.draw-width-btn').forEach(b => b.classList.remove('bg-gold/20', 'text-gold', 'active-width')); e.currentTarget.classList.add('bg-gold/20', 'text-gold', 'active-width'); }
-          if (state.selectedDrawingIndex !== -1) { state.drawings[state.selectedDrawingIndex].lineWidth = state.drawLineWidth; redrawCanvas(); }
-        });
-      });
-
-      // Delete Drawing Actions
-      [btnDeleteActiveDrawing, document.getElementById('btnDeleteDrawing')].forEach(btn => {
-        if(btn) btn.addEventListener('click', () => {
-          if (state.selectedDrawingIndex !== -1) { state.drawings.splice(state.selectedDrawingIndex, 1); state.selectedDrawingIndex = -1; hideDrawingToolbarSelection(); hideDrawingContextMenu(); redrawCanvas(); }
-        });
-      });
-      document.getElementById('clearDrawings').addEventListener('click', () => { state.drawings = []; state.selectedDrawingIndex = -1; hideDrawingContextMenu(); hideDrawingToolbarSelection(); redrawCanvas(); });
+      // زر العودة للأعلى
+      const scrollToTopBtn = document.querySelector('.scroll-to-top');
       
-      // Fullscreen Toggle
-      document.getElementById('btnFullscreen').addEventListener('click', () => { if (!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); });
-      
-      // Buy/Sell Order Triggers
-      document.getElementById('btnBuy').addEventListener('click', () => executeOrderSimulation('BUY'));
-      document.getElementById('btnSell').addEventListener('click', () => executeOrderSimulation('SELL'));
-      document.getElementById('btnVoteRed')?.addEventListener('click', () => castCandlePrediction('RED'));
-      document.getElementById('btnVoteGreen')?.addEventListener('click', () => castCandlePrediction('GREEN'));
-      window.addEventListener('storage', (event) => {
-        if (event.key && event.key.startsWith(voteTallyStoragePrefix)) updateVoteTallyUI();
+      window.addEventListener('scroll', () => {
+        if (window.pageYOffset > 300 && !document.querySelector('.main-nav.active')) {
+          scrollToTopBtn.style.opacity = '1';
+          scrollToTopBtn.style.visibility = 'visible';
+        } else {
+          scrollToTopBtn.style.opacity = '0';
+          scrollToTopBtn.style.visibility = 'hidden';
+        }
       });
-      updatePredictionUI();
-      document.getElementById('btnClosePosition').addEventListener('click', closeActivePosition);
-    }
+
+      scrollToTopBtn.addEventListener('click', () => {
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+      });
+
+      // التحقق من وضع الصيانة
+      function checkMaintenanceMode() {
+        const maintenanceMode = localStorage.getItem('maintenanceMode') === 'true';
+        if (maintenanceMode) {
+          window.location.href = 'maintenance.html';
+        }
+      }
+
+      // تحديث السعر المعروض
+      function updateDisplayPrice() {
+        const price = localStorage.getItem('currentPrice') || '66';
+        document.getElementById('displayPrice').textContent = price;
+      }
+
+      // تشغيل الدوال عند تحميل الصفحة
+      checkMaintenanceMode();
+      updateDisplayPrice();
+    });
   </script>
+
 </body>
+  
 </html>
+
