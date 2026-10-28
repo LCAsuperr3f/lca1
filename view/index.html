@@ -42,14 +42,14 @@
    if(window.ResizeObserver)new ResizeObserver(()=>chart&&chart.applyOptions({width:host.clientWidth,height:host.clientHeight})).observe(host);
    return true;
  }
- async function jsonFetch(url,options){const r=await fetch(url,{cache:'no-store',...options});let data;try{data=await r.json()}catch{throw new Error('Sunucudan geçerli JSON yanıtı gelmedi (HTTP '+r.status+').')}if(!r.ok||data.status==='error'||data.ok===false)throw new Error(data.message||('HTTP '+r.status));return data}
+ async function jsonFetch(url,options){const r=await fetch(url,{...options});let data;try{data=await r.json()}catch{throw new Error('Sunucudan geçerli JSON yanıtı gelmedi (HTTP '+r.status+').')}if(!r.ok||data.status==='error'||data.ok===false)throw new Error(data.message||('HTTP '+r.status));return data}
  async function load(){
   if(busy)return;busy=true;loadBtn.disabled=true;loadBtn.textContent='Yükleniyor…';
   const symbol=sym.value, tf=interval.value;
   $('chartTitle').textContent=symbol;$('chartTf').textContent='· '+labels[tf];$('price').textContent='—';$('change').textContent='—';$('count').textContent='—';$('lastTime').textContent='Veri bekleniyor';$('priceSub').textContent='Twelve Data';pill('YÜKLENİYOR');status(symbol+' gerçek mumları alınıyor…');
   try{
-   await jsonFetch('/api/connect',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({symbol,interval:tf})});
-   const data=await jsonFetch('/api/time_series?symbol='+encodeURIComponent(symbol)+'&interval='+encodeURIComponent(tf)+'&outputsize=300');
+
+   const data=await jsonFetch('/api/time_series?symbol='+encodeURIComponent(symbol)+'&interval='+encodeURIComponent(tf)+'&outputsize=150');
    if(!Array.isArray(data.values)||!data.values.length)throw new Error('Twelve Data bu sembol/zaman dilimi için mum döndürmedi.');
    const candles=data.values.map(v=>({time:dateTime(v.datetime),open:Number(v.open),high:Number(v.high),low:Number(v.low),close:Number(v.close)})).filter(c=>Number.isFinite(c.time)&&[c.open,c.high,c.low,c.close].every(Number.isFinite)&&c.open>0&&c.low>0&&c.high>=c.low).sort((a,b)=>a.time-b.time);
    if(!candles.length)throw new Error('API yanıtında geçerli OHLC mum verisi bulunamadı.');
@@ -68,7 +68,7 @@
  sym.addEventListener('change',()=>{document.querySelectorAll('[data-symbol]').forEach(b=>b.classList.toggle('active',b.dataset.symbol===sym.value));load()});
  interval.addEventListener('change',load);
  document.querySelectorAll('[data-symbol]').forEach(b=>b.addEventListener('click',()=>{sym.value=b.dataset.symbol;document.querySelectorAll('[data-symbol]').forEach(x=>x.classList.toggle('active',x===b));load()}));
- fetch('/api/status',{cache:'no-store'}).then(r=>r.json()).then(d=>{if(!d.connected){pill('SUNUCU ANAHTARI EKSİK');status('Vercel ortam değişkenine TWELVEDATA_API_KEY ekle ve yeniden deploy et. API anahtarı bu sayfaya girilmez.','error');$('chart').innerHTML='<div class="loading" style="padding:24px;text-align:center">Önce Vercel sunucusunda TWELVEDATA_API_KEY yapılandırılmalı.</div>';return}load();poll=setInterval(load,120000)}).catch(()=>{pill('SUNUCU BULUNAMADI');status('Bu grafik GitHub Pages üzerinde API çalıştırmaz. Aynı depoyu Vercel üzerinde deploy edip sunucu değişkenini ayarla.','error');$('chart').innerHTML='<div class="loading" style="padding:24px;text-align:center">Sunucu API’si bulunamadı. Vercel deployment gerekli.</div>'});
+ fetch('/api/status',{cache:'no-store'}).then(r=>r.json()).then(d=>{if(!d.connected){pill('SUNUCU ANAHTARI EKSİK');status('Vercel ortam değişkenine TWELVEDATA_API_KEY ekle ve yeniden deploy et. API anahtarı bu sayfaya girilmez.','error');$('chart').innerHTML='<div class="loading" style="padding:24px;text-align:center">Önce Vercel sunucusunda TWELVEDATA_API_KEY yapılandırılmalı.</div>';return}load();poll=setInterval(load,300000)}).catch(()=>{pill('SUNUCU BULUNAMADI');status('Bu grafik GitHub Pages üzerinde API çalıştırmaz. Aynı depoyu Vercel üzerinde deploy edip sunucu değişkenini ayarla.','error');$('chart').innerHTML='<div class="loading" style="padding:24px;text-align:center">Sunucu API’si bulunamadı. Vercel deployment gerekli.</div>'});
  window.addEventListener('beforeunload',()=>poll&&clearInterval(poll));
 })();
 </script>
