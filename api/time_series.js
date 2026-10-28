@@ -9,7 +9,7 @@ module.exports = async function handler(req, res) {
   } catch (error) { return json(res, 400, { status: 'error', message: error.message }); }
   try {
     const data = await requestTimeSeries({symbol, interval, outputsize});
-    res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate=30');
+    res.setHeader('Cache-Control', 's-maxage=240, stale-while-revalidate=60');
     res.setHeader('X-Content-Type-Options', 'nosniff');
     return res.status(200).json(data);
   } catch (error) {
